@@ -66,17 +66,5 @@ coverage/
 
 # Firebase credentials
 serviceAccountKey.json
-firebase.json
-
-# Ignore the virtual environment
-env/
-
-# Ignore Python bytecode files
-__pycache__/
-*.pyc
-*.pyo
-
-# Ignore other unnecessary files (optional)
-*.log
-*.sqlite
+firebase.json/Users/hy/Documents/Uni/fyp/project/flask_G1/env/bin/python /Users/hy/Documents/Uni/fyp/project/flask_G1/app.py
 
