@@ -1,0 +1,69 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Python virtual environments
+.env
+.venv
+ENV/
+env/
+venv/
+env.bak/
+venv.bak/
+
+# Flask specific
+instance/
+*.pyc
+*.pyo
+*.pyd
+
+# Pytest
+.pytest_cache/
+
+# MyPy
+.mypy_cache/
+
+# Environments
+.env
+.env.local
+.env.production
+.env.development
+.env.test
+
+# IDEs
+.vscode/
+.idea/
+
+# Logs
+logs/
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Node.js / Frontend (如有前端)
+node_modules/
+
+# Test coverage reports
+coverage/
+*.coverage
+
+# SQLite database (SQLite)
+*.sqlite3
+*.db
+
+# Firebase credentials
+serviceAccountKey.json
+firebase.json

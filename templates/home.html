@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Project</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        /* 全局樣式 */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff; /* 淡藍色背景 */
+            color: #333;
+        }
+
+        /* 頁首 */
+        header {
+            background-color: #0077b6; /* 深藍色 */
+            color: white;
+            text-align: center;
+            padding: 1.5rem 0;
+            font-size: 1.8rem;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 導航欄 */
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #0096c7; /* 次要藍色 */
+            padding: 0.8rem 0;
+        }
+
+        nav a {
+            color: white;
+            padding: 1rem 1.5rem;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s ease, transform 0.2s;
+            border-radius: 5px;
+        }
+
+        nav a:hover {
+            background: #005f87;
+            transform: scale(1.05);
+        }
+
+        /* 主視覺區塊 */
+        .hero {
+            background: linear-gradient(to right, #0077b6, #00a8e8); /* 漸層藍 */
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* 主要內容 */
+        .content {
+            padding: 3rem;
+            text-align: center;
+            background: white;
+            margin: 2rem auto;
+            max-width: 800px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .content h2 {
+            color: #0077b6;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .content p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* 頁尾 */
+        footer {
+            background-color: #023e8a;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            position: relative;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        Flask Project Homepage
+    </header>
+
+    <nav>
+        <a href="#"><i class="fas fa-home"></i> Home</a>
+        <a href="#"><i class="fas fa-info-circle"></i> About</a>
+        <a href="#"><i class="fas fa-cogs"></i> Services</a>
+        <a href="#"><i class="fas fa-envelope"></i> Contact</a>
+    </nav>
+
+    <div class="hero">
+        <h1>Welcome to Our Flask Project, {{user_name}}</h1>
+    </div>
+
+    <div class="content">
+        <h2>About Us</h2>
+        <p>We are a dedicated team committed to delivering high-quality web applications using Flask.</p>
+    </div>
+
+    <footer>
+        &copy; 2025 Flask Project. All rights reserved.
+    </footer>
+
+</body>
+</html>
