@@ -12,7 +12,7 @@ def create_user_controller(db):
 
     @user_bp.route('/users', methods=['POST'])
     def create_user():
-        """新增使用者"""
+        """Create a new user"""
         try:
             data = request.get_json()
             user_id = data.get('user_id')
@@ -20,7 +20,7 @@ def create_user_controller(db):
             email = data.get('email')
 
             if not user_id or not name or not email:
-                return jsonify({"error": "缺少 user_id, name 或 email"}), 400
+                return jsonify({"error": "Missing user_id, name, or email"}), 400
 
             user = user_service.create_user(user_id, name, email)
             return jsonify(user.to_dict()), 201

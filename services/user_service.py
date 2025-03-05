@@ -1,7 +1,6 @@
 from models.user_model import User
 from repositories.user_repository import UserRepository
 
-
 class UserService:
     def __init__(self, db):
         """初始化 UserService，並連線Firestore"""

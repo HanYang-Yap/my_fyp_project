@@ -1,9 +1,10 @@
 import os
-
 import openai  # OpenAI
+import firebase_admin
+from firebase_admin import credentials, firestore
 from flask import Flask, jsonify, render_template, request
 
-from config import DevelopmentConfig, ProductionConfig
+from config import DevelopmentConfig, ProductionConfig, Config
 from controllers.test_controller import test_bp
 from controllers.user_controller import create_user_controller
 
@@ -22,9 +23,18 @@ openai.api_key = app.config["OPENAI_API_KEY"]
 # 設定 Firebase
 # db = app_config.init_firebase()
 
+#Load Firebase credentials from .env file
+cred = credentials.Certificate(Config.FIREBASE_CREDENTIALS)
+
+#Initialize Firebase app with the credentials
+firebase_admin.initialize_app(cred)
+
+#Access Firestore database
+db = firebase_admin.firestore.client()
+
 # 註冊 API Blueprint
-# app.register_blueprint(create_user_controller(db), url_prefix='/api/users') # 使用者 API
-app.register_blueprint(test_bp, url_prefix='/test') # 測試用
+app.register_blueprint(create_user_controller(db), url_prefix='/api')  # User API
+#app.register_blueprint(test_bp, url_prefix='/test')
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
