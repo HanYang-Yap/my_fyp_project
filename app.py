@@ -34,7 +34,7 @@ db = firebase_admin.firestore.client()
 
 # 註冊 API Blueprint
 app.register_blueprint(create_user_controller(db), url_prefix='/api')  # User API
-#app.register_blueprint(test_bp, url_prefix='/test')
+app.register_blueprint(test_bp, url_prefix='/test')
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
