@@ -36,7 +36,7 @@ def ask_openai():
 # 🔹 測試首頁
 @test_bp.route('/')
 def test():
-    return 'One In A Million, annyeonghaseyo, this is the index page!'
+    return 'Annyeonghaseyo, this is the index page!'
 
 # 🔹 測試 home 頁面 (渲染 HTML)
 @test_bp.route('/home')
