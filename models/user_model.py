@@ -1,3 +1,4 @@
+
 class User:
     def __init__(self, user_id, name, email, password_hash, role_id, department_id, created_at, updated_at):
         """
