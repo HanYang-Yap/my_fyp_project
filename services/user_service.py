@@ -6,12 +6,12 @@ class UserService:
         """初始化 UserService，並連線Firestore"""
         self.user_repository = UserRepository(db)
 
-    def create_user(self, user_id, name, email):
+    def create_user(self, user_id, name, email, password_hash, role_id, department_id):                   #created_at=None, updated_at=None):
         """創建新使用者"""
-        if not user_id or not name or not email:
+        if not user_id or not name or not email or not password_hash or not role_id or not department_id:
             raise ValueError("user_id, name 和 email 不能為空")
         
-        user = User(user_id, name, email)
+        user = User(user_id, name, email, password_hash, role_id, department_id)
         self.user_repository.add_user(user)
         return user
 
@@ -22,13 +22,13 @@ class UserService:
             return None
         return user
 
-    def update_user(self, user_id, name, email):
+    def update_user(self, user_id, name, email, role_id, department_id):
         """更新使用者資訊"""
         existing_user = self.get_user(user_id)
         if not existing_user:
             return None
 
-        updated_user = User(user_id, name, email)
+        updated_user = User(user_id, name, email, role_id=role_id, department_id=department_id)
         self.user_repository.update_user(updated_user)
         return updated_user
 
