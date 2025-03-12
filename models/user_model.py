@@ -1,7 +1,6 @@
 from datetime import datetime
-from role_model import Role
-from department_model import Department
-from app import db
+from models.role_model import Role
+from models.department_model import Department
 
 class User:
     def __init__(self, user_id, name, email, password_hash, role_id, department_id, created_at = None, updated_at = None):
@@ -77,6 +76,7 @@ def get_role_from_id(role_id):
     """
     Query Firestore to get the role by role_id
     """
+    from app import db
     role_ref = db.collection("roles").document(str(role_id))
     role_doc = role_ref.get()
     if role_doc.exists:
@@ -87,6 +87,7 @@ def get_department_from_id(department_id):
     """
     Query Firestore to get the department by department_id
     """
+    from app import db
     department_ref = db.collection("departments").document(str(department_id))
     department_doc = department_ref.get()
     if department_doc.exists:
