@@ -20,17 +20,15 @@ else:
 app.config.from_object(app_config)
 # 設定 OpenAI API Key
 openai.api_key = app.config["OPENAI_API_KEY"]
+
 # 設定 Firebase
-# db = app_config.init_firebase()
+# Firebase initialization should be done only once
+if not firebase_admin._apps:
+    cred = credentials.Certificate(Config.FIREBASE_CREDENTIALS)
+    firebase_admin.initialize_app(cred)
 
-#Load Firebase credentials from .env file
-cred = credentials.Certificate(Config.FIREBASE_CREDENTIALS)
-
-#Initialize Firebase app with the credentials
-firebase_admin.initialize_app(cred)
-
-#Access Firestore database
-db = firebase_admin.firestore.client()
+# Access Firestore database
+db = firestore.client()
 
 # 註冊 API Blueprint
 app.register_blueprint(create_user_controller(db), url_prefix='/api')  # User API

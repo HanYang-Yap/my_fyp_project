@@ -48,7 +48,9 @@ def create_user_controller(db):
             role_id = data.get('role_id')
             department_id = data.get('department_id')
 
+            # Call the service method to update the user, without needing password_hash
             updated_user = user_service.update_user(user_id, name, email, role_id, department_id)
+            
             if updated_user:
                 return jsonify(updated_user.to_dict()), 200
             return jsonify({"error": "找不到該使用者 Couldn't find this user"}), 404

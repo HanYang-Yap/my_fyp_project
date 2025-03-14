@@ -23,11 +23,12 @@ class UserService:
         return user
 
     def update_user(self, user_id, name, email, role_id, department_id):
-        """更新使用者資訊"""
+        """Update user information"""
         existing_user = self.get_user(user_id)
         if not existing_user:
             return None
 
+        # Create the updated user object, but do not pass password_hash as it's optional
         updated_user = User(user_id, name, email, role_id=role_id, department_id=department_id)
         self.user_repository.update_user(updated_user)
         return updated_user
