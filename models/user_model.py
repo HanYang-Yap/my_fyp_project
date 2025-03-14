@@ -3,7 +3,7 @@ from models.role_model import Role
 from models.department_model import Department
 
 class User:
-    def __init__(self, user_id, name, email, password_hash, role_id, department_id, created_at = None, updated_at = None):
+    def __init__(self, user_id, name, email, password_hash=None, role_id=None, department_id=None, created_at = None, updated_at = None):
         """
         初始化 User 物件
         :param user_id: 使用者 ID (Firebase 的 document ID)
