@@ -19,7 +19,6 @@ class User:
         self.updated_at = updated_at or datetime.utcnow()
         #Initialize role and department as objects
         self.role = None
-        self.department = None
 
     def to_dict(self):
         """
@@ -53,10 +52,10 @@ class User:
         )
 
         role_data = get_role_from_id(data.get("role_id"))
-        department_data = get_department_from_id(data.get("department_id"))
+        #department_data = get_department_from_id(data.get("department_id"))
 
         user.set_role(role_data)
-        user.set_department(department_data)
+        #user.set_department(department_data)
 
         return user
 
@@ -64,9 +63,9 @@ class User:
         if role_data:
             self.role = Role.from_dict(role_data)
 
-    def set_department(self, department_data):
-        if department_data:
-            self.department = Department.from_dict(department_data)
+    # def set_department(self, department_data):
+    #     if department_data:
+    #         self.department = Department.from_dict(department_data)
 
 
 def get_role_from_id(role_id):
