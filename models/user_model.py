@@ -3,7 +3,7 @@ from models.role_model import Role
 from models.department_model import Department
 
 class User:
-    def __init__(self, user_id, name, email, password_hash=None, role_id=None, department_id=None, created_at = None, updated_at = None):
+    def __init__(self, user_id, name, email, password_hash=None, role_id=None, created_at = None, updated_at = None):
         """
         初始化 User 物件
         :param user_id: 使用者 ID (Firebase 的 document ID)
@@ -15,7 +15,6 @@ class User:
         self.email = email
         self.password_hash = password_hash
         self.role_id = role_id
-        self.department_id = department_id
         self.created_at = created_at or datetime.utcnow()
         self.updated_at = updated_at or datetime.utcnow()
         #Initialize role and department as objects
@@ -32,7 +31,6 @@ class User:
             "email": self.email,
             "password_hash": self.password_hash,
             "role_id": self.role_id,
-            "department_id": self.department_id,
             "created_at": self.created_at,
             "updated_at": self.updated_at
         }
@@ -50,7 +48,6 @@ class User:
             email=data.get("email"),
             password_hash=data.get("password_hash"),
             role_id=data.get("role_id"),
-            department_id=data.get("department_id"),
             created_at=data.get("created_at"),
             updated_at=data.get("updated_at")
         )
@@ -83,13 +80,13 @@ def get_role_from_id(role_id):
         return role_doc.to_dict()
     return None
 
-def get_department_from_id(department_id):
-    """
-    Query Firestore to get the department by department_id
-    """
-    from app import db
-    department_ref = db.collection("departments").document(str(department_id))
-    department_doc = department_ref.get()
-    if department_doc.exists:
-        return department_doc.to_dict()
-    return None
+# def get_department_from_id(department_id):
+#     """
+#     Query Firestore to get the department by department_id
+#     """
+#     from app import db
+#     department_ref = db.collection("departments").document(str(department_id))
+#     department_doc = department_ref.get()
+#     if department_doc.exists:
+#         return department_doc.to_dict()
+#     return None
