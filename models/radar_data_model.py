@@ -1,8 +1,7 @@
 from datetime import datetime
-from user_model import User
-from app import db
+from models.user_model import User
 
-class Radar_Data:
+class RadarData:
 
     def __init__(self, radar_id, user_id, typos_punctuation, off_topic, conciseness, expansion, structure, completeness, updated_at=None):
 
@@ -57,6 +56,7 @@ class Radar_Data:
             self.user = User.from_dict(user_data)
 
 def get_user_from_id(user_id):
+    from app import db
     user_ref = db.collection("users").document(str(user_id))
     user_doc = user_ref.get()
     if user_doc.exists:

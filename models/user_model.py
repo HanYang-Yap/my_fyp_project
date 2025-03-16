@@ -1,6 +1,5 @@
 from datetime import datetime
 from models.role_model import Role
-from models.department_model import Department
 
 class User:
     def __init__(self, user_id, name, email, password_hash=None, role_id=None, created_at = None, updated_at = None):

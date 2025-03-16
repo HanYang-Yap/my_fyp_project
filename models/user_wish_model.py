@@ -2,7 +2,6 @@ from models.user_model import User
 from models.department_model import Department
 
 class UserWish:
-
     def __init__(self, user_id, department_id, wish_order):
         self.user_id = user_id
         self.department_id = department_id
@@ -17,7 +16,7 @@ class UserWish:
             "department_id": self.department_id,
             "wish_order": self.wish_order
         }
-    
+
     @staticmethod
     def from_dict(data):
         user_wish = UserWish(
@@ -33,7 +32,7 @@ class UserWish:
         user_wish.set_department(department_data)
 
         return user_wish
-    
+
     def set_user(self, user_data):
         if user_data:
             self.user = User.from_dict(user_data)
@@ -41,7 +40,7 @@ class UserWish:
     def set_department(self, department_data):
         if department_data:
             self.department = Department.from_dict(department_data)
-    
+
 def get_user_from_id(user_id):
     from app import db
     user_ref = db.collection("users").document(str(user_id))
