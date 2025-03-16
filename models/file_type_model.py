@@ -1,5 +1,5 @@
 
-class File_Type:
+class FileType:
 
     def __init__(self, id, type_name):
         self.id = id
@@ -14,7 +14,7 @@ class File_Type:
     @staticmethod
     def from_dict(data):
 
-        file_type = File_Type(
+        file_type = FileType(
             id = data.get("id"),
             type_name = data.get("type_name")
         )
