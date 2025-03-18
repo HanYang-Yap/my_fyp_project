@@ -8,9 +8,6 @@ class InterviewQuestion:
         self.diag_type_code = diag_type_code
         self.question_text = question_text
 
-        self.diag_sect_code = None
-        self.diag_type_code = None
-
     def to_dict(self):
         return {
             "question_id": self.question_id,

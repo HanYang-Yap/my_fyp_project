@@ -14,6 +14,10 @@ from controllers.radar_data_controller import create_radar_data_controller
 from controllers.portfolio_controller import create_portfolio_controller
 from controllers.file_type_controller import create_file_type_controller
 from controllers.suggestion_controller import create_suggestion_controller
+from controllers.suggestion_type_controller import create_suggestion_type_controller
+from controllers.interview_question_controller import create_interview_question_controller
+from controllers.diag_section_controller import create_diag_section_controller
+from controllers.diag_type_controller import create_diag_type_controller
 
 app = Flask(__name__,template_folder="templates")
 
@@ -46,6 +50,10 @@ app.register_blueprint(create_radar_data_controller(db), url_prefix='/api')
 app.register_blueprint(create_portfolio_controller(db), url_prefix='/api')
 app.register_blueprint(create_file_type_controller(db), url_prefix='/api')
 app.register_blueprint(create_suggestion_controller(db), url_prefix='/api')
+app.register_blueprint(create_suggestion_type_controller(db), url_prefix='/api')
+app.register_blueprint(create_interview_question_controller(db), url_prefix='/api')
+app.register_blueprint(create_diag_section_controller(db), url_prefix='/api')
+app.register_blueprint(create_diag_type_controller(db), url_prefix='/api')
 
 app.register_blueprint(test_bp, url_prefix='/test')
 
