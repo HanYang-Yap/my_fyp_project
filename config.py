@@ -17,6 +17,7 @@ class Config:
     DEBUG = os.getenv("DEBUG", "True")
     SECRET_KEY = os.getenv("SECRET_KEY", "my_development_secret_key")
     FIREBASE_CREDENTIALS = os.getenv("FIREBASE_CREDENTIALS", "config/fyp-g1-project-firebase-credentials.json")
+    FIREBASE_STORAGE_BUCKET = os.getenv("FIREBASE_STORAGE_BUCKET", "fyp-g1-project.firebasestorage.app")
 
     # # Firebase
     # @staticmethod
