@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniTopia - 歷史紀錄</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            height: 100vh;
+        }
+        
+        /* 側邊欄樣式 */
+        .sidebar {
+            width: 260px;
+            background-color: #2b303b;
+            color: #e8eaed;
+            padding: 20px;
+            box-shadow: 5px 0 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        .logo-area {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: rgba(58, 63, 75, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e8eaed;
+        }
+        
+        .logo-icon {
+            position: relative;
+            width: 24px;
+            height: 24px;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #9da3b4;
+            transition: background-color 0.3s;
+        }
+        
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .menu-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #e8eaed;
+            font-weight: bold;
+        }
+        
+        /* 主內容區域樣式 */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        
+        .content-container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .profile-header {
+            background: linear-gradient(135deg, #547a8c 0%, #3a5a6a 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .profile-picture {
+            width: 120px;
+            height: 120px;
+            background-color: #e8eaed;
+            border-radius: 60px;
+            margin-right: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profile-picture::after {
+            content: '';
+            position: absolute;
+            width: 60%;
+            height: 40%;
+            border-radius: 50%;
+            background-color: #3a5a6a;
+            top: 25%;
+            left: 20%;
+        }
+        
+        .profile-picture::before {
+            content: '';
+            position: absolute;
+            width: 60%;
+            height: 30%;
+            border-radius: 50% 50% 0 0;
+            border-bottom: 10px solid #3a5a6a;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            background-color: transparent;
+            bottom: 0;
+            left: 20%;
+        }
+        
+        .profile-info h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .profile-info p {
+            margin-bottom: 5px;
+            opacity: 0.9;
+        }
+        
+        .edit-button {
+            margin-left: auto;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .edit-button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* 頁籤導航 */
+        .tabs {
+            display: flex;
+            background-color: #f5f7fa;
+            padding: 10px 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            margin-right: 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            color: #636973;
+            font-size: 14px;
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, #5d8a9e 0%, #3a5a6a 100%);
+            color: white;
+            font-weight: bold;
+        }
+        
+        /* 卡片樣式 */
+        .card-container {
+            padding: 20px;
+        }
+        
+        .history-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .history-card h2 {
+            font-size: 18px;
+            color: #3a4049;
+            margin-bottom: 10px;
+        }
+        
+        .history-subtitle {
+            font-size: 14px;
+            color: #636973;
+            margin-bottom: 20px;
+        }
+        
+        .test-entry {
+            background-color: #f5f7fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .test-school {
+            font-weight: bold;
+            font-size: 16px;
+            color: #3a4049;
+        }
+        
+        .test-date {
+            font-size: 12px;
+            color: #636973;
+        }
+        
+        .test-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        
+        .radar-chart {
+            width: 200px;
+            height: 200px;
+            position: relative;
+        }
+        
+        .scores {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .score-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .score-label {
+            width: 120px;
+            font-size: 14px;
+            color: #636973;
+        }
+        
+        .score-bar-container {
+            flex: 1;
+            height: 12px;
+            background-color: #e8eaed;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .score-bar {
+            height: 100%;
+            background: linear-gradient(to right, #5d8a9e, #3a5a6a);
+            border-radius: 6px;
+        }
+        
+        .score-value {
+            width: 30px;
+            font-size: 14px;
+            color: #3a4049;
+            text-align: right;
+        }
+        
+        .total-score {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+            justify-content: center;
+        }
+        
+        .total-score-label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #636973;
+        }
+        
+        .total-score-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #3a4049;
+            margin-left: 10px;
+        }
+        
+        /* 雷達圖樣式 */
+        .radar-chart-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+        
+        .radar-chart {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .radar-chart canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo-area">
+            <div class="logo-text">UniTopia</div>
+            <div class="logo-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M16 8 a4 4 0 1 0 0.01 0 M16 4 L16 12 M14 8 L18 8" stroke="#8aa2aa" stroke-width="2.5" fill="none" />
+                </svg>
+            </div>
+        </div>
+        
+        <div class="menu-item">
+            <span style="width: 20px; margin-right: 15px; display: inline-block; text-align: center;">
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                    <path d="M5 10 L10 5 L15 10 L15 15 L5 15 Z" fill="#9da3b4" />
+                </svg>
+            </span>
+            <span>首頁</span>
+        </div>
+        
+        <div class="menu-item active">
+            <span style="width: 20px; margin-right: 15px; display: inline-block; text-align: center;">
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                    <circle cx="10" cy="10" r="5" stroke="#e8eaed" stroke-width="2" fill="none" />
+                    <path d="M6 15 L14 15" stroke="#e8eaed" stroke-width="2" />
+                </svg>
+            </span>
+            <span>個人資料</span>
+        </div>
+        
+        <div class="menu-item">
+            <span style="width: 20px; margin-right: 15px; display: inline-block; text-align: center;">
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                    <rect x="5" y="8" width="10" height="8" stroke="#9da3b4" stroke-width="2" fill="none" rx="1" />
+                    <path d="M7 6 L7 8 M13 6 L13 8" stroke="#9da3b4" stroke-width="2" />
+                </svg>
+            </span>
+            <span>日程表</span>
+        </div>
+        
+        <div class="menu-item">
+            <span style="width: 20px; margin-right: 15px; display: inline-block; text-align: center;">
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                    <path d="M10 10 a3.5 3.5 0 1 0 0.01 0 M10 7 L10 6 M10 14 L10 13 M7 7 L6 6 M13 7 L14 6 M7 13 L6 14 M13 13 L14 14" stroke="#9da3b4" stroke-width="2" fill="none" />
+                </svg>
+            </span>
+            <span>設定</span>
+        </div>
+        
+        <div class="menu-item">
+            <span style="width: 20px; margin-right: 15px; display: inline-block; text-align: center;">
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                    <circle cx="10" cy="10" r="5" stroke="#9da3b4" stroke-width="2" fill="none" />
+                    <text x="10" y="12.5" font-family="Arial, sans-serif" font-size="7" font-weight="bold" fill="#9da3b4" text-anchor="middle">?</text>
+                </svg>
+            </span>
+            <span>常見問題</span>
+        </div>
+        
+        <div class="menu-item" style="margin-top: auto;">
+            <span style="width: 20px; margin-right: 15px; display: inline-block; text-align: center;">
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                    <path d="M10 5 L5 10 L10 15" stroke="#9da3b4" stroke-width="2" fill="none" />
+                    <path d="M5 10 L15 10" stroke="#9da3b4" stroke-width="2" />
+                </svg>
+            </span>
+            <span>登出</span>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div class="content-container">
+            <div class="profile-header">
+                <div class="profile-picture"></div>
+                <div class="profile-info">
+                    <h1>王小明</h1>
+                    <p>台北市建國高級中學 - 高三 (3)班</p>
+                    <p>目標科系：資訊工程 / 資訊管理 / 人工智慧</p>
+                </div>
+                <button class="edit-button">編輯資料</button>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab" onclick="window.location.href='unitopia-profile-basic.html'">基本資料</div>
+                <div class="tab active">歷史紀錄</div>
+            </div>
+            
+            <div class="card-container">
+                <div class="history-card">
+                    <h2>測試歷史紀錄</h2>
+                    <div class="history-subtitle">申請文件測試評分歷史</div>
+                    
+                    <!-- 測試紀錄1 -->
+                    <div class="test-entry">
+                        <div class="test-header">
+                            <div class="test-school">國立臺灣大學-資訊工程學系</div>
+                            <div class="test-date">測試日期: 2025/03/15</div>
+                        </div>
+                        <div class="test-content">
+                            <div class="radar-chart-container">
+                                <canvas id="radarChart1"></canvas>
+                            </div>
+                            <div class="scores">
+                                <div class="score-item">
+                                    <div class="score-label">錯字&標點</div>
+                                    <div class="score-bar-container">
+                                        <div class="score-bar" style="width: 85%"></div>
+                                    </div>
+                                    <div class="score-value">8.5</div>
+                                </div>
+                                <div class="score-item">
+                                    <div class="score-label">偏題</div>
+                                    <div class="score-bar-container">
+                                        <div class="score-bar" style="width: 90%"></div>
+                                    </div>
+                                    <div class="score-value">9.0</div>
+                                </div>
+                                <div class="score-item">
+                                    <div class="score-label">精簡</div>
+                                    <div class="score-bar-container">
+                                        <div class="score-bar" style="width: 80%"></div>
+                                    </div>
+                                    <div class="score-value">8.0</div>
+                                </div>
+                                <div class="score-item">
+                                    <div class="score-label">架構</div>
+                                    <div class="score-bar-container">
+                                        <div class="score-bar" style="width: 70%"></div>
+                                    </div>
+                                    <div class="score-value">7.0</div>
+                                </div>
+                                <div class="score-item">
+                                    <div class="score-label">完整度</div>
+                                    <div class="score-bar-container">
+                                        <div class="score-bar" style="width: 80%"></div>
+                                    </div>
+                                    <div class="score-value">8.0</div>
+                                </div>
+                                <div class="total-score">
+                                    <span class="total-score-label">綜合評分:</span>
+                                    <span class="total-score-value">8.1</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 測試紀錄2 -->
+                    <div class="test-entry">
+                        <div class="test-header">
+                            <div class="test-school">國立政治大學-資訊管理學系</div>
+                            <div class="test-date">測試日期: 2025/03/10</div>
+                        </div>
+                        <div class="test-content">
+                            <div class="radar-chart-container">
+                                <canvas id="radarChart2"></canvas>
+                            </div>
+                            <div class="scores">
+                                <div class="score-item">
+                                    <div class="score-label">錯字&標點</div>
+                                    <div class="score-bar-container">
+                                        <div class="score-bar" style="width: 80%"></div>
+                                    </div>
+                                    <div class="score-value">8.0</div>
+                                </div>
+                                <div class="score-item">
+                                    <div class="score-label">偏題</div>
+                                    <div class="score-bar-container">
+                                        <div class="score-bar" style="width: 85%"></div>
+                                    </div>
+                                    <div class="score-value">8.5</div>
+                                </div>
+                                <div class="score-item">
+                                    <div class="score-label">精簡</div>
+                                    <div class="score-bar-container">
+                                        <div class="score-bar" style="width: 85%"></div>
+                                    </div>
+                                    <div class="score-value">8.5</div>
+                                </div>
+                                <div class="score-item">
+                                    <div class="score-label">架構</div>
+                                    <div class="score-bar-container">
+                                        <div class="score-bar" style="width: 75%"></div>
+                                    </div>
+                                    <div class="score-value">7.5</div>
+                                </div>
+                                <div class="score-item">
+                                    <div class="score-label">完整度</div>
+                                    <div class="score-bar-container">
+                                        <div class="score-bar" style="width: 85%"></div>
+                                    </div>
+                                    <div class="score-value">8.5</div>
+                                </div>
+                                <div class="total-score">
+                                    <span class="total-score-label">綜合評分:</span>
+                                    <span class="total-score-value">8.2</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 測試紀錄3 -->
+                    <div class="test-entry">
+                        <div class="test-header">
+                            <div class="test-school">台灣人工智慧學校-人工智慧班</div>
+                            <div class="test-date">測試日期: 2025/03/05</div>
+                        </div>
+                        <div class="test-content">
+                            <div class="radar-chart-container">
+                                <canvas id="radarChart3"></canvas>
+                            </div>
+                            <div class="scores">
+                                <div class="score-item">
+                                    <div class="score-label">錯字&標點</div>
+                                    <div class="score-bar-container">
+                                        <div class="score-bar" style="width: 75%"></div>
+                                    </div>
+                                    <div class="score-value">7.5</div>
+                                </div>
+                                <div class="score-item">
+                                    <div class="score-label">偏題</div>
+                                    <div class="score-bar-container">
+                                        <div class="score-bar" style="width: 95%"></div>
+                                    </div>
+                                    <div class="score-value">9.5</div>
+                                </div>
+                                <div class="score-item">
+                                    <div class="score-label">精簡</div>
+                                    <div class="score-bar-container">
+                                        <div class="score-bar" style="width: 90%"></div>
+                                    </div>
+                                    <div class="score-value">9.0</div>
+                                </div>
+                                <div class="score-item">
+                                    <div class="score-label">架構</div>
+                                    <div class="score-bar-container">
+                                        <div class="score-bar" style="width: 70%"></div>
+                                    </div>
+                                    <div class="score-value">7.0</div>
+                                </div>
+                                <div class="score-item">
+                                    <div class="score-label">完整度</div>
+                                    <div class="score-bar-container">
+                                        <div class="score-bar" style="width: 80%"></div>
+                                    </div>
+                                    <div class="score-value">8.0</div>
+                                </div>
+                                <div class="total-score">
+                                    <span class="total-score-label">綜合評分:</span>
+                                    <span class="total-score-value">8.3</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 設定雷達圖的共同配置
+            const commonOptions = {
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    r: {
+                        angleLines: {
+                            display: true,
+                            color: '#e0e0e0'
+                        },
+                        min: 0,
+                        max: 10,
+                        ticks: {
+                            stepSize: 2,
+                            display: false
+                        }
+                    }
+                }
+            };
+            
+            // 創建第一個雷達圖
+            const ctx1 = document.getElementById('radarChart1').getContext('2d');
+            new Chart(ctx1, {
+                type: 'radar',
+                data: {
+                    labels: ['錯字&標點', '偏題', '精簡', '架構', '完整度'],
+                    datasets: [{
+                        data: [8.5, 9.0, 8.0, 7.0, 8.0],
+                        backgroundColor: 'rgba(93, 138, 158, 0.2)',
+                        borderColor: 'rgba(93, 138, 158, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(93, 138, 158, 1)',
+                        pointRadius: 4
+                    }]
+                },
+                options: commonOptions
+            });
+            
+            // 創建第二個雷達圖
+            const ctx2 = document.getElementById('radarChart2').getContext('2d');
+            new Chart(ctx2, {
+                type: 'radar',
+                data: {
+                    labels: ['錯字&標點', '偏題', '精簡', '架構', '完整度'],
+                    datasets: [{
+                        data: [8.0, 8.5, 8.5, 7.5, 8.5],
+                        backgroundColor: 'rgba(93, 138, 158, 0.2)',
+                        borderColor: 'rgba(93, 138, 158, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(93, 138, 158, 1)',
+                        pointRadius: 4
+                    }]
+                },
+                options: commonOptions
+            });
+            
+            // 創建第三個雷達圖
+            const ctx3 = document.getElementById('radarChart3').getContext('2d');
+            new Chart(ctx3, {
+                type: 'radar',
+                data: {
+                    labels: ['錯字&標點', '偏題', '精簡', '架構', '完整度'],
+                    datasets: [{
+                        data: [7.5, 9.5, 9.0, 7.0, 8.0],
+                        backgroundColor: 'rgba(93, 138, 158, 0.2)',
+                        borderColor: 'rgba(93, 138, 158, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(93, 138, 158, 1)',
+                        pointRadius: 4
+                    }]
+                },
+                options: commonOptions
+            });
+        });
+    </script>
+</body>
+</html>

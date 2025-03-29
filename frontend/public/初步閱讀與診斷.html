@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniTopia - 初步閱讀與診斷</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+        }
+        
+        /* 左側邊欄 */
+        .sidebar {
+            width: 260px;
+            background-color: #2b303b;
+            height: 100vh;
+            position: fixed;
+            box-shadow: 5px 0 8px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            z-index: 100;
+        }
+        
+        .logo-container {
+            padding: 30px 25px;
+        }
+        
+        .logo {
+            background-color: rgba(58, 63, 75, 0.5);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-text {
+            color: #e8eaed;
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .logo-icon {
+            color: #8aa2aa;
+            font-size: 20px;
+            margin-left: auto;
+        }
+        
+        .menu-container {
+            padding: 0 25px;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            color: #9da3b4;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .menu-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #e8eaed;
+            font-weight: bold;
+        }
+        
+        .menu-item svg {
+            min-width: 24px;
+            text-align: center;
+            margin-right: 20px;
+        }
+        
+        /* 主要內容區 */
+        .main-content {
+            margin-left: 260px;
+            flex-grow: 1;
+            padding: 30px;
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3a4049;
+        }
+        
+        .diagnosis-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 80px;
+        }
+        
+        .diagnosis-left, .diagnosis-right {
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            padding: 25px;
+            height: calc(100vh - 140px);
+            overflow-y: auto;
+        }
+        
+        .diagnosis-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f2f5;
+            margin-bottom: 20px;
+        }
+        
+        .diagnosis-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #3a4049;
+            display: flex;
+            align-items: center;
+        }
+        
+        .diagnosis-title svg {
+            margin-right: 10px;
+        }
+        
+        .doc-info {
+            display: flex;
+            align-items: center;
+            color: #636973;
+            font-size: 14px;
+        }
+        
+        .doc-type {
+            background-color: #5d8a9e;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-right: 10px;
+        }
+        
+        .school-info {
+            font-weight: bold;
+        }
+        
+        .content-panel {
+            margin-bottom: 20px;
+        }
+        
+        .content-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #3a4049;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .content-title svg {
+            margin-right: 8px;
+        }
+        
+        .diagnosis-list {
+            list-style-type: none;
+        }
+        
+        .diagnosis-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f5f7fa;
+            border-left: 4px solid #5d8a9e;
+        }
+        
+        .diagnosis-item.structure {
+            border-left-color: #5d8a9e;
+        }
+        
+        .diagnosis-item.irrelevant {
+            border-left-color: #e94e77;
+        }
+        
+        .diagnosis-item.conciseness {
+            border-left-color: #f39c12;
+        }
+        
+        .diagnosis-item.completeness {
+            border-left-color: #8e44ad;
+        }
+        
+        .diagnosis-item.improvement {
+            border-left-color: #27ae60;
+        }
+        
+        .diagnosis-item.grammar {
+            border-left-color: #f1c40f;
+        }
+        
+        .issue-code {
+            font-weight: bold;
+            color: #3a4049;
+            margin-right: 5px;
+        }
+        
+        .issue-title {
+            font-weight: bold;
+            color: #3a4049;
+        }
+        
+        .issue-desc {
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+        
+        .editable-content {
+            width: 100%;
+            height: calc(100% - 60px);
+            padding: 15px;
+            background-color: #f5f7fa;
+            border: 1px solid #dce0e5;
+            border-radius: 8px;
+            font-size: 15px;
+            line-height: 1.7;
+            resize: none;
+            color: #3a4049;
+            transition: border-color 0.3s;
+        }
+        
+        .editable-content:focus {
+            outline: none;
+            border-color: #5d8a9e;
+        }
+        
+        .next-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #5d8a9e;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .next-button:hover {
+            background-color: #3a5a6a;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .next-button svg {
+            margin-left: 10px;
+        }
+        
+        /* 自定義輸入區域 */
+        .user-input-section {
+            margin-top: 30px;
+        }
+        
+        .user-input-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #3a4049;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-input-title svg {
+            margin-right: 8px;
+        }
+        
+        .user-input-container {
+            background-color: #f5f7fa;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        
+        .user-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 1px solid #dce0e5;
+            border-radius: 8px;
+            resize: vertical;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #3a4049;
+            transition: border-color 0.3s;
+        }
+        
+        .user-textarea:focus {
+            outline: none;
+            border-color: #5d8a9e;
+        }
+        
+        .hint-text {
+            color: #8d939e;
+            font-size: 13px;
+            margin-top: 8px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <!-- 左側邊欄 -->
+    <div class="sidebar">
+        <div class="logo-container">
+            <div class="logo">
+                <div class="logo-text">UniTopia</div>
+                <div class="logo-icon">
+                    <svg width="16" height="16" viewBox="0 0 16 16">
+                        <circle cx="8" cy="8" r="8" fill="none" stroke="#8aa2aa" stroke-width="2"/>
+                        <line x1="8" y1="4" x2="8" y2="12" stroke="#8aa2aa" stroke-width="2"/>
+                        <line x1="4" y1="8" x2="12" y2="8" stroke="#8aa2aa" stroke-width="2"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <div class="menu-container">
+            <a href="#" class="menu-item">
+                <svg width="24" height="24" viewBox="0 0 24 24" style="margin-right: 20px;">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" fill="none" stroke="currentColor" stroke-width="2" />
+                    <polyline points="9 22 9 12 15 12 15 22" fill="none" stroke="currentColor" stroke-width="2" />
+                </svg>
+                <span class="menu-text">首頁</span>
+            </a>
+            <a href="#" class="menu-item active">
+                <svg width="24" height="24" viewBox="0 0 24 24" style="margin-right: 20px;">
+                    <path d="M4 19.5v-15A2.5 2.5 0 016.5 2H20v20H6.5a2.5 2.5 0 01-2.5-2.5z" fill="none" stroke="currentColor" stroke-width="2" />
+                    <path d="M8 7h8M8 11h8M8 15h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+                <span class="menu-text">學習歷程</span>
+            </a>
+            <a href="#" class="menu-item">
+                <svg width="24" height="24" viewBox="0 0 24 24" style="margin-right: 20px;">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+                <span class="menu-text">日程表</span>
+            </a>
+            <a href="#" class="menu-item">
+                <svg width="24" height="24" viewBox="0 0 24 24" style="margin-right: 20px;">
+                    <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2" />
+                    <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" fill="none" stroke="currentColor" stroke-width="2" />
+                </svg>
+                <span class="menu-text">設定</span>
+            </a>
+            <a href="#" class="menu-item">
+                <svg width="24" height="24" viewBox="0 0 24 24" style="margin-right: 20px;">
+                    <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2" />
+                    <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <line x1="12" y1="17" x2="12" y2="17.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+                <span class="menu-text">常見問題</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- 主要內容區 -->
+    <div class="main-content">
+        <div class="content-header">
+            <h1 class="page-title">初步閱讀與診斷</h1>
+        </div>
+        
+        <div class="diagnosis-container">
+            <!-- 左側診斷結果 -->
+            <div class="diagnosis-left">
+                <div class="diagnosis-header">
+                    <div class="diagnosis-title">
+                        <svg width="24" height="24" viewBox="0 0 24 24">
+                            <path d="M20.24 12.24a6 6 0 00-8.49-8.49L5 10.5V19h8.5l6.74-6.76z" stroke="#5d8a9e" stroke-width="2" fill="none"/>
+                            <line x1="16" y1="8" x2="2" y2="22" stroke="#5d8a9e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        診斷結果
+                    </div>
+                    <div class="doc-info">
+                        <div class="doc-type">學習歷程自述檔案</div>
+                        <div class="school-info">國立臺灣大學 - 資訊工程學系</div>
+                    </div>
+                </div>
+                
+                <div class="content-panel">
+                    <ul class="diagnosis-list">
+                        <li class="diagnosis-item structure">
+                            <div class="issue-code">1. O5：</div>
+                            <span class="issue-title">[架構檢查]</span>
+                            <div class="issue-desc">在"個性和興趣"段落中，對於從藝術到科技興趣轉變的敘述稍顯分散，可以考慮重新組織此段內容，使轉變的原因與過程更具邏輯性。</div>
+                        </li>
+                        
+                        <li class="diagnosis-item irrelevant">
+                            <div class="issue-code">2. P2：</div>
+                            <span class="issue-title">[偏題部分]</span>
+                            <div class="issue-desc">在校表現與挑戰"段落中提到的電阻實驗和Excel使用，與資訊管理的直接關聯性不明顯，建議刪減或用更相關的內容替代，以更突出與資訊管理的關聯性。</div>
+                        </li>
+                        
+                        <li class="diagnosis-item conciseness">
+                            <div class="issue-code">3. O3：</div>
+                            <span class="issue-title">[精簡建議]</span>
+                            <div class="issue-desc">"資訊領域的經驗"段落中，Python專案的細節陳述較為冗長，建議精簡描述，專注於突出重點，例如專案的結果或學習到的關鍵能力。</div>
+                        </li>
+                        
+                        <li class="diagnosis-item completeness">
+                            <div class="issue-code">4. O6：</div>
+                            <span class="issue-title">[完整度]</span>
+                            <div class="issue-desc">"語言與其他能力"段落中，關於邏輯分析能力的提及較少，建議加入相關經歷或數據分析案例，以強化該關鍵能力並更符合系所需求。</div>
+                        </li>
+                        
+                        <li class="diagnosis-item improvement">
+                            <div class="issue-code">5. P4：</div>
+                            <span class="issue-title">[增長建議]</span>
+                            <div class="issue-desc">"未來的規劃與目標"段落中，關於跨領域合作與創新思維的內容較為簡單，建議補充具體計畫或例子，以展現更深入的思考和實際應用的可能性。</div>
+                        </li>
+                        
+                        <li class="diagnosis-item grammar">
+                            <div class="issue-code">6. O1：</div>
+                            <span class="issue-title">[錯字與標點符號]</span>
+                            <div class="issue-desc">整段多數句子之間缺少明顯的標點符號，尤其是在段與段之間的轉換，應檢查全文標點符號的使用，以提升可讀性與語法正確性。</div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="user-input-section">
+                    <div class="user-input-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" stroke="#5d8a9e" stroke-width="2" fill="none"/>
+                            <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" stroke="#5d8a9e" stroke-width="2" stroke-linecap="round"/>
+                            <circle cx="12" cy="17" r="0.5" stroke="#5d8a9e" stroke-width="2" fill="#5d8a9e"/>
+                        </svg>
+                        自我疑問與回饋
+                    </div>
+                    <div class="user-input-container">
+                        <textarea class="user-textarea" placeholder="請輸入您對文件的疑問、已知問題或需要特別關注的部分..."></textarea>
+                        <div class="hint-text">若無疑問可留空此欄位</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右側文件內容 -->
+            <div class="diagnosis-right">
+                <div class="diagnosis-header">
+                    <div class="diagnosis-title">
+                        <svg width="24" height="24" viewBox="0 0 24 24">
+                            <path d="M14 3v4a1 1 0 001 1h4" stroke="#5d8a9e" stroke-width="2" fill="none"/>
+                            <path d="M17 21H7a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z" stroke="#5d8a9e" stroke-width="2" fill="none"/>
+                            <path d="M9 9h6M9 13h6M9 17h4" stroke="#5d8a9e" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        文件內容（可編輯）
+                    </div>
+                </div>
+                
+                <textarea class="editable-content">在高中三年的學習歷程中，我不斷探索與發掘自己的興趣與專長。藝術創作一直是我從小的興趣，但隨著對科技領域的接觸，我開始發現自己對程式設計和資訊科學有著濃厚的好奇心；不只是試過 C++程式語言，還接觸了 3D 建模軟體和數位繪圖。我發現自己特別喜歡將抽象的概念具體化，這讓我確信資訊管理是我想深入研究的方向。
+
+在校期間，我參與了許多實驗和專題研究。電阻實驗讓我學會如何收集數據並使用Excel進行分析，雖然實驗本身並不複雜，但這過程培養了我的耐心和細心，也是我首次體會到數據分析的魅力。此外，我也積極參與社團活動，擔任電腦社副社長，定期舉辦程式設計工作坊，幫助對程式設計感興趣的同學入門。
+
+資訊領域的實作經驗是我最為重視的部分。大三下學期，我開始學習Python語言，並完成了一個數據分析專案。這是一個針對台灣股市過去十年數據的分析項目，使用pandas和matplotlib進行數據處理和視覺化。首先，我收集了大量的歷史交易數據，然後對數據進行清洗和標準化，去除異常值。接著，我使用各種統計方法分析不同產業的表現趨勢，並開發了一個簡單的線性回歸模型來預測特定股票的短期走勢。這個專案讓我不僅學會了Python編程，還掌握了基本的數據分析流程和技術，從數據收集、清洗到分析和視覺化表達。遇到的最大挑戰是如何處理缺失值，最終我通過研究相關技術文獻，決定採用均值填充法並配合異常值檢測來確保數據質量。
+
+我的語言能力包括流利的中文、中等程度的英文和基礎的日文。英文能力主要體現在閱讀專業文獻和技術文檔方面，雖然口語表達仍有進步空間。邏輯分析能力主要通過程式設計和數學課程培養，尤其擅長結構化思考和問題拆解。
+
+未來，我希望能夠深入學習資料科學和人工智能領域，並探索這些技術在商業決策和市場分析中的應用。同時，我也計劃培養跨領域合作能力，與不同背景的專業人士共同創新。我相信在政治大學資訊管理學系的學習環境中，能夠獲得更全面的專業訓練和實踐機會。</textarea>
+            </div>
+        </div>
+        
+        <!-- 下一步按鈕 -->
+        <button class="next-button" onclick="location.href='guidance.html'">
+            提問引導與釐清
+            <svg width="16" height="16" viewBox="0 0 24 24">
+                <path d="M5 12h14" stroke="white" stroke-width="2" stroke-linecap="round" />
+                <path d="M12 5l7 7-7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </button>
+    </div>
+</body>
+</html>
