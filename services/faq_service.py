@@ -16,7 +16,7 @@ class FAQService(BaseService):
         next_id = self.repository.get_next_id(type)
         faq = FAQ(type, title, description, contact_email, type_name=type)
         self.repository.add(type, next_id, faq)
-        print(f"[🔥 DEBUG] 存入 Firestore: /faq/{type}/{next_id}")
+        #print(f"[🔥 DEBUG] 存入 Firestore: /faq/{type}/{next_id}")
         return faq
 
     def get_faq(self, type, doc_id):

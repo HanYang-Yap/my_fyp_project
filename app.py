@@ -71,16 +71,24 @@ app.register_blueprint(create_diag_type_controller(db), url_prefix='/api')
 app.register_blueprint(create_faq_controller(db), url_prefix='/api')
 app.register_blueprint(test_bp, url_prefix='/test')
 
-@app.route('/')
+from flask import Flask, render_template
+from config import Config
+
+app = Flask(__name__)
+app.config.from_object(Config)
+
+@app.route("/")
 def index():
-    blobs = bucket.list_blobs(prefix='uploads/')
-    images = []
+    firebase_config = {
+        "apiKey": Config.FIREBASE_API_KEY,
+        "authDomain": Config.FIREBASE_AUTH_DOMAIN,
+        "projectId": Config.FIREBASE_PROJECT_ID,
+        "storageBucket": Config.FIREBASE_STORAGE_BUCKET,
+        "messagingSenderId": Config.FIREBASE_MESSAGING_SENDER_ID,
+        "appId": Config.FIREBASE_APP_ID
+    }
+    return render_template("index.html", firebase_config=firebase_config)
 
-    for blob in blobs:
-        if any(blob.name.endswith(ext) for ext in app.config['ALLOWED_EXTENSIONS']):
-            images.append(blob.public_url)
-
-    return render_template('upload_file.html', images=images)
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -103,10 +111,79 @@ def upload():
 def serve_image(filename):
     return send_from_directory(app.config['UPLOAD_DIRECTORY'], filename)
 
-@app.route('/faq-form')
+@app.route('/faq')
 def faq_form():
     return render_template('faq.html')
 
+@app.route('/home')
+def home_form():
+    return render_template('home.html')
+
+@app.route('/file_upload&management')
+def file_upload_form():
+    return render_template('file_upload&management.html')
+
+@app.route('/get-uploaded-files', methods=['GET'])
+def get_uploaded_files():
+    collection_ref = db.collection('uploaded_files')
+    docs = collection_ref.stream()
+    files = []
+
+    for doc in docs:
+        data = doc.to_dict()
+        files.append({
+            "filename": data.get("filename"),
+            "path": data.get("path"),
+            "url": data.get("url"),
+            "size": data.get("size"),
+            "school": data.get("school"),
+            "type": data.get("type"),
+            "uploaded_at": data.get("uploaded_at")
+        })
+
+    return jsonify(files)
+
+@app.route('/save-file-metadata', methods=['POST'])
+def save_file_metadata():
+    data = request.get_json()
+    #print("Saving file metadata:", data)
+    collection_ref = db.collection('uploaded_files')
+    doc_id = f"{data['school']}_{data['type']}_{data['filename']}"
+    collection_ref.document(doc_id).set(data)
+    return jsonify({"status": "success"}), 200
+
+@app.route('/delete-file-metadata', methods=['POST'])
+def delete_file_metadata():
+    try:
+        data = request.get_json()
+        path = data.get('path')
+        filename = data.get('filename')
+        
+        if not path or not filename:
+            return jsonify({"error": "缺少必要參數"}), 400
+        
+        # 從 Firestore 中刪除文件元數據
+        collection_ref = db.collection('uploaded_files')
+        
+        # 透過查詢找到相符的文件
+        docs = collection_ref.where('path', '==', path).stream()
+        
+        # 檢查是否找到文件
+        doc_found = False
+        
+        # 刪除所有匹配的文件
+        for doc in docs:
+            doc.reference.delete()
+            doc_found = True
+        
+        if not doc_found:
+            return jsonify({"error": "找不到文件記錄"}), 404
+        
+        return jsonify({"message": "文件元數據已成功刪除"}), 200
+    
+    except Exception as e:
+        #print(f"刪除文件元數據時出錯: {str(e)}")
+        return jsonify({"error": "刪除文件元數據失敗"}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
