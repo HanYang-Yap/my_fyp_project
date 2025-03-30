@@ -17,7 +17,7 @@ class BaseRepository:
 
     def get(self, obj_id):
         """Get a document from Firestore by ID"""
-        collection_name = self.model_class.__name__.lower() + 's'  # Dynamically choose collection
+        collection_name = self.model_class.__name__.lower()  # Dynamically choose collection
         doc = self.db.collection(collection_name).document(str(obj_id)).get()
         if doc.exists:
             return self.model_class.from_dict(doc.to_dict())
@@ -25,7 +25,7 @@ class BaseRepository:
     
     def update(self, obj):
         """Update an existing document in Firestore"""
-        collection_name = self.model_class.__name__.lower() + 's'
+        collection_name = self.model_class.__name__.lower()
         if self.custom_id_field and hasattr(obj, self.custom_id_field):
             document_id = getattr(obj, self.custom_id_field)
             self.db.collection(collection_name).document(str(document_id)).update(obj.to_dict())
@@ -34,5 +34,5 @@ class BaseRepository:
 
     def delete(self, obj_id):
         """Delete a document from Firestore"""
-        collection_name = self.model_class.__name__.lower() + 's'
+        collection_name = self.model_class.__name__.lower()
         self.db.collection(collection_name).document(str(obj_id)).delete()
