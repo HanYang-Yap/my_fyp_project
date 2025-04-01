@@ -23,6 +23,7 @@ from controllers.interview_question_controller import create_interview_question_
 from controllers.diag_section_controller import create_diag_section_controller
 from controllers.diag_type_controller import create_diag_type_controller
 from controllers.faq_controller import create_faq_controller
+from controllers.calendar_controller import create_calendar_controller
 
 app = Flask(__name__, template_folder="templates")
 app.config['UPLOAD_DIRECTORY'] = 'uploads/'
@@ -69,6 +70,7 @@ app.register_blueprint(create_interview_question_controller(db), url_prefix='/ap
 app.register_blueprint(create_diag_section_controller(db), url_prefix='/api')
 app.register_blueprint(create_diag_type_controller(db), url_prefix='/api')
 app.register_blueprint(create_faq_controller(db), url_prefix='/api')
+app.register_blueprint(create_calendar_controller(db), url_prefix='/api')
 app.register_blueprint(test_bp, url_prefix='/test')
 
 from flask import Flask, render_template
