@@ -4,627 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UniTopia - 個人基本資料</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
-        
-        body {
-            background-color: #f0f2f5;
-            display: flex;
-            height: 100vh;
-        }
-        
-        /* 側邊欄樣式 */
-        .sidebar {
-            width: 260px;
-            background-color: #2b303b;
-            color: #e8eaed;
-            padding: 20px;
-            box-shadow: 5px 0 8px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-        
-        .logo-area {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: rgba(58, 63, 75, 0.5);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-        }
-        
-        .logo-text {
-            font-size: 24px;
-            font-weight: bold;
-            color: #e8eaed;
-        }
-        
-        .logo-icon {
-            position: relative;
-            width: 24px;
-            height: 24px;
-        }
-        
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            color: #9da3b4;
-            transition: background-color 0.3s;
-        }
-        
-        .menu-item:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-        
-        .menu-item.active {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #e8eaed;
-            font-weight: bold;
-        }
-        
-        /* 主內容區域樣式 */
-        .main-content {
-            flex: 1;
-            padding: 30px;
-            overflow-y: auto;
-            position: relative; /* 添加相對定位 */
-        }
-        
-        .content-container {
-            background-color: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-            margin-bottom: 30px;
-        }
-        
-        .profile-header {
-            background: linear-gradient(135deg, #547a8c 0%, #3a5a6a 100%);
-            color: white;
-            padding: 30px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .profile-picture {
-            width: 120px;
-            height: 120px;
-            background-color: #e8eaed;
-            border-radius: 60px;
-            margin-right: 30px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .profile-picture::after {
-            content: '';
-            position: absolute;
-            width: 60%;
-            height: 40%;
-            border-radius: 50%;
-            background-color: #3a5a6a;
-            top: 25%;
-            left: 20%;
-        }
-        
-        .profile-picture::before {
-            content: '';
-            position: absolute;
-            width: 60%;
-            height: 30%;
-            border-radius: 50% 50% 0 0;
-            border-bottom: 10px solid #3a5a6a;
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            background-color: transparent;
-            bottom: 0;
-            left: 20%;
-        }
-        
-        .profile-info h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-        
-        .profile-info p {
-            margin-bottom: 5px;
-            opacity: 0.9;
-        }
-        
-        .edit-button {
-            margin-left: auto;
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        
-        .edit-button:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-        }
-        
-        /* 頁籤導航 */
-        .tabs {
-            display: flex;
-            background-color: #f5f7fa;
-            padding: 10px 20px;
-        }
-        
-        .tab {
-            padding: 10px 20px;
-            margin-right: 10px;
-            border-radius: 15px;
-            cursor: pointer;
-            color: #636973;
-            font-size: 14px;
-        }
-        
-        .tab.active {
-            background: linear-gradient(135deg, #5d8a9e 0%, #3a5a6a 100%);
-            color: white;
-            font-weight: bold;
-        }
-        
-        /* 卡片樣式 */
-        .card-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            padding: 20px;
-        }
-        
-        .card {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-            padding: 20px;
-        }
-        
-        .basic-info-card {
-            width: 48%;
-        }
-        
-        .target-schools-card {
-            width: 48%;
-        }
-        
-        .card h2 {
-            font-size: 18px;
-            color: #3a4049;
-            margin-bottom: 20px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            font-size: 14px;
-            color: #636973;
-            margin-bottom: 5px;
-        }
-        
-        .form-control {
-            display: block;
-            width: 100%;
-            padding: 10px 15px;
-            background-color: #f5f7fa;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            color: #3a4049;
-            margin-bottom: 5px;
-        }
-        
-        .form-control.editable {
-            cursor: pointer;
-            transition: background-color 0.2s;
-            position: relative;
-        }
-        
-        .form-control.editable:hover {
-            background-color: #edf1f7;
-        }
-        
-        .form-control.editable:hover::after {
-            content: "✎";
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #5d8a9e;
-            font-size: 16px;
-        }
-        
-        .form-control.editing {
-            background-color: #ffffff;
-            border: 1px solid #5d8a9e;
-            box-shadow: 0 0 0 2px rgba(93, 138, 158, 0.1);
-            padding: 9px 14px;
-        }
-        
-        .form-control input {
-            width: 100%;
-            padding: 0;
-            border: none;
-            background: transparent;
-            font-size: 14px;
-            color: #3a4049;
-            outline: none;
-        }
-        
-        .half-width {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .half-width .form-group {
-            flex: 1;
-        }
-        
-        /* 目標學校列表 */
-        .school-list {
-            margin-bottom: 20px;
-        }
-        
-        .school-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            background-color: #f5f7fa;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            cursor: move;
-            transition: background-color 0.2s;
-            position: relative;
-        }
-        
-        .school-item:hover {
-            background-color: #edf1f7;
-        }
-        
-        .school-item.dragging {
-            opacity: 0.5;
-            background-color: #e1e5eb;
-        }
-        
-        .drag-handle {
-            margin-right: 10px;
-            color: #9da3b4;
-            cursor: grab;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 16px;
-            height: 16px;
-        }
-        
-        .drag-icon {
-            display: block;
-            width: 100%;
-            height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6C4.55228 6 5 5.55228 5 5C5 4.44772 4.55228 4 4 4C3.44772 4 3 4.44772 3 5C3 5.55228 3.44772 6 4 6Z' fill='%239da3b4'/%3E%3Cpath d='M4 12C4.55228 12 5 11.5523 5 11C5 10.4477 4.55228 10 4 10C3.44772 10 3 10.4477 3 11C3 11.5523 3.44772 12 4 12Z' fill='%239da3b4'/%3E%3Cpath d='M11 5C11 5.55228 10.5523 6 10 6C9.44772 6 9 5.55228 9 5C9 4.44772 9.44772 4 10 4C10.5523 4 11 4.44772 11 5Z' fill='%239da3b4'/%3E%3Cpath d='M11 11C11 11.5523 10.5523 12 10 12C9.44772 12 9 11.5523 9 11C9 10.4477 9.44772 10 10 10C10.5523 10 11 10.4477 11 11Z' fill='%239da3b4'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: center;
-        }
-        
-        .school-info {
-            flex: 1;
-        }
-        
-        .school-name {
-            font-weight: bold;
-            font-size: 14px;
-            color: #3a4049;
-            margin-bottom: 2px;
-        }
-        
-        .school-department {
-            font-size: 12px;
-            color: #636973;
-        }
-        
-        .school-rank {
-            width: 24px;
-            height: 24px;
-            background-color: #e8eaed;
-            color: #5d8a9e;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 14px;
-            margin-right: 10px;
-        }
-        
-        .delete-school-btn {
-            background: none;
-            border: none;
-            color: #9da3b4;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 2px 8px;
-            border-radius: 50%;
-            transition: all 0.2s;
-        }
-        
-        .delete-school-btn:hover {
-            color: #e25c5c;
-            background-color: rgba(226, 92, 92, 0.1);
-        }
-        
-        .add-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #5d8a9e 0%, #3a5a6a 100%);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            margin-left: auto;
-        }
-        
-        .update-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #5d8a9e 0%, #3a5a6a 100%);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            margin-top: 20px;
-        }
-        
-        /* 模態對話框樣式 */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        
-        .modal-container {
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            width: 500px;
-            max-width: 90%;
-            overflow: hidden;
-            animation: modalFadeIn 0.3s ease-out;
-        }
-        
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .modal-header {
-            background: linear-gradient(135deg, #547a8c 0%, #3a5a6a 100%);
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .modal-header h2 {
-            font-size: 18px;
-            font-weight: bold;
-        }
-        
-        .close-button {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-            padding: 0 5px;
-        }
-        
-        .modal-body {
-            padding: 20px;
-        }
-        
-        .modal-footer {
-            padding: 15px 20px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            border-top: 1px solid #e8eaed;
-        }
-        
-        /* 表單樣式 - 模態框特定 */
-        .school-input-container {
-            position: relative;
-        }
-        
-        .school-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background-color: white;
-            border: 1px solid #e8eaed;
-            border-radius: 0 0 8px 8px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 10;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .school-option {
-            padding: 8px 15px;
-            cursor: pointer;
-            font-size: 14px;
-            color: #3a4049;
-        }
-        
-        .school-option:hover {
-            background-color: #f5f7fa;
-        }
-        
-        .department-select {
-            display: block;
-            width: 100%;
-            padding: 10px 15px;
-            background-color: #f5f7fa;
-            border: 1px solid #e8eaed;
-            border-radius: 8px;
-            font-size: 14px;
-            color: #3a4049;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%233a4049' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 15px center;
-        }
-        
-        .btn {
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-            border: none;
-            transition: all 0.3s;
-        }
-        
-        .btn-secondary {
-            background-color: #e8eaed;
-            color: #636973;
-        }
-        
-        .btn-secondary:hover {
-            background-color: #d1d5db;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #5d8a9e 0%, #3a5a6a 100%);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            opacity: 0.9;
-        }
-        
-        .rank-input {
-            width: 80px;
-            text-align: center;
-        }
-        
-        /* 表單特定樣式覆蓋 */
-        .modal-body .form-control {
-            border: 1px solid #e8eaed;
-        }
-        
-        .modal-body .form-control:focus {
-            outline: none;
-            border-color: #5d8a9e;
-            box-shadow: 0 0 0 2px rgba(93, 138, 158, 0.2);
-        }
-    </style>
+    <link rel="stylesheet" href="css/profile.css" />
 </head>
 <body>
-    <div class="sidebar">
-        <div class="logo-area">
-            <div class="logo-text">UniTopia</div>
-            <div class="logo-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24">
-                    <path d="M16 8 a4 4 0 1 0 0.01 0 M16 4 L16 12 M14 8 L18 8" stroke="#8aa2aa" stroke-width="2.5" fill="none" />
-                </svg>
-            </div>
-        </div>
-        
-        <div class="menu-item">
-            <span style="width: 20px; margin-right: 15px; display: inline-block; text-align: center;">
-                <svg width="20" height="20" viewBox="0 0 20 20">
-                    <path d="M5 10 L10 5 L15 10 L15 15 L5 15 Z" fill="#9da3b4" />
-                </svg>
-            </span>
-            <span>首頁</span>
-        </div>
-        
-        <div class="menu-item active">
-            <span style="width: 20px; margin-right: 15px; display: inline-block; text-align: center;">
-                <svg width="20" height="20" viewBox="0 0 20 20">
-                    <circle cx="10" cy="10" r="5" stroke="#e8eaed" stroke-width="2" fill="none" />
-                    <path d="M6 15 L14 15" stroke="#e8eaed" stroke-width="2" />
-                </svg>
-            </span>
-            <span>個人資料</span>
-        </div>
-        
-        <div class="menu-item">
-            <span style="width: 20px; margin-right: 15px; display: inline-block; text-align: center;">
-                <svg width="20" height="20" viewBox="0 0 20 20">
-                    <rect x="5" y="8" width="10" height="8" stroke="#9da3b4" stroke-width="2" fill="none" rx="1" />
-                    <path d="M7 6 L7 8 M13 6 L13 8" stroke="#9da3b4" stroke-width="2" />
-                </svg>
-            </span>
-            <span>日程表</span>
-        </div>
-        
-        <div class="menu-item">
-            <span style="width: 20px; margin-right: 15px; display: inline-block; text-align: center;">
-                <svg width="20" height="20" viewBox="0 0 20 20">
-                    <path d="M10 10 a3.5 3.5 0 1 0 0.01 0 M10 7 L10 6 M10 14 L10 13 M7 7 L6 6 M13 7 L14 6 M7 13 L6 14 M13 13 L14 14" stroke="#9da3b4" stroke-width="2" fill="none" />
-                </svg>
-            </span>
-            <span>設定</span>
-        </div>
-        
-        <div class="menu-item">
-            <span style="width: 20px; margin-right: 15px; display: inline-block; text-align: center;">
-                <svg width="20" height="20" viewBox="0 0 20 20">
-                    <circle cx="10" cy="10" r="5" stroke="#9da3b4" stroke-width="2" fill="none" />
-                    <text x="10" y="12.5" font-family="Arial, sans-serif" font-size="7" font-weight="bold" fill="#9da3b4" text-anchor="middle">?</text>
-                </svg>
-            </span>
-            <span>常見問題</span>
-        </div>
-        
-        <div class="menu-item" style="margin-top: auto;">
-            <span style="width: 20px; margin-right: 15px; display: inline-block; text-align: center;">
-                <svg width="20" height="20" viewBox="0 0 20 20">
-                    <path d="M10 5 L5 10 L10 15" stroke="#9da3b4" stroke-width="2" fill="none" />
-                    <path d="M5 10 L15 10" stroke="#9da3b4" stroke-width="2" />
-                </svg>
-            </span>
-            <span>登出</span>
-        </div>
-    </div>
     
     <div class="main-content">
         <div class="content-container">
@@ -741,32 +123,15 @@
                             <div class="school-input-container">
                                 <input type="text" class="form-control" id="schoolInput" placeholder="請輸入學校名稱" autocomplete="off">
                                 <div class="school-dropdown" id="schoolDropdown" style="display: none;">
-                                    <div class="school-option" data-value="國立臺灣大學">國立臺灣大學</div>
-                                    <div class="school-option" data-value="國立政治大學">國立政治大學</div>
-                                    <div class="school-option" data-value="國立清華大學">國立清華大學</div>
-                                    <div class="school-option" data-value="國立交通大學">國立交通大學</div>
-                                    <div class="school-option" data-value="國立成功大學">國立成功大學</div>
-                                    <div class="school-option" data-value="國立中央大學">國立中央大學</div>
-                                    <div class="school-option" data-value="國立中山大學">國立中山大學</div>
-                                    <div class="school-option" data-value="國立臺灣科技大學">國立臺灣科技大學</div>
-                                    <div class="school-option" data-value="國立台北大學">國立台北大學</div>
+                                    <!-- Will be populated dynamically -->
                                 </div>
                             </div>
                         </div>
                         
                         <div class="form-group">
                             <label for="departmentSelect">系所</label>
-                            <select class="department-select" id="departmentSelect">
+                            <select class="department-select" id="departmentSelect" disabled>
                                 <option value="" disabled selected>請選擇系所</option>
-                                <option value="資訊工程學系">資訊工程學系</option>
-                                <option value="資訊管理學系">資訊管理學系</option>
-                                <option value="電機工程學系">電機工程學系</option>
-                                <option value="資訊科學系">資訊科學系</option>
-                                <option value="資訊傳播學系">資訊傳播學系</option>
-                                <option value="人工智慧學系">人工智慧學系</option>
-                                <option value="人工智慧研究所">人工智慧研究所</option>
-                                <option value="數據科學研究所">數據科學研究所</option>
-                                <option value="資料科學系">資料科學系</option>
                             </select>
                         </div>
                     </form>
@@ -793,10 +158,39 @@
             const departmentSelect = document.getElementById('departmentSelect');
             const schoolList = document.getElementById('schoolList');
             
+            let schoolsData = []; // Store all schools data
+
             // 處理基本資料更新按鈕點擊
             const updateButton = document.querySelector('.update-button');
-            updateButton.addEventListener('click', function() {
-                alert('基本資料已更新！');
+            updateButton.addEventListener('click', async function() {
+                const updatedData = {
+                    name: document.querySelector('[data-field="name"]').textContent,
+                    school: document.querySelector('[data-field="school"]').textContent,
+                    grade: document.querySelector('[data-field="grade"]').textContent,
+                    class: document.querySelector('[data-field="class"]').textContent,
+                    email: document.querySelector('[data-field="email"]').textContent,
+                    phone: document.querySelector('[data-field="phone"]').textContent,
+                };
+
+                try {
+                    const response = await fetch('/api/user/profile', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(updatedData)
+                    });
+
+                    if (response.ok) {
+                        alert('基本資料已更新！');
+                        fetchUserData(); // Refresh the data
+                    } else {
+                        alert('更新失敗，請稍後再試！');
+                    }
+                } catch (error) {
+                    console.error('Error updating profile:', error);
+                    alert('更新失敗，請稍後再試！');
+                }
             });
             
             // 處理可編輯字段
@@ -951,7 +345,7 @@
             });
             
             // 保存志願
-            saveBtn.addEventListener('click', function() {
+            saveBtn.addEventListener('click', async function() {
                 const school = schoolInput.value.trim();
                 const department = departmentSelect.value;
                 
@@ -1005,6 +399,10 @@
                 
                 // 更新目標科系文本
                 updateTargetDepartments();
+                
+                // Update database and refresh data
+                await updateSchoolRanksInDB();
+                await fetchUserData();
             });
             
             // 檢查是否存在重複志願
@@ -1029,10 +427,13 @@
             });
             
             // 刪除志願項並更新排序
-            function deleteSchoolItem(item) {
+            async function deleteSchoolItem(item) {
                 item.remove();
                 updateSchoolRanks();
                 updateTargetDepartments();
+                await updateSchoolRanksInDB();
+                // 重新獲取用戶資料以更新頁面
+                await fetchUserData();
             }
             
             // 更新志願排名
@@ -1098,11 +499,12 @@
             
             function handleDragEnd(e) {
                 this.classList.remove('dragging');
-                
-                // 更新所有項目的排名
                 updateSchoolRanks();
-                
-                // 重置拖曳項
+                updateTargetDepartments();
+                updateSchoolRanksInDB().then(() => {
+                    // 重新獲取用戶資料以更新頁面
+                    fetchUserData();
+                });
                 draggedItem = null;
             }
             
@@ -1144,6 +546,177 @@
                 
                 this.classList.remove('drag-over');
                 return false;
+            }
+
+            // Add this new function to fetch user data
+            async function fetchUserData() {
+                try {
+                    const response = await fetch('/api/user/profile');
+                    const userData = await response.json();
+                    
+                    // Update basic profile info
+                    document.querySelector('.profile-info h1').textContent = userData.name;
+                    document.querySelector('[data-field="name"]').textContent = userData.name;
+                    document.querySelector('[data-field="school"]').textContent = userData.school;
+                    document.querySelector('[data-field="grade"]').textContent = userData.grade;
+                    document.querySelector('[data-field="class"]').textContent = userData.class;
+                    document.querySelector('[data-field="email"]').textContent = userData.email;
+                    document.querySelector('[data-field="phone"]').textContent = userData.phone;
+                    
+                    // Update school info text in header
+                    document.querySelector('.profile-info p:first-of-type').textContent = 
+                        `${userData.school} - ${userData.grade} ${userData.class}`;
+                    
+                    // Update target departments text in header
+                    if (userData.targetSchools && userData.targetSchools.length > 0) {
+                        const uniqueDepartments = [...new Set(
+                            userData.targetSchools
+                                .sort((a, b) => a.rank - b.rank)
+                                .map(school => school.departmentName)
+                        )];
+                        
+                        const topThreeDepts = uniqueDepartments.slice(0, 3);
+                        const targetDeptText = topThreeDepts.length > 0 
+                            ? topThreeDepts.join(' / ')
+                            : "尚未設定";
+                            
+                        document.querySelector('.profile-info p:nth-child(3)').textContent = 
+                            `目標科系：${targetDeptText}`;
+                    } else {
+                        document.querySelector('.profile-info p:nth-child(3)').textContent = 
+                            "目標科系：尚未設定";
+                    }
+                    
+                    // Update profile picture if exists
+                    if (userData.profilePicture) {
+                        const profilePicDiv = document.querySelector('.profile-picture');
+                        profilePicDiv.style.backgroundImage = `url(${userData.profilePicture})`;
+                        profilePicDiv.style.backgroundSize = 'cover';
+                        profilePicDiv.style.backgroundPosition = 'center';
+                    }
+                    
+                    // Update school info text
+                    document.querySelector('.profile-info p:first-of-type').textContent = 
+                        `${userData.school} - ${userData.grade} ${userData.class}`;
+                    
+                    // Update target schools list
+                    if (userData.targetSchools && userData.targetSchools.length > 0) {
+                        const schoolList = document.getElementById('schoolList');
+                        schoolList.innerHTML = ''; // Clear existing schools
+                        
+                        // Sort schools by rank
+                        const sortedSchools = [...userData.targetSchools].sort((a, b) => a.rank - b.rank);
+                        
+                        sortedSchools.forEach(school => {
+                            const schoolItem = document.createElement('div');
+                            schoolItem.className = 'school-item';
+                            schoolItem.draggable = true;
+                            schoolItem.innerHTML = `
+                                <div class="drag-handle">
+                                    <i class="drag-icon"></i>
+                                </div>
+                                <div class="school-info">
+                                    <div class="school-name">${school.schoolName}</div>
+                                    <div class="school-department">${school.departmentName}</div>
+                                </div>
+                                <div class="school-rank">${school.rank}</div>
+                                <button class="delete-school-btn">&times;</button>
+                            `;
+                            
+                            schoolList.appendChild(schoolItem);
+                            addDragListeners(schoolItem);
+                            
+                            // Add delete button event listener
+                            const deleteBtn = schoolItem.querySelector('.delete-school-btn');
+                            deleteBtn.addEventListener('click', () => deleteSchoolItem(school));
+                        });
+                        
+                        // Update target departments display
+                        updateTargetDepartments();
+                    }
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                }
+            }
+
+            // Call this function when page loads
+            fetchUserData();
+
+            // Fetch schools and departments when page loads
+            async function fetchSchoolsData() {
+                try {
+                    const response = await fetch('/api/school-departments');
+                    schoolsData = await response.json();
+                    
+                    // Populate school dropdown
+                    const schoolDropdown = document.getElementById('schoolDropdown');
+                    schoolDropdown.innerHTML = schoolsData.map(school => 
+                        `<div class="school-option" data-value="${school.name}" data-id="${school.id}">
+                            ${school.name}
+                        </div>`
+                    ).join('');
+
+                    // Re-attach click events to new school options
+                    document.querySelectorAll('.school-option').forEach(option => {
+                        option.addEventListener('click', function() {
+                            const schoolId = this.dataset.id;
+                            schoolInput.value = this.dataset.value;
+                            schoolDropdown.style.display = 'none';
+                            updateDepartments(schoolId);
+                        });
+                    });
+                } catch (error) {
+                    console.error('Error fetching schools:', error);
+                }
+            }
+
+            // Update departments based on selected school
+            function updateDepartments(schoolId) {
+                const school = schoolsData.find(s => s.id === schoolId);
+                const departmentSelect = document.getElementById('departmentSelect');
+                
+                if (school && school.departments) {
+                    departmentSelect.innerHTML = `
+                        <option value="" disabled selected>請選擇系所</option>
+                        ${school.departments.map(dept => 
+                            `<option value="${dept.name}">${dept.name}</option>`
+                        ).join('')}
+                    `;
+                    departmentSelect.disabled = false;
+                } else {
+                    departmentSelect.innerHTML = '<option value="" disabled selected>請選擇系所</option>';
+                    departmentSelect.disabled = true;
+                }
+            }
+
+            // Call this when page loads
+            fetchSchoolsData();
+
+            // Add this new function to update ranks in database
+            async function updateSchoolRanksInDB() {
+                try {
+                    const items = document.querySelectorAll('.school-item');
+                    const updatedSchools = Array.from(items).map((item, index) => ({
+                        schoolName: item.querySelector('.school-name').textContent,
+                        departmentName: item.querySelector('.school-department').textContent,
+                        rank: index + 1
+                    }));
+
+                    const response = await fetch('/api/user/target-schools', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ targetSchools: updatedSchools })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to update school ranks');
+                    }
+                } catch (error) {
+                    console.error('Error updating school ranks:', error);
+                    alert('更新志願順序失敗，請稍後再試！');
+                }
             }
         });
     </script>
