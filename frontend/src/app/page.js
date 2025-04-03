@@ -1,7 +1,7 @@
 import Image from "next/image";
 import MenuBtn from "./menuBtn"
 
-export default function Home() {
+export default function Index() {
   return (
     <div className="w-full h-full flex justify-center items-center bg-gray-300">
       

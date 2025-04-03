@@ -1,12 +1,12 @@
 import Image from "next/image";
 import MenuBtn from "../menuBtn"
 
-export default function Profile() {
+export default function PortfolioUpload() {
   return (
     <div className="w-full h-full flex justify-center items-center bg-gray-300">
       
-      {/* the html file in public folder */}
-      <iframe src="html/profile.html" className="w-full h-full" />
+      {/* in public/html folder */}
+      <iframe src="html/portfolioUpload.html" className="w-full h-full" />
 
     </div>
   );

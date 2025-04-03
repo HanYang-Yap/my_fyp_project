@@ -39,6 +39,12 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en">
+      <head>
+        <link 
+          rel="stylesheet" 
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         
         <div className="w-screen h-screen relative gap-5 bg-gray-200 box-border" style={{"--navbar-width": "20%"}}>
@@ -57,29 +63,62 @@ export default function RootLayout({ children }) {
             <div>
               
               {/* navbar頁面切換 */}
-              
+
               <Link href="/home">
-                <div className={`flex min-w-[150px] w-[16vw] p-3 px-4 mt-4 hover:bg-gray-700 hover:text-white rounded`}>首頁</div>
+                <div className={`flex items-center justify-start min-w-[150px] w-[16vw] p-3 px-4 mt-5 hover:bg-gray-700 hover:text-white rounded`}>
+                  <i className="fas fa-home w-5"></i>
+                  <span className="ml-3">首頁</span>
+                </div>
               </Link>
 
               <Link href="/profile">
-                <div className={`flex min-w-[150px] w-[16vw] p-3 px-4 mt-2 hover:bg-gray-700 hover:text-white rounded`}>個人資料</div>
+                <div className={`flex items-center justify-start min-w-[150px] w-[16vw] p-3 px-4 mt-2 hover:bg-gray-700 hover:text-white rounded`}>
+                  <i className="fas fa-user w-5"></i>
+                  <span className="ml-3">個人資料</span>
+                </div>
               </Link>
 
-              <Link href="/portfolio">
-                <div className={`flex min-w-[150px] w-[16vw] p-3 px-4 mt-2 hover:bg-gray-700 hover:text-white rounded`}>學習歷程</div>
+              {/* /portfolio? connect to the latest page? */}
+              <Link href="/portfolioUpload"> 
+                <div className={`flex items-center justify-start min-w-[150px] w-[16vw] p-3 px-4 mt-2 hover:bg-gray-700 hover:text-white rounded`}>
+                  <i className="fas fa-folder w-5"></i>
+                  <span className="ml-3">學習歷程</span>
+                </div>
+              </Link>
+
+              <Link href="/">
+                <div className={`flex items-center justify-start min-w-[150px] w-[16vw] p-3 px-4 mt-2 hover:bg-gray-700 hover:text-white rounded`}>
+                  <i className="fas fa-book w-5"></i>
+                  <span className="ml-3">考古題庫</span>
+                </div>
               </Link>
 
               <Link href="/schedule">
-                <div className={`flex min-w-[150px] w-[16vw] p-3 px-4 mt-2 hover:bg-gray-700 hover:text-white rounded`}>日程表</div>
+                <div className={`flex items-center justify-start min-w-[150px] w-[16vw] p-3 px-4 mt-2 hover:bg-gray-700 hover:text-white rounded`}>
+                  <i className="fas fa-calendar w-5"></i>
+                  <span className="ml-3">日程表</span>
+                </div>
               </Link>
 
               <Link href="/settings">
-                <div className={`flex min-w-[150px] w-[16vw] p-3 px-4 mt-2 hover:bg-gray-700 hover:text-white rounded`}>設定</div>
+                <div className={`flex items-center justify-start min-w-[150px] w-[16vw] p-3 px-4 mt-2 hover:bg-gray-700 hover:text-white rounded`}>
+                  <i className="fas fa-cog w-5"></i>
+                  <span className="ml-3">設定</span>
+                </div>
               </Link>
               
               <Link href="/faq">
-                <div className={`flex min-w-[150px] w-[16vw] p-3 px-4 mt-2 hover:bg-gray-700 hover:text-white rounded`}>常見問題</div>
+                <div className={`flex items-center justify-start min-w-[150px] w-[16vw] p-3 px-4 mt-2 hover:bg-gray-700 hover:text-white rounded`}>
+                  <i className="fas fa-question-circle w-5"></i>
+                  <span className="ml-3">常見問題</span>
+                </div>
+              </Link>
+
+              <Link href="/logout" className="mt-auto">
+                <div className={`flex items-center justify-start min-w-[150px] w-[16vw] p-3 px-4 mt-2 hover:bg-gray-700 hover:text-white rounded`}>
+                  <i className="fas fa-sign-out-alt w-5"></i>
+                  <span className="ml-3">登出</span>
+                </div>
               </Link>
 
             </div>
