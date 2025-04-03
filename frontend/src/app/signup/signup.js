@@ -311,3 +311,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // 初始化按鈕狀態
     checkFormValidity();
 });
+
+document.getElementById("login").addEventListener("click",
+    function(event) {
+     event.preventDefault();
+     window.location.href = "/login";
+     });
