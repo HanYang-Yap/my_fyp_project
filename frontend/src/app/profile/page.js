@@ -6,7 +6,7 @@ export default function Profile() {
     <div className="w-full h-full flex justify-center items-center bg-gray-300">
       
       {/* the html file in public folder */}
-      <iframe src="/profile.html" className="w-full h-full" />
+      <iframe src="html/profile.html" className="w-full h-full" />
 
     </div>
   );
