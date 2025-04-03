@@ -492,3 +492,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // 頁面載入時調整一次
     adjustResponsiveLayout();
 });
+
+document.getElementById("forgetpassword").addEventListener("click",
+    function(event) {
+     event.preventDefault();
+     window.location.href = "/forgetpassword";
+     });
+
+
+
+document.getElementById("signup").addEventListener("click",
+    function(event) {
+    event.preventDefault();
+     window.location.href = "/signup";
+     });
