@@ -222,3 +222,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+document.getElementById("index").addEventListener("click",
+    function(event) {
+    event.preventDefault();
+     window.location.href = "/index";
+     });

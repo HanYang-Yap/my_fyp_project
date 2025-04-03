@@ -464,6 +464,7 @@
                         stroke-linejoin="round" />
                 </svg>
             </button>
+            <a href="index.html" id="index">
             <button class="action-btn complete-button">
                 完成修改
                 <svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor">
@@ -471,115 +472,11 @@
                         fill="none" />
                 </svg>
             </button>
+            </a>
         </div>
     </div>
 
-    <script>
-        // 初始化圖表
-        window.onload = function () {
-            const ctx = document.getElementById('radarChart').getContext('2d');
-
-            // 圖表數據 - 只包含五個評分項目
-            const data = {
-                labels: ['錯字&標點符號', '偏題', '精簡', '增長', '架構'],
-                datasets: [{
-                    data: [5.0, 5.0, 4.0, 4.0, 4.0],
-                    backgroundColor: 'rgba(93, 138, 158, 0.2)',
-                    borderColor: 'rgba(93, 138, 158, 1)',
-                    borderWidth: 2,
-                    pointBackgroundColor: '#5d8a9e',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointRadius: 6
-                }]
-            };
-
-            // 圖表配置
-            const config = {
-                type: 'radar',
-                data: data,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        r: {
-                            min: 0,
-                            max: 5,
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1,
-                                display: true,
-                                backdropColor: 'transparent',
-                                color: '#636973'
-                            },
-                            angleLines: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            },
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.05)'
-                            },
-                            pointLabels: {
-                                font: {
-                                    size: 14,
-                                    family: 'Arial',
-                                    weight: 'bold'
-                                },
-                                color: '#3a4049',
-                                padding: 10
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                            titleColor: '#3a4049',
-                            bodyColor: '#636973',
-                            bodyFont: {
-                                size: 13
-                            },
-                            titleFont: {
-                                size: 15,
-                                weight: 'bold'
-                            },
-                            borderColor: '#5d8a9e',
-                            borderWidth: 1,
-                            displayColors: false,
-                            padding: 12,
-                            cornerRadius: 8,
-                            callbacks: {
-                                title: function (context) {
-                                    return context[0].label + ': ' + context[0].raw + ' 分';
-                                },
-                                label: function (context) {
-                                    const descriptions = [
-                                        '文章無錯字，標點符號使用正確且風格統一，句子流暢易讀。',
-                                        '文章完全緊扣該校系核心需求，內容深入探討管理資訊系統與經濟學的相關經歷，並能有效展現學習動機。',
-                                        '整體表達簡潔清晰，大多數段落沒有冗長敘述，但仍有部分細節可以稍作刪減，使內容更精煉。',
-                                        '文章內容完整且有細節支撐，部分段落已補充專題研究與數據分析的實際應用，但還可以進一步拓展學習過程中的挑戰與解決方案。',
-                                        '文章結構良好，層次分明，段落銜接自然，內容有邏輯地鋪陳，但個別轉折仍可更流暢，例如從學習經驗過渡到未來規劃的部分。'
-                                    ];
-                                    return descriptions[context.dataIndex];
-                                }
-                            }
-                        }
-                    },
-                    elements: {
-                        line: {
-                            tension: 0 // 設為0使用直線連接點
-                        }
-                    },
-                    animation: {
-                        duration: 1200
-                    }
-                }
-            };
-
-            new Chart(ctx, config);
-        };
-    </script>
+    
 </body>
 
 </html>

@@ -323,3 +323,9 @@ function showExportDialog() {
     
     showNotification('文檔已複製到剪貼板');
 }
+
+document.getElementById("lastreview").addEventListener("click",
+    function(event) {
+    event.preventDefault();
+     window.location.href = "/lastreview";
+     });
