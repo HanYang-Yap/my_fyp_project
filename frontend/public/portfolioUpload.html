@@ -389,12 +389,10 @@
                     
                     if (fileStatus.classList.contains('status-analyzed')) {
                         if (confirm('此文件已經分析過，確定要重新分析嗎？')) {
-                            alert('開始重新分析: ' + fileName);
-                            window.location.href = 'initAnalysis.html';
+                            window.location.href = '/initAnalysis';
                         }
                     } else {
-                        alert('開始分析: ' + fileName);
-                        window.location.href = 'initAnalysis.html';
+                        window.location.href = '/initAnalysis';
                     }
                 } else {
                     alert('請先選擇一個要分析的文件');
