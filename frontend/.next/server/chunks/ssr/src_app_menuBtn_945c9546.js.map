@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file://D%3A/GitHub/fyp_flask_project/frontend/src/app/menuBtn.js"],"sourcesContent":["'use client';\r\nimport { useState } from 'react';\r\nimport Image from \"next/image\";\r\nimport IconMenu from \"@/../public/menu.png\";\r\n\r\n\r\nfunction MenuBtn() {\r\n  const [isOpen, setIsOpen] = useState(true);\r\n\r\n  return (\r\n    <div>\r\n      {/* Toggle Button */}\r\n      <button onClick={() => setIsOpen(!isOpen)}\r\n          className=\"p-2 fixed top-4 left-4 z-50\">\r\n        <div className=\"bg-gray-100 w-[40px] h-[40px] rounded-2xl relative\">\r\n\r\n          <Image src={IconMenu} alt=\"Menu\" className=\"w-[24px] h-[24px] absolute top-[8px] left-[8px]\" />\r\n        </div>\r\n      </button>\r\n    </div>\r\n  );\r\n}\r\nexport default MenuBtn;"],"names":[],"mappings":";;;;AACA;AACA;AACA;AAHA;;;;;AAMA,SAAS;IACP,MAAM,CAAC,QAAQ,UAAU,GAAG,CAAA,GAAA,qMAAA,CAAA,WAAQ,AAAD,EAAE;IAErC,qBACE,8OAAC;kBAEC,cAAA,8OAAC;YAAO,SAAS,IAAM,UAAU,CAAC;YAC9B,WAAU;sBACZ,cAAA,8OAAC;gBAAI,WAAU;0BAEb,cAAA,8OAAC,6HAAA,CAAA,UAAK;oBAAC,KAAK,4PAAA,CAAA,UAAQ;oBAAE,KAAI;oBAAO,WAAU;;;;;;;;;;;;;;;;;;;;;AAKrD;uCACe","debugId":null}}]
+}

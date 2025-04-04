@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 1, "column": 0}, "map": {"version":3,"sources":["file://D%3A/GitHub/fyp_flask_project/frontend/src/styles/initAnalysis.css"],"sourcesContent":[" /* 主要顏色和字體樣式 */\r\n.diagnosis-item.structure {\r\n    border-left-color: #5d8a9e;\r\n  }\r\n  \r\n  .diagnosis-item.irrelevant {\r\n    border-left-color: #e94e77;\r\n  }\r\n  \r\n  .diagnosis-item.conciseness {\r\n    border-left-color: #f39c12;\r\n  }\r\n  \r\n  .diagnosis-item.completeness {\r\n    border-left-color: #8e44ad;\r\n  }\r\n  \r\n  .diagnosis-item.improvement {\r\n    border-left-color: #27ae60;\r\n  }\r\n  \r\n  .diagnosis-item.grammar {\r\n    border-left-color: #f1c40f;\r\n  }\r\n  \r\n  .next-button {\r\n    box-shadow: 0 4px 10px rgba(0,0,0,0.1);\r\n    transition: all 0.3s ease;\r\n  }\r\n  \r\n  .next-button:hover {\r\n    background-color: #3a5a6a;\r\n    box-shadow: 0 6px 15px rgba(0,0,0,0.15);\r\n  }\r\n  \r\n  @media (max-width: 768px) {\r\n    .diagnosis-container {\r\n      grid-template-columns: 1fr;\r\n    }\r\n    \r\n    .diagnosis-left, .diagnosis-right {\r\n      height: auto;\r\n      max-height: 500px;\r\n    }\r\n  }"],"names":[],"mappings":"AACA;;;;AAIE;;;;AAIA;;;;AAIA;;;;AAIA;;;;AAIA;;;;AAIA;;;;;AAKA;;;;;AAKA;EACE;;;;EAIA","debugId":null}}]
+}

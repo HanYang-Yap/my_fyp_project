@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 6, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"","debugId":null}},
+    {"offset": {"line": 60, "column": 0}, "map": {"version":3,"sources":["file://D%3A/GitHub/fyp_flask_project/frontend/src/app/api/school-departments/route.js"],"sourcesContent":["import { NextResponse } from 'next/server'\r\n\r\nexport async function GET() {\r\n  try {\r\n    // Replace this with your actual database query\r\n    const schools = await prisma.school.findMany({\r\n      include: {\r\n        departments: true\r\n      }\r\n    })\r\n    \r\n    return NextResponse.json(schools)\r\n  } catch (error) {\r\n    return NextResponse.json(\r\n      { error: 'Failed to fetch schools data' },\r\n      { status: 500 }\r\n    )\r\n  }\r\n} "],"names":[],"mappings":";;;AAAA;;AAEO,eAAe;IACpB,IAAI;QACF,+CAA+C;QAC/C,MAAM,UAAU,MAAM,OAAO,MAAM,CAAC,QAAQ,CAAC;YAC3C,SAAS;gBACP,aAAa;YACf;QACF;QAEA,OAAO,gIAAA,CAAA,eAAY,CAAC,IAAI,CAAC;IAC3B,EAAE,OAAO,OAAO;QACd,OAAO,gIAAA,CAAA,eAAY,CAAC,IAAI,CACtB;YAAE,OAAO;QAA+B,GACxC;YAAE,QAAQ;QAAI;IAElB;AACF","debugId":null}}]
+}

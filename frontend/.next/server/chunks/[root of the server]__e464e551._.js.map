@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 6, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"","debugId":null}},
+    {"offset": {"line": 60, "column": 0}, "map": {"version":3,"sources":["file://D%3A/GitHub/fyp_flask_project/frontend/src/app/api/user/route.js"],"sourcesContent":["import { NextResponse } from 'next/server'\r\n\r\nexport async function GET() {\r\n  try {\r\n    // Connect to your database\r\n    // Fetch user data based on session/authentication\r\n    const userData = await db.user.findFirst({\r\n      where: { id: userId }\r\n    })\r\n    \r\n    return NextResponse.json(userData)\r\n  } catch (error) {\r\n    return NextResponse.json({ error: 'Failed to fetch user' }, { status: 500 })\r\n  }\r\n}"],"names":[],"mappings":";;;AAAA;;AAEO,eAAe;IACpB,IAAI;QACF,2BAA2B;QAC3B,kDAAkD;QAClD,MAAM,WAAW,MAAM,GAAG,IAAI,CAAC,SAAS,CAAC;YACvC,OAAO;gBAAE,IAAI;YAAO;QACtB;QAEA,OAAO,gIAAA,CAAA,eAAY,CAAC,IAAI,CAAC;IAC3B,EAAE,OAAO,OAAO;QACd,OAAO,gIAAA,CAAA,eAAY,CAAC,IAAI,CAAC;YAAE,OAAO;QAAuB,GAAG;YAAE,QAAQ;QAAI;IAC5E;AACF","debugId":null}}]
+}
