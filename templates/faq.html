@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniTopia AI 升學輔助系統 - 常見問題</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #3a4049;
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* 側邊欄樣式 */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(135deg, #383d49 0%, #272a33 100%);
+            color: #e8eaed;
+            padding: 20px 0;
+            min-height: 100vh;
+            box-shadow: 5px 0 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            z-index: 10;
+        }
+        
+        .logo-container {
+            padding: 10px 20px;
+            margin: 10px 25px 30px;
+            background-color: rgba(58, 63, 75, 0.5);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .logo-icon {
+            color: #8aa2aa;
+            font-size: 20px;
+        }
+        
+        .menu-item {
+            padding: 15px 25px;
+            margin: 5px 25px;
+            display: flex;
+            align-items: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .menu-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .menu-item:hover:not(.active) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .menu-item i {
+            width: 24px;
+            margin-right: 15px;
+            color: #9da3b4;
+        }
+        
+        .menu-item.active i, .menu-item.active span {
+            color: #e8eaed;
+        }
+        
+        .menu-item span {
+            color: #9da3b4;
+        }
+        
+        .menu-item.active span {
+            font-weight: bold;
+        }
+        
+        .logout {
+            margin-top: auto;
+            position: absolute;
+            bottom: 30px;
+            width: 210px;
+        }
+        
+        /* 主要內容區域 */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 30px;
+            background-color: #f0f2f5;
+        }
+        
+        .content-container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* 頁面標題 */
+        .page-header {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eaecef;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            color: #3a4049;
+            display: flex;
+            align-items: center;
+        }
+        
+        .page-title i {
+            margin-right: 15px;
+            color: #5d8a9e;
+            font-size: 24px;
+        }
+        
+        .search-container {
+            position: relative;
+            width: 300px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #4a5568;
+            transition: all 0.3s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #5d8a9e;
+            box-shadow: 0 0 0 3px rgba(93, 138, 158, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+        }
+        
+        /* FAQ 分類標籤 */
+        .faq-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        
+        .faq-tab {
+            padding: 8px 16px;
+            background-color: #f7f9fb;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #4a5568;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .faq-tab.active {
+            background-color: #5d8a9e;
+            color: white;
+            border-color: #5d8a9e;
+        }
+        
+        .faq-tab:hover:not(.active) {
+            background-color: #edf2f7;
+        }
+        
+        /* FAQ 手風琴樣式 */
+        .faq-container {
+            margin-bottom: 40px;
+        }
+        
+        .faq-item {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            padding: 18px 20px;
+            background-color: #f8fafc;
+            cursor: pointer;
+            font-weight: 500;
+            color: #3a4049;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        
+        .faq-question:hover {
+            background-color: #f1f5f9;
+        }
+        
+        .faq-question i {
+            color: #5d8a9e;
+            transition: transform 0.3s;
+        }
+        
+        .faq-item.active .faq-question {
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        
+        .faq-answer-content {
+            padding: 20px;
+        }
+        
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            padding: 0;
+        }
+        
+        /* 提交問題表單 */
+        .submit-question {
+            background-color: #f8fafc;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .submit-title {
+            font-size: 18px;
+            color: #3a4049;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .submit-title i {
+            margin-right: 10px;
+            color: #5d8a9e;
+        }
+        
+        .submit-description {
+            color: #718096;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 14px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #4a5568;
+            transition: border-color 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #5d8a9e;
+            box-shadow: 0 0 0 3px rgba(93, 138, 158, 0.1);
+        }
+        
+        .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #4a5568;
+            transition: border-color 0.3s;
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-textarea:focus {
+            outline: none;
+            border-color: #5d8a9e;
+            box-shadow: 0 0 0 3px rgba(93, 138, 158, 0.1);
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #4a5568;
+            background-color: white;
+            transition: border-color 0.3s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235d8a9e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            padding-right: 40px;
+        }
+        
+        .form-select:focus {
+            outline: none;
+            border-color: #5d8a9e;
+            box-shadow: 0 0 0 3px rgba(93, 138, 158, 0.1);
+        }
+        
+        .submit-btn {
+            background-color: #5d8a9e;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+        
+        .submit-btn:hover {
+            background-color: #4a7b8f;
+        }
+        
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                overflow: hidden;
+            }
+            
+            .logo-container {
+                justify-content: center;
+                margin: 10px auto 30px;
+                padding: 10px;
+                width: 50px;
+            }
+            
+            .logo {
+                display: none;
+            }
+            
+            .menu-item span {
+                display: none;
+            }
+            
+            .menu-item {
+                justify-content: center;
+                padding: 15px 0;
+                margin: 5px auto;
+                width: 50px;
+            }
+            
+            .menu-item i {
+                margin-right: 0;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+            }
+            
+            .logout {
+                width: 50px;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .search-container {
+                width: 100%;
+                margin-top: 15px;
+            }
+            
+            .faq-tabs {
+                padding-bottom: 10px;
+            }
+        }
+    </style>
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- 側邊欄 -->
+    <div class="sidebar">
+        <div class="logo-container">
+            <div class="logo">UniTopia</div>
+            <div class="logo-icon">
+                <i class="fas fa-plus"></i>
+            </div>
+        </div>
+        
+        <div class="menu-item">
+            <i class="fas fa-home"></i>
+            <span>首頁</span>
+        </div>
+        
+        <div class="menu-item">
+            <i class="fas fa-user"></i>
+            <span>個人資料</span>
+        </div>
+        
+        <div class="menu-item">
+            <i class="fas fa-calendar"></i>
+            <span>日程表</span>
+        </div>
+        
+        <div class="menu-item">
+            <i class="fas fa-cog"></i>
+            <span>設定</span>
+        </div>
+        
+        <div class="menu-item active">
+            <i class="fas fa-question-circle"></i>
+            <span>常見問題</span>
+        </div>
+        
+        <div class="menu-item logout">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>登出</span>
+        </div>
+    </div>
+    
+    <!-- 主要內容區域 -->
+    <div class="main-content">
+        <div class="content-container">
+            <div class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-question-circle"></i>
+                    常見問題 FAQ 
+                </h1>
+                
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="搜尋問題...">
+                </div>
+            </div>
+            
+            <!-- FAQ 分類標籤 -->
+            <div class="faq-tabs">
+                <div class="faq-tab active">所有問題</div>
+                <div class="faq-tab">系統使用</div>
+                <div class="faq-tab">申請準備</div>
+                <div class="faq-tab">面試準備</div>
+                <div class="faq-tab">帳號設定</div>
+                <div class="faq-tab">技術支援</div>
+            </div>
+            
+            <!-- FAQ 問題列表 -->
+            <div class="faq-container">
+                <div class="faq-item active">
+                    <div class="faq-question">
+                        <div>UniTopia 如何協助我的大學申請過程？</div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            UniTopia 是一個全方位的大學申請輔助系統，能夠幫助您：<br><br>
+                            1. <strong>自動整理學習歷程</strong>：系統將自動分類並整理您的學習成果和課外活動記錄，便於製作申請資料。<br>
+                            2. <strong>AI 輔助撰寫</strong>：提供智能建議，協助您撰寫更有說服力的自傳、讀書計畫和其他申請文件。<br>
+                            3. <strong>面試模擬訓練</strong>：提供虛擬面試環境，基於真實大學面試問題進行練習，並給予即時反饋。<br>
+                            4. <strong>申請進度管理</strong>：追蹤每所志願學校的申請截止日期和面試時間，確保您不會錯過任何重要日期。<br>
+                            5. <strong>考古題庫</strong>：提供歷年入學考試題目和解析，幫助您更好地準備筆試和面試。
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <div>如何開始使用 AI 輔助撰寫功能？</div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            要使用 AI 輔助撰寫功能，請按照以下步驟操作：<br><br>
+                            1. 登入您的 UniTopia 帳戶<br>
+                            2. 在首頁點擊「學習歷程」卡片<br>
+                            3. 在左側選單中選擇「備審文件」<br>
+                            4. 點擊「新增文件」按鈕，選擇您要撰寫的文件類型（自傳、讀書計畫等）<br>
+                            5. 在編輯器中，您可以開始撰寫，或點擊右上角的「AI 輔助」按鈕<br>
+                            6. 選擇您需要的協助類型，如「提供大綱建議」、「改善表達」或「檢查錯誤」<br><br>
+                            
+                            系統會根據您提供的基本資料和學習經歷，提供個性化的寫作建議和內容優化。您可以根據需要接受或修改這些建議。
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <div>面試模擬功能如何運作？</div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            UniTopia 的面試模擬功能利用 AI 技術提供真實的面試體驗：<br><br>
+                            
+                            1. <strong>選擇志願學校和科系</strong>：系統會根據特定學校和科系的面試特點，提供量身定制的模擬面試。<br>
+                            2. <strong>多種面試模式</strong>：支援一對一、小組討論和專題簡報等多種面試形式。<br>
+                            3. <strong>真實問題庫</strong>：問題基於歷年真實面試題目和最新趨勢，確保模擬的真實性。<br>
+                            4. <strong>即時反饋</strong>：面試完成後，系統會分析您的回答內容、語音表達、表情和肢體語言，提供全面評估。<br>
+                            5. <strong>改進建議</strong>：針對表現不佳的部分，系統會提供具體的改進建議和參考回答。<br>
+                            6. <strong>進度追蹤</strong>：記錄您的練習歷程，追蹤進步情況。<br><br>
+                            
+                            建議每週進行 2-3 次模擬練習，尤其是在實際面試前的 1-2 週，密集練習可顯著提升您的面試表現。
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <div>我可以在多少台設備上使用 UniTopia？</div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            標準帳戶可以同時在最多 3 台設備上登入使用 UniTopia。這包括桌面電腦、筆記型電腦、平板和手機等任何支援的設備。<br><br>
+                            
+                            如果您嘗試在第 4 台設備上登入，系統會提示您先從其他設備登出。您可以在「設定」>「帳號安全」>「登入設備管理」中查看和管理當前已登入的所有設備。<br><br>
+                            
+                            如果您需要在更多設備上使用，可以考慮升級到專業版帳戶，專業版支援最多 5 台設備同時登入。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <div>我該從哪裡開始準備大學申請</div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            建議您依照以下步驟開始準備：
+                            <br><br>
+                            1. 確認申請學校與科系的條件與時程<br>
+                            2. 準備學習歷程資料，如：自傳、讀書計畫、活動紀錄等<br>
+                            3. 使用 UniTopia 的「AI 輔助撰寫」功能撰寫與優化申請文件<br>
+                            4. 利用模擬面試功能練習常見面試問題<br>
+                            5. 持續更新志願學校清單與準備進度<br>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <div>如何更新個人資料和志願學校信息？</div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            更新您的個人資料和志願學校資訊非常簡單：<br><br>
+                            
+                            <strong>更新個人資料：</strong><br>
+                            1. 點擊側邊欄的「個人資料」<br>
+                            2. 選擇您需要更新的項目（基本資料、學術背景、課外活動等）<br>
+                            3. 進行必要的修改<br>
+                            4. 點擊頁面底部的「儲存變更」按鈕<br><br>
+                            
+                            <strong>更新志願學校資訊：</strong><br>
+                            1. 點擊側邊欄的「首頁」<br>
+                            2. 在 D-Day 卡片上點擊「管理志願」<br>
+                            3. 在志願清單中，您可以添加新志願、移除現有志願或調整志願順序<br>
+                            4. 點擊「確認變更」保存您的修改<br><br>
+                            
+                            請注意，保持個人資料和志願資訊的最新狀態對於獲取準確的 AI 輔助和面試模擬至關重要。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <div>如何更新密碼？</div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            在側邊欄點選設定，請按照以下步驟操作：<br><br>
+                            1. 填寫目前的密碼<br>
+                            2. 輸入新的密碼<br>
+                            3. 確認新的密碼<br>
+                            4. 點擊更新密碼<br><br>
+                            
+                            完成更新密碼。
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            
+            <!-- 提交問題表單 -->
+            <div class="submit-question">
+                <h2 class="submit-title">
+                    <i class="fas fa-paper-plane"></i>
+                    提交問題或建議
+                </h2>
+                
+                <p class="submit-description">
+                    沒有找到您需要的答案？請提交您的問題或建議，我們的團隊將在 24 小時內回覆。
+                </p>
+                
+                <form class="question-form">
+                    <div class="form-group">
+                        <label for="question-type" class="form-label">問題類型</label>
+                        <select id="question-type" class="form-select">
+                            <option value="" disabled selected>請選擇問題類型</option>
+                            <option value="usage">系統使用問題</option>
+                            <option value="application">申請準備問題</option>
+                            <option value="interview">面試準備問題</option>
+                            <option value="account">帳號設定問題</option>
+                            <option value="suggestion">功能建議</option>
+                            <option value="bug">問題回報</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="question-title" class="form-label">問題標題</label>
+                        <input type="text" id="question-title" class="form-input" placeholder="請簡短描述您的問題">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="question-content" class="form-label">問題詳情</label>
+                        <textarea id="question-content" class="form-textarea" placeholder="請詳細描述您的問題或建議..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contact-email" class="form-label">聯絡信箱（選填）</label>
+                        <input type="email" id="contact-email" class="form-input" placeholder="如需直接回覆，請留下您的電子郵件">
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">提交問題</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // FAQ 手風琴功能
+            const faqItems = document.querySelectorAll('.faq-item');
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                
+                question.addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+                    
+                    // 關閉所有其他項目
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.classList.remove('active');
+                        }
+                    });
+                    
+                    // 切換當前項目狀態
+                    if (isActive) {
+                        item.classList.remove('active');
+                    } else {
+                        item.classList.add('active');
+                    }
+                });
+            });
+            
+            // 為每個 FAQ 項目添加類別標籤
+            const faqItemsWithCategories = [
+                { 
+                    element: document.querySelector('.faq-item:nth-child(1)'),
+                    categories: ['all']
+                },
+                { 
+                    element: document.querySelector('.faq-item:nth-child(2)'),
+                    categories: ['all', 'system-usage']
+                },
+                { 
+                    element: document.querySelector('.faq-item:nth-child(3)'),
+                    categories: ['all', 'interview-prep']
+                },
+                { 
+                    element: document.querySelector('.faq-item:nth-child(4)'),
+                    categories: ['all', 'tech-support']
+                },
+                { 
+                    element: document.querySelector('.faq-item:nth-child(5)'),
+                    categories: ['all', 'application-prep']
+                },
+                { 
+                    element: document.querySelector('.faq-item:nth-child(6)'),
+                    categories: ['all', 'account-settings']
+                },
+                { 
+                    element: document.querySelector('.faq-item:nth-child(7)'),
+                    categories: ['all', 'tech-support']
+                }
+            ];
+            
+            // 分類標籤切換功能
+            const tabButtons = document.querySelectorAll('.faq-tab');
+            
+            tabButtons.forEach((tab, index) => {
+                tab.addEventListener('click', () => {
+                    // 設置所有標籤為非活動狀態
+                    tabButtons.forEach(otherTab => {
+                        otherTab.classList.remove('active');
+                    });
+                    
+                    // 設置當前標籤為活動狀態
+                    tab.classList.add('active');
+                    
+                    // 根據選定的標籤篩選 FAQ 項目
+                    const selectedCategory = getCategoryByIndex(index);
+                    
+                    faqItemsWithCategories.forEach(itemData => {
+                        if (itemData.categories.includes(selectedCategory)) {
+                            itemData.element.style.display = 'block';
+                        } else {
+                            itemData.element.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // 根據索引獲取類別
+            function getCategoryByIndex(index) {
+                switch(index) {
+                    case 0: return 'all';           // 所有問題
+                    case 1: return 'system-usage';  // 系統使用
+                    case 2: return 'application-prep'; // 申請準備
+                    case 3: return 'interview-prep'; // 面試準備
+                    case 4: return 'account-settings'; // 帳號設定
+                    case 5: return 'tech-support';  // 技術支援
+                    default: return 'all';
+                }
+            }
+            
+            // 搜尋功能
+            const searchInput = document.querySelector('.search-input');
+            
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                // 重置所有標籤為非活動狀態
+                tabButtons.forEach((tab, index) => {
+                    if (index === 0) {
+                        tab.classList.add('active');
+                    } else {
+                        tab.classList.remove('active');
+                    }
+                });
+                
+                // 搜尋所有 FAQ 項目
+                faqItems.forEach(item => {
+                    const questionText = item.querySelector('.faq-question div').textContent.toLowerCase();
+                    const answerText = item.querySelector('.faq-answer-content').textContent.toLowerCase();
+                    
+                    if (questionText.includes(searchTerm) || answerText.includes(searchTerm)) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+            
+            document.querySelector('.question-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                // 取得表單資料
+                const type = document.getElementById('question-type').value;
+                const title = document.getElementById('question-title').value.trim();
+                const description = document.getElementById('question-content').value.trim();
+                const email = document.getElementById('contact-email').value.trim();  // optional
+
+                if (!type || !title || !description) {
+                    alert('請填寫所有必填欄位');
+                    return;
+                }
+
+                // 建立資料物件
+                const data = {
+                    type: type,
+                    title: title,
+                    description: description,
+                    contact_email: email
+                };
+
+                try {
+                    const response = await fetch('/api/faqs', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        alert('感謝您的提問！我們將盡快回覆。');
+                        this.reset();
+                    } else {
+                        alert('提交失敗：' + result.error);
+                    }
+                } catch (error) {
+                    alert('系統錯誤：' + error.message);
+                }
+            });
+            });
+
+    </script>
+</body>
+</html>

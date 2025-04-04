@@ -1,131 +1,561 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask Project</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <title>UniTopia AI 升學輔助系統</title>
     <style>
-        /* 全局樣式 */
-        body {
-            font-family: 'Poppins', sans-serif;
+        * {
             margin: 0;
             padding: 0;
-            background-color: #f0f8ff; /* 淡藍色背景 */
-            color: #333;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
         }
-
-        /* 頁首 */
-        header {
-            background-color: #0077b6; /* 深藍色 */
-            color: white;
-            text-align: center;
-            padding: 1.5rem 0;
-            font-size: 1.8rem;
-            font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        /* 導航欄 */
-        nav {
+        
+        body {
+            background-color: #f0f2f5;
+            color: #3a4049;
             display: flex;
-            justify-content: center;
-            background-color: #0096c7; /* 次要藍色 */
-            padding: 0.8rem 0;
+            min-height: 100vh;
         }
-
-        nav a {
-            color: white;
-            padding: 1rem 1.5rem;
-            text-decoration: none;
-            font-weight: bold;
-            transition: background 0.3s ease, transform 0.2s;
-            border-radius: 5px;
+        
+        /* 側邊欄樣式 */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(135deg, #383d49 0%, #272a33 100%);
+            color: #e8eaed;
+            padding: 20px 0;
+            min-height: 100vh;
+            box-shadow: 5px 0 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            z-index: 10;
         }
-
-        nav a:hover {
-            background: #005f87;
-            transform: scale(1.05);
-        }
-
-        /* 主視覺區塊 */
-        .hero {
-            background: linear-gradient(to right, #0077b6, #00a8e8); /* 漸層藍 */
-            height: 200px;
+        
+        .logo-container {
+            padding: 10px 20px;
+            margin: 10px 25px 30px;
+            background-color: rgba(58, 63, 75, 0.5);
+            border-radius: 8px;
             display: flex;
-            justify-content: center;
             align-items: center;
-            color: white;
-            text-align: center;
-            padding: 2rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            justify-content: space-between;
         }
-
-        .hero h1 {
-            font-size: 2.8rem;
+        
+        .logo {
+            font-size: 24px;
             font-weight: bold;
-            letter-spacing: 1px;
         }
-
-        /* 主要內容 */
-        .content {
-            padding: 3rem;
-            text-align: center;
-            background: white;
-            margin: 2rem auto;
-            max-width: 800px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        
+        .logo-icon {
+            color: #8aa2aa;
+            font-size: 20px;
         }
-
-        .content h2 {
-            color: #0077b6;
-            font-size: 2rem;
-            margin-bottom: 1rem;
+        
+        .menu-item {
+            padding: 15px 25px;
+            margin: 5px 25px;
+            display: flex;
+            align-items: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
-
-        .content p {
-            font-size: 1.1rem;
-            line-height: 1.6;
+        
+        .menu-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
         }
-
-        /* 頁尾 */
-        footer {
-            background-color: #023e8a;
+        
+        .menu-item:hover:not(.active) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .menu-item i {
+            width: 24px;
+            margin-right: 15px;
+            color: #9da3b4;
+        }
+        
+        .menu-item.active i, .menu-item.active span {
+            color: #e8eaed;
+        }
+        
+        .menu-item span {
+            color: #9da3b4;
+        }
+        
+        .menu-item.active span {
+            font-weight: bold;
+        }
+        
+        .logout {
+            margin-top: auto;
+            position: absolute;
+            bottom: 30px;
+            width: 210px;
+        }
+        
+        /* 主要內容區域 */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 30px;
+            background-color: #f0f2f5;
+        }
+        
+        .content-container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            min-height: calc(100vh - 60px);
+        }
+        
+        /* 頂部歡迎區域 */
+        .welcome-header {
+            background: linear-gradient(135deg, #547a8c 0%, #3a5a6a 100%);
             color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .welcome-header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .welcome-header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        /* 功能卡片樣式 */
+        .cards-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .card {
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-card {
+            width: 32%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 280px;
+        }
+        
+        .card-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: white;
+            font-size: 36px;
+        }
+        
+        .card-icon.learn {
+            background: linear-gradient(135deg, #5d8a9e 0%, #3a5a6a 100%);
+        }
+        
+        .card-icon.interview {
+            background: linear-gradient(135deg, #5d7a8c 0%, #3a5a6a 100%);
+        }
+        
+        .card-icon.exam {
+            background: linear-gradient(135deg, #5d8a9e 0%, #3a5a6a 100%);
+        }
+        
+        .card h2 {
+            color: #3a4049;
+            font-size: 20px;
+            margin-bottom: 10px;
             text-align: center;
-            padding: 1rem;
+        }
+        
+        .card p {
+            color: #636973;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        
+        .check-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #f5f7fa;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #5d8a9e;
+            margin-top: auto;
+        }
+        
+        /* 底部卡片樣式 */
+        .dday-card {
+            width: 66%;
+            padding: 30px;
             position: relative;
+            min-height: 220px;
+        }
+        
+        .dday-label {
+            background-color: #3a4049;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        .school-info {
+            color: #636973;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .countdown {
+            position: absolute;
+            right: 100px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 120px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #5d8a9e 0%, #3a5a6a 100%);
+            background-clip: text;              /* Standard property */
+            -webkit-background-clip: text;      /* Vendor prefix for Safari/Chrome */
+            color: transparent;                 /* Standard way to make text transparent */
+            -webkit-text-fill-color: transparent; /* For older WebKit browsers */
+            z-index: 1;
+            width: 180px;
+            height: 180px;
+            line-height: 180px;
+            text-align: center;
+        }
+        
+        .countdown-circle {
+            position: absolute;
+            right: 100px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 180px;
+            height: 180px;
+            border: 8px dashed #f0f2f5;
+            border-radius: 50%;
+            z-index: 0;
+        }
+        
+        .view-button {
+            background: linear-gradient(135deg, #5d8a9e 0%, #3a5a6a 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: opacity 0.3s;
+        }
+        
+        .view-button:hover {
+            opacity: 0.9;
+        }
+        
+        .notification-card {
+            width: 32%;
+            padding: 20px;
+        }
+        
+        .notification-card h2 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #3a4049;
+        }
+        
+        .notification-item {
+            background-color: #f5f7fa;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .notification-text {
+            color: #636973;
+            font-size: 14px;
+        }
+        
+        .notification-time {
+            color: #8d939e;
+            font-size: 12px;
+        }
+        
+        /* 新增: 按鈕卡片的樣式 */
+        .feature-button {
+            text-decoration: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-button::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
             width: 100%;
-            font-size: 0.9rem;
+            height: 0;
+            background-color: rgba(93, 138, 158, 0.1);
+            transition: height 0.3s ease;
+            z-index: 0;
+        }
+
+        .feature-button:hover::after {
+            height: 100%;
+        }
+
+        .feature-button:active {
+            transform: translateY(2px) !important;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .feature-button * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 確保點擊整個卡片區域都有效果 */
+        .feature-button h2, .feature-button p, .feature-button .card-icon, .feature-button .check-icon {
+            pointer-events: none;
+        }
+        
+        /* 響應式設計 */
+        @media (max-width: 1200px) {
+            .feature-card {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            
+            .dday-card, .notification-card {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            
+            .cards-row {
+                flex-direction: column;
+            }
+            
+            .countdown, .countdown-circle {
+                right: 50px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                overflow: hidden;
+            }
+            
+            .logo-container {
+                justify-content: center;
+                margin: 10px auto 30px;
+                padding: 10px;
+                width: 50px;
+            }
+            
+            .logo {
+                display: none;
+            }
+            
+            .menu-item span {
+                display: none;
+            }
+            
+            .menu-item {
+                justify-content: center;
+                padding: 15px 0;
+                margin: 5px auto;
+                width: 50px;
+            }
+            
+            .menu-item i {
+                margin-right: 0;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+            }
+            
+            .logout {
+                width: 50px;
+            }
+            
+            .countdown {
+                font-size: 80px;
+                right: 30px;
+                width: 140px;
+                height: 140px;
+                line-height: 140px;
+            }
+            
+            .countdown-circle {
+                width: 140px;
+                height: 140px;
+                right: 30px;
+            }
         }
     </style>
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-
-    <header>
-        Flask Project Homepage
-    </header>
-
-    <nav>
-        <a href="#"><i class="fas fa-home"></i> Home</a>
-        <a href="#"><i class="fas fa-info-circle"></i> About</a>
-        <a href="#"><i class="fas fa-cogs"></i> Services</a>
-        <a href="#"><i class="fas fa-envelope"></i> Contact</a>
-    </nav>
-
-    <div class="hero">
-        <h1>Welcome to Our Flask Project, {{user_name}}</h1>
+    <!-- 側邊欄 -->
+    <div class="sidebar">
+        <div class="logo-container">
+            <div class="logo">UniTopia</div>
+            <div class="logo-icon">
+                <i class="fas fa-plus"></i>
+            </div>
+        </div>
+        
+        <div class="menu-item active">
+            <i class="fas fa-home"></i>
+            <span>首頁</span>
+        </div>
+        
+        <div class="menu-item">
+            <i class="fas fa-user"></i>
+            <span>個人資料</span>
+        </div>
+        
+        <div class="menu-item">
+            <i class="fas fa-calendar"></i>
+            <span>日程表</span>
+        </div>
+        
+        <div class="menu-item">
+            <i class="fas fa-cog"></i>
+            <span>設定</span>
+        </div>
+        
+        <div class="menu-item">
+            <i class="fas fa-question-circle"></i>
+            <span>常見問題</span>
+        </div>
+        
+        <div class="menu-item logout">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>登出</span>
+        </div>
     </div>
-
-    <div class="content">
-        <h2>About Us</h2>
-        <p>We are a dedicated team committed to delivering high-quality web applications using Flask.</p>
+    
+    <!-- 主要內容區域 -->
+    <div class="main-content">
+        <div class="content-container">
+            <!-- 歡迎頭部 -->
+            <div class="welcome-header">
+                <h1>歡迎回來，同學！</h1>
+                <p>開始探索你的大學申請之旅，我們會協助你取得最佳成果。</p>
+            </div>
+            
+            <!-- 功能卡片區域 - 已轉換為按鈕功能 -->
+            <div class="cards-row">
+                <!-- 學習歷程卡片 -->
+                <a href="/file_upload&management" class="card feature-card feature-button">
+                    <div class="card-icon learn">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h2>學習歷程</h2>
+                    <p>自動整理你的學習成果</p>
+                    <p>並創建最佳的申請文件</p>
+                    <div class="check-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </a>
+                
+                <!-- 模擬面試卡片 -->
+                <a href="#" class="card feature-card feature-button">
+                    <div class="card-icon interview">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h2>模擬面試</h2>
+                    <p>利用 AI 技術模擬真實面試</p>
+                    <p>獲得即時反饋與指導</p>
+                    <div class="check-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </a>
+                
+                <!-- 考古題庫卡片 -->
+                <a href="#" class="card feature-card feature-button">
+                    <div class="card-icon exam">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h2>考古題庫</h2>
+                    <p>智能搜索歷年考題</p>
+                    <p>AI 分析解題思路</p>
+                    <div class="check-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- 底部卡片區域 -->
+            <div class="cards-row">
+                <!-- D-Day 倒計時卡片 -->
+                <div class="card dday-card">
+                    <div class="dday-label">D-DAY</div>
+                    <div class="school-info">國立政治大學</div>
+                    <div class="school-info">資訊管理學系</div>
+                    <div class="countdown">6</div>
+                    <div class="countdown-circle"></div>
+                    <button class="view-button">查看申請材料</button>
+                </div>
+                
+                <!-- 通知卡片 -->
+                <div class="card notification-card">
+                    <h2>最新通知</h2>
+                    
+                    <div class="notification-item">
+                        <div class="notification-text">臺大資工系開放申請</div>
+                        <div class="notification-time">今天</div>
+                    </div>
+                    
+                    <div class="notification-item">
+                        <div class="notification-text">面試模擬即將開始</div>
+                        <div class="notification-time">明天</div>
+                    </div>
+                    
+                    <div class="notification-item">
+                        <div class="notification-text">備審資料截止提醒</div>
+                        <div class="notification-time">3 天後</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <footer>
-        &copy; 2025 Flask Project. All rights reserved.
-    </footer>
-
 </body>
 </html>
