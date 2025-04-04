@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniTopia - 最後整合與精修</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* 左側邊欄 */
+        
+
+        .logo-container {
+            padding: 30px 25px;
+        }
+
+        .logo {
+            background-color: rgba(58, 63, 75, 0.5);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-text {
+            color: #e8eaed;
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .logo-icon {
+            color: #8aa2aa;
+            font-size: 20px;
+            margin-left: auto;
+        }
+
+        .menu-container {
+            padding: 0 25px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            color: #9da3b4;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #e8eaed;
+            font-weight: bold;
+        }
+
+        .menu-item svg {
+            min-width: 24px;
+            text-align: center;
+            margin-right: 20px;
+        }
+
+        /* 主要內容區 */
+        .main-content {
+            margin-left: 260px;
+            flex-grow: 1;
+            padding: 30px;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3a4049;
+        }
+
+        /* 分析結果區 */
+        .final-analysis {
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .analysis-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .analysis-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #3a4049;
+        }
+
+        .final-score {
+            font-size: 24px;
+            color: #5d8a9e;
+            background-color: rgba(93, 138, 158, 0.1);
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: bold;
+        }
+
+        .analysis-content {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .chart-container {
+            width: 450px;
+            height: 450px;
+            position: relative;
+            background-color: #f9fafc;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .detail-container {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .criterion-detail {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            background-color: #f9fafc;
+            border-left: 4px solid #5d8a9e;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s ease;
+        }
+
+        .criterion-detail:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .criterion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .criterion-name {
+            font-weight: bold;
+            color: #3a4049;
+            font-size: 16px;
+        }
+
+        .criterion-score {
+            color: #5d8a9e;
+            font-weight: bold;
+            font-size: 16px;
+            background-color: rgba(93, 138, 158, 0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .criterion-description {
+            color: #636973;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* 總結區塊 */
+        .summary-section {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 12px;
+            background-color: #f0f5f9;
+            border-left: 4px solid #5d8a9e;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .summary-title {
+            font-weight: bold;
+            color: #3a4049;
+            font-size: 18px;
+        }
+
+        .summary-score {
+            color: #5d8a9e;
+            font-weight: bold;
+            font-size: 18px;
+            background-color: rgba(93, 138, 158, 0.1);
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        .summary-content {
+            color: #3a4049;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* 最終文章區域 */
+        .final-document {
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .document-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .document-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #3a4049;
+            display: flex;
+            align-items: center;
+        }
+
+        .document-icon {
+            margin-right: 10px;
+            color: #5d8a9e;
+        }
+
+        .document-content {
+            color: #3a4049;
+            line-height: 1.8;
+            font-size: 15px;
+            white-space: pre-line;
+        }
+
+        .paragraph {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+        }
+
+        .paragraph:hover {
+            background-color: #f9fafc;
+        }
+
+        /* 按鈕區域 */
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            padding: 12px 25px;
+            border-radius: 30px;
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .export-button {
+            background-color: #f0f2f5;
+            color: #3a4049;
+        }
+
+        .export-button:hover {
+            background-color: #e0e0e0;
+        }
+
+        .complete-button {
+            background-color: #5d8a9e;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .complete-button:hover {
+            background-color: #3a5a6a;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .action-btn svg {
+            margin-left: 10px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+</head>
+
+<body>
+    <!-- 左側邊欄 -->
+    
+
+    <!-- 主要內容區 -->
+    <div class="main-content">
+        <div class="content-header">
+            <h1 class="page-title">最後整合與精修</h1>
+        </div>
+
+        <!-- 分析結果區 -->
+        <div class="final-analysis">
+            <div class="analysis-header">
+                <div class="analysis-title">整體文章評分分析</div>
+                <div class="final-score">4.4 分</div>
+            </div>
+
+            <div class="analysis-content">
+                <div class="chart-container">
+                    <canvas id="radarChart"></canvas>
+                </div>
+
+                <div class="detail-container">
+                    <div class="criterion-detail">
+                        <div class="criterion-header">
+                            <div class="criterion-name">錯字&標點符號</div>
+                            <div class="criterion-score">5.0</div>
+                        </div>
+                        <div class="criterion-description">
+                            文章無錯字，標點符號使用正確且風格統一，句子流暢易讀。
+                        </div>
+                    </div>
+
+                    <div class="criterion-detail">
+                        <div class="criterion-header">
+                            <div class="criterion-name">偏題</div>
+                            <div class="criterion-score">5.0</div>
+                        </div>
+                        <div class="criterion-description">
+                            文章完全緊扣該校系核心需求，內容深入探討管理資訊系統與經濟學的相關經歷，並能有效展現學習動機。
+                        </div>
+                    </div>
+
+                    <div class="criterion-detail">
+                        <div class="criterion-header">
+                            <div class="criterion-name">精簡</div>
+                            <div class="criterion-score">4.0</div>
+                        </div>
+                        <div class="criterion-description">
+                            整體表達簡潔清晰，大多數段落沒有冗長敘述，但仍有部分細節可以稍作刪減，使內容更精煉。
+                        </div>
+                    </div>
+
+                    <div class="criterion-detail">
+                        <div class="criterion-header">
+                            <div class="criterion-name">增長</div>
+                            <div class="criterion-score">4.0</div>
+                        </div>
+                        <div class="criterion-description">
+                            文章內容完整且有細節支撐，部分段落已補充專題研究與數據分析的實際應用，但還可以進一步拓展學習過程中的挑戰與解決方案。
+                        </div>
+                    </div>
+
+                    <div class="criterion-detail">
+                        <div class="criterion-header">
+                            <div class="criterion-name">架構</div>
+                            <div class="criterion-score">4.0</div>
+                        </div>
+                        <div class="criterion-description">
+                            文章結構良好，層次分明，段落銜接自然，內容有邏輯地鋪陳，但個別轉折仍可更流暢，例如從學習經驗過渡到未來規劃的部分。
+                        </div>
+                    </div>
+
+                    <!-- 總結區塊 -->
+                    <div class="summary-section">
+                        <div class="summary-header">
+                            <div class="summary-title">總體評價</div>
+                            <div class="summary-score">4.5</div>
+                        </div>
+                        <div class="summary-content">
+                            文章涵蓋學習動機、課程經驗、專題研究、課外活動及未來發展，整體完整度高，僅部分細節可再補充，例如如何將學習經驗應用於未來目標。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 最終文章區域 -->
+        <div class="final-document">
+            <div class="document-header">
+                <div class="document-title">
+                    <div class="document-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" stroke="#5d8a9e" fill="none">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                            <line x1="16" y1="13" x2="8" y2="13" />
+                            <line x1="16" y1="17" x2="8" y2="17" />
+                            <polyline points="10 9 9 9 8 9" />
+                        </svg>
+                    </div>
+                    最終文章內容
+                </div>
+            </div>
+
+            <div class="document-content">
+                <div class="paragraph">
+                    我對商業管理及經濟學的興趣源自於日常生活中的觀察。從中學時期，我便對市場經濟與企業營運感到好奇，曾參與校內模擬投資比賽並獲得優異成績，也自發組織同學們進行小型創業計畫銷售自製手工產品。在這些經歷中，我意識到資訊技術對現代商業的重要性，尤其對數據分析和決策支持系統的需求促使我思考跨域整合的價值。因此，在大學階段，我選擇雙主修管理資訊系統與經濟學，期望透過資訊技術與數據分析提升對經濟決策的理解，未來能夠將理論應用於企業管理或金融分析領域。
+                </div>
+
+                <div class="paragraph">
+                    除了學校課業，我也積極參加業界相關活動，特別是2023年參與台灣金融科技協會舉辦的"數據分析驅動金融創新"系列講座，透過實務案例學習如何運用Python和R語言進行金融數據分析。從中了解金融市場的實務運作，尤其對智能投顧系統和區塊鏈技術在金融交易中的應用深感興趣。這與貴校資管系王教授領導的金融科技實驗室研究方向高度契合。此外，我也有明確的理財觀念，並常透過閱讀研究報告、分析市場趨勢來提升自己的判斷能力。
+                </div>
+
+                <div class="paragraph">
+                    在資訊專題中，我與同學合作開發了校園導覽APP，不僅負責後端資料庫設計和API開發，更主導了用戶需求分析和使用者介面優化，運用商業分析方法確保產品符合使用者期望。這個專題讓我學會如何將管理學和資訊科技的理論知識整合應用於解決實際問題，也培養了我的團隊合作能力。此經驗讓我確信，貴校資管系強調的管理與技術並重的教育理念正是我追求的方向。參與這個專案的過程中，我發現自己在面對技術難題時能夠保持冷靜並系統性地分析問題，這是我認為在資訊工程領域中非常重要的特質。
+                </div>
+            </div>
+        </div>
+
+        <!-- 按鈕區域 -->
+        <div class="button-container">
+            <button class="action-btn export-button">
+                匯出文件
+                <svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" fill="none" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                    <polyline points="7 10 12 15 17 10" fill="none" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <line x1="12" y1="15" x2="12" y2="3" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </button>
+            <a href="index.html" id="index">
+            <button class="action-btn complete-button">
+                完成修改
+                <svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor">
+                    <polyline points="20 6 9 17 4 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        fill="none" />
+                </svg>
+            </button>
+            </a>
+        </div>
+    </div>
+
+    
+</body>
+
+</html>
