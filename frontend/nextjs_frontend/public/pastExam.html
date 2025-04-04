@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniTopia AI 升學輔助系統 - 考古題庫</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #3a4049;
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* 側邊欄樣式 */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(135deg, #383d49 0%, #272a33 100%);
+            color: #e8eaed;
+            padding: 20px 0;
+            height: 100vh;
+            box-shadow: 5px 0 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            z-index: 10;
+            overflow-y: auto;
+        }
+        
+        .logo-container {
+            padding: 10px 20px;
+            margin: 10px 25px 30px;
+            background-color: rgba(58, 63, 75, 0.5);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .logo-icon {
+            color: #8aa2aa;
+            font-size: 20px;
+        }
+        
+        .menu-item {
+            padding: 15px 25px;
+            margin: 5px 25px;
+            display: flex;
+            align-items: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .menu-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .menu-item:hover:not(.active) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .menu-item i {
+            width: 24px;
+            margin-right: 15px;
+            color: #9da3b4;
+        }
+        
+        .menu-item.active i, .menu-item.active span {
+            color: #e8eaed;
+        }
+        
+        .menu-item span {
+            color: #9da3b4;
+        }
+        
+        .menu-item.active span {
+            font-weight: bold;
+        }
+        
+        .logout {
+            margin-top: auto;
+            position: absolute;
+            bottom: 30px;
+            width: 210px;
+        }
+        
+        /* 主要內容區域 */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 30px;
+            background-color: #f0f2f5;
+        }
+        
+        .content-container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* 頁面標題與功能按鈕 */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3a4049;
+            display: flex;
+            align-items: center;
+        }
+        
+        .page-title i {
+            margin-right: 10px;
+            color: #5d8a9e;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .action-button {
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .action-button i {
+            margin-right: 8px;
+        }
+        
+        .upload-button {
+            background-color: #5d8a9e;
+            color: white;
+            border: none;
+        }
+        
+        .upload-button:hover {
+            background-color: #4a7b8f;
+        }
+        
+        .bookmark-button {
+            background-color: #f8fafc;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .bookmark-button:hover {
+            background-color: #f1f5f9;
+        }
+        
+        .bookmark-button.active {
+            background-color: #5d8a9e;
+            color: white;
+            border-color: #5d8a9e;
+        }
+        
+        /* 搜索與篩選 */
+        .search-filter-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .search-container {
+            display: flex;
+            align-items: center;
+            background-color: #f0f2f5;
+            border-radius: 8px;
+            padding: 8px 15px;
+            width: 300px;
+            transition: all 0.3s;
+            flex-grow: 1;
+        }
+        
+        .search-container:focus-within {
+            box-shadow: 0 0 0 2px rgba(93, 138, 158, 0.3);
+        }
+        
+        .search-icon {
+            color: #718096;
+            margin-right: 10px;
+        }
+        
+        .search-input {
+            border: none;
+            background: none;
+            outline: none;
+            font-size: 14px;
+            color: #4a5568;
+            width: 100%;
+        }
+        
+        .search-input::placeholder {
+            color: #a0aec0;
+        }
+        
+        /* 篩選區域 */
+        .filters-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #4a5568;
+        }
+        
+        .filter-select {
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #4a5568;
+            background-color: white;
+            min-width: 180px;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235d8a9e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 30px;
+            cursor: pointer;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #5d8a9e;
+            box-shadow: 0 0 0 3px rgba(93, 138, 158, 0.1);
+        }
+        
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+        
+        .filter-button {
+            padding: 10px 20px;
+            background-color: #5d8a9e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .filter-button:hover {
+            background-color: #4a7b8f;
+        }
+        
+        .reset-button {
+            padding: 10px 20px;
+            background-color: #e2e8f0;
+            color: #4a5568;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .reset-button:hover {
+            background-color: #cbd5e0;
+        }
+        
+        /* 標籤篩選區 */
+        .tags-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .tag-filter-item {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            background-color: #f8fafc;
+            color: #4a5568;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tag-filter-item:hover:not(.active) {
+            background-color: #f1f5f9;
+        }
+        
+        .tag-filter-item.active {
+            background-color: #5d8a9e;
+            color: white;
+        }
+        
+        /* 考古題列表 */
+        .questions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .question-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .question-card:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .question-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .question-school {
+            font-size: 16px;
+            font-weight: bold;
+            color: #3a4049;
+        }
+        
+        .question-department {
+            font-size: 14px;
+            color: #5d8a9e;
+        }
+        
+        .question-meta {
+            font-size: 13px;
+            color: #718096;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .meta-item i {
+            margin-right: 5px;
+        }
+        
+        .question-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .question-tag {
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .tag-type {
+            background-color: #e6f2ff;
+            color: #1a75ff;
+        }
+        
+        .tag-year {
+            background-color: #f0f9ff;
+            color: #0099cc;
+        }
+        
+        .tag-difficulty {
+            background-color: #fff0f0;
+            color: #ff6666;
+        }
+        
+        .question-content {
+            margin-top: 15px;
+            margin-bottom: 15px;
+            font-size: 15px;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        
+        .question-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 13px;
+            color: #718096;
+        }
+        
+        .question-views {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .stat-item i {
+            margin-right: 5px;
+        }
+        
+        .question-save {
+            color: #5d8a9e;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .question-save i {
+            margin-right: 5px;
+        }
+        
+        .question-save:hover {
+            color: #4a7b8f;
+        }
+        
+        .question-save.saved {
+            color: #e53e3e;
+        }
+        
+        /* 分頁控制 */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .pagination {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .page-btn {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            background-color: #ffffff;
+            color: #4a5568;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .page-btn:hover:not(.active) {
+            background-color: #f8fafc;
+        }
+        
+        .page-btn.active {
+            background-color: #5d8a9e;
+            color: white;
+            border-color: #5d8a9e;
+        }
+        
+        .page-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* 模態框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            display: none;
+        }
+        
+        .modal-container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            padding: 25px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #3a4049;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: #718096;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .modal-close:hover {
+            color: #4a5568;
+        }
+        
+        .modal-body {
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #4a5568;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #4a5568;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #5d8a9e;
+            box-shadow: 0 0 0 3px rgba(93, 138, 158, 0.1);
+        }
+        
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235d8a9e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 35px;
+        }
+        
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .tag-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .tag-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .tag-checkbox {
+            width: 16px;
+            height: 16px;
+            accent-color: #5d8a9e;
+        }
+        
+        .tag-label {
+            font-size: 14px;
+            color: #4a5568;
+        }
+        
+        .error-text {
+            color: #e53e3e;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .modal-button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .cancel-button {
+            background-color: #e2e8f0;
+            color: #4a5568;
+            border: none;
+        }
+        
+        .cancel-button:hover {
+            background-color: #cbd5e0;
+        }
+        
+        .submit-button {
+            background-color: #5d8a9e;
+            color: white;
+            border: none;
+        }
+        
+        .submit-button:hover {
+            background-color: #4a7b8f;
+        }
+        
+        /* 響應式設計 */
+        @media (max-width: 1200px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .action-buttons {
+                width: 100%;
+            }
+            
+            .action-button {
+                flex: 1;
+                justify-content: center;
+            }
+            
+            .search-container {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                overflow: hidden;
+            }
+            
+            .logo-container {
+                justify-content: center;
+                margin: 10px auto 30px;
+                padding: 10px;
+                width: 50px;
+            }
+            
+            .logo {
+                display: none;
+            }
+            
+            .menu-item span {
+                display: none;
+            }
+            
+            .menu-item {
+                justify-content: center;
+                padding: 15px 0;
+                margin: 5px auto;
+                width: 50px;
+            }
+            
+            .menu-item i {
+                margin-right: 0;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+            }
+            
+            .logout {
+                width: 50px;
+            }
+            
+            .content-container {
+                padding: 20px 15px;
+            }
+            
+            .filter-select {
+                min-width: unset;
+                width: 100%;
+            }
+            
+            .filter-group {
+                width: 100%;
+            }
+            
+            .filters-container {
+                flex-direction: column;
+            }
+            
+            .filter-actions {
+                width: 100%;
+            }
+            
+            .filter-button, .reset-button {
+                flex: 1;
+            }
+        }
+    </style>
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- 側邊欄 -->
+    <div class="sidebar">
+        <div class="logo-container">
+            <div class="logo">UniTopia</div>
+            <div class="logo-icon">
+                <i class="fas fa-plus"></i>
+            </div>
+        </div>
+        
+        <div class="menu-item">
+            <i class="fas fa-home"></i>
+            <span>首頁</span>
+        </div>
+        
+        <div class="menu-item">
+            <i class="fas fa-user"></i>
+            <span>個人資料</span>
+        </div>
+        
+        <div class="menu-item">
+            <i class="fas fa-calendar"></i>
+            <span>日程表</span>
+        </div>
+        
+        <div class="menu-item">
+            <i class="fas fa-cog"></i>
+            <span>設定</span>
+        </div>
+        
+        <div class="menu-item active">
+            <i class="fas fa-book"></i>
+            <span>考古題庫</span>
+        </div>
+        
+        <div class="menu-item">
+            <i class="fas fa-question-circle"></i>
+            <span>常見問題</span>
+        </div>
+        
+        <div class="menu-item logout">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>登出</span>
+        </div>
+    </div>
+    
+    <!-- 主要內容區域 -->
+    <div class="main-content">
+        <div class="content-container">
+            <!-- 標題與功能按鈕 -->
+            <div class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-book"></i>
+                    大學面試考古題庫
+                </h1>
+                
+                <div class="action-buttons">
+                    <button class="action-button upload-button" id="uploadButton">
+                        <i class="fas fa-upload"></i>上傳面試題目
+                    </button>
+                    <button class="action-button bookmark-button" id="bookmarkButton">
+                        <i class="fas fa-bookmark"></i>我的收藏
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 搜索與篩選 -->
+            <div class="search-filter-row">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="搜尋面試題目、關鍵字...">
+                </div>
+            </div>
+            
+            <!-- 標籤篩選 -->
+            <div class="tags-filter">
+                <div class="tag-filter-item active">全部題目</div>
+                <div class="tag-filter-item">觀念題</div>
+                <div class="tag-filter-item">實作題</div>
+                <div class="tag-filter-item">反思題</div>
+                <div class="tag-filter-item">情境題</div>
+                <div class="tag-filter-item">英文題</div>
+                <div class="tag-filter-item">程式設計</div>
+                <div class="tag-filter-item">最新上傳</div>
+                <div class="tag-filter-item">熱門題目</div>
+            </div>
+            
+            <!-- 篩選條件 -->
+            <div class="filters-container">
+                <div class="filter-group">
+                    <label class="filter-label">學校</label>
+                    <select class="filter-select">
+                        <option value="">所有學校</option>
+                        <option value="ntu">國立臺灣大學</option>
+                        <option value="nthu">國立清華大學</option>
+                        <option value="nctu">國立交通大學</option>
+                        <option value="nccu">國立政治大學</option>
+                        <option value="ntu">國立成功大學</option>
+                        <option value="ntust">國立臺灣科技大學</option>
+                        <option value="nthu">國立中央大學</option>
+                        <option value="nctu">國立中山大學</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">科系</label>
+                    <select class="filter-select">
+                        <option value="">所有科系</option>
+                        <option value="cs">資訊工程學系</option>
+                        <option value="im">資訊管理學系</option>
+                        <option value="ee">電機工程學系</option>
+                        <option value="me">機械工程學系</option>
+                        <option value="ba">工商管理學系</option>
+                        <option value="fin">財務金融學系</option>
+                        <option value="med">醫學系</option>
+                        <option value="law">法律學系</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">年份</label>
+                    <select class="filter-select">
+                        <option value="">所有年份</option>
+                        <option value="2025">2025年</option>
+                        <option value="2024">2024年</option>
+                        <option value="2023">2023年</option>
+                        <option value="2022">2022年</option>
+                        <option value="2021">2021年</option>
+                        <option value="2020">2020年</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">難度</label>
+                    <select class="filter-select">
+                        <option value="">所有難度</option>
+                        <option value="easy">基礎</option>
+                        <option value="medium">中等</option>
+                        <option value="hard">困難</option>
+                    </select>
+                </div>
+                
+                <div class="filter-actions">
+                    <button class="filter-button">套用篩選</button>
+                    <button class="reset-button">重置</button>
+                </div>
+            </div>
+            
+            <!-- 考古題列表 -->
+            <div id="allQuestions" class="questions-container">
+                <!-- 考古題卡片 1 -->
+                <div class="question-card">
+                    <div class="question-header">
+                        <div class="question-info">
+                            <div class="question-school">國立臺灣大學</div>
+                            <div class="question-department">資訊工程學系</div>
+                        </div>
+                        <div class="question-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-calendar"></i>
+                                2024年
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-user"></i>
+                                個人面試
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="question-tags">
+                        <div class="question-tag tag-type">觀念題</div>
+                        <div class="question-tag tag-difficulty">中等難度</div>
+                    </div>
+                    
+                    <div class="question-content">
+                        請說明人工智能（AI）在資訊科學領域的三個主要應用，並選擇其中一個應用詳細說明其技術原理與可能的倫理問題。
+                    </div>
+                    
+                    <div class="question-stats">
+                        <div class="question-views">
+                            <div class="stat-item">
+                                <i class="fas fa-eye"></i>
+                                512 次查看
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-comment"></i>
+                                18 則討論
+                            </div>
+                        </div>
+                        <div class="question-save">
+                            <i class="far fa-bookmark"></i>
+                

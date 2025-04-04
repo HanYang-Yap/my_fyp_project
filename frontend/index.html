@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FYP G1</title>
+        <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="style.css">
+        <script>
+            function openSlideMenu(){
+                document.getElementById('menu').style.width = '250px';
+                document.getElementById('content').style.marginLeft = '250px';
+            }
+            function closeSlideMenu(){
+                document.getElementById('menu').style.width = '0';
+                document.getElementById('content').style.marginLeft = '0';
+            }
+        </script>
+    </head>
+    <body>
+        <div id="content">
+            <span class="slide">
+                <a href="#" onclick="openSlideMenu()">
+                    <i class="fas fa-bars"></i>
+                </a>
+            </span>
+
+            <div id="menu" class="nav">
+                <a href="#" class="close" onclick="closeSlideMenu()">
+                    <i class="fas fa-times"></i>
+                </a>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Portfolio</a></li>
+                </ul>
+            </div>
+            <h1>Responsive Sidebar</h1>
+        </div>
+    </body>
+</html>

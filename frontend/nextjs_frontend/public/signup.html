@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniTopia AI 升學輔助系統 - 註冊</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        html, body {
+            height: 100%;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #3a5a6a 0%, #5d8a9e 100%);
+            color: #ffffff;
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* 背景圖案 */
+        .background-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="25" cy="25" r="3" fill="%23ffffff" fill-opacity="0.1"/><circle cx="75" cy="25" r="3" fill="%23ffffff" fill-opacity="0.1"/><circle cx="25" cy="75" r="3" fill="%23ffffff" fill-opacity="0.1"/><circle cx="75" cy="75" r="3" fill="%23ffffff" fill-opacity="0.1"/></svg>');
+            background-repeat: repeat;
+            opacity: 0.5;
+            z-index: 0;
+        }
+        
+        /* 裝飾圖形 */
+        .decoration {
+            position: absolute;
+            z-index: 0;
+        }
+        
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            top: 10%;
+            left: 10%;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .circle-2 {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+            bottom: 15%;
+            left: 25%;
+            animation: float 6s ease-in-out infinite reverse;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+        
+        /* 左側品牌區 */
+        .left-panel {
+            flex: 1;
+            padding: 40px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow-y: auto;
+        }
+        
+        .brand-container {
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            margin-left: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .tagline {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+        
+        .description {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .testimonial {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+        }
+        
+        .testimonial-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .author-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .author-school {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        /* 右側註冊表單 */
+        .right-panel {
+            flex: 1;
+            background-color: #ffffff;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .form-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 40px 20px;
+            margin: auto;
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-title {
+            font-size: 1.8rem;
+            color: #3a4049;
+            margin-bottom: 10px;
+        }
+        
+        .form-subtitle {
+            font-size: 1rem;
+            color: #718096;
+        }
+        
+        .register-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .input-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+        
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+        }
+        
+        .required-mark {
+            color: #e53e3e;
+            margin-left: 4px;
+        }
+        
+        .form-input {
+            padding: 12px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: #4a5568;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #5d8a9e;
+            box-shadow: 0 0 0 3px rgba(93, 138, 158, 0.1);
+        }
+        
+        .form-select {
+            padding: 12px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: #4a5568;
+            background-color: white;
+            transition: all 0.3s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235d8a9e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            padding-right: 35px;
+        }
+        
+        .form-select:focus {
+            outline: none;
+            border-color: #5d8a9e;
+            box-shadow: 0 0 0 3px rgba(93, 138, 158, 0.1);
+        }
+        
+        .help-text {
+            font-size: 0.8rem;
+            color: #718096;
+            margin-top: 5px;
+        }
+        
+        .password-strength {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+            align-items: center;
+        }
+        
+        .strength-bar {
+            height: 5px;
+            flex: 1;
+            background-color: #e2e8f0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 5px;
+            background-color: #e53e3e;
+            transition: all 0.3s;
+        }
+        
+        .strength-fill.medium {
+            background-color: #ed8936;
+            width: 50%;
+        }
+        
+        .strength-fill.strong {
+            background-color: #38a169;
+            width: 100%;
+        }
+        
+        .strength-text {
+            font-size: 0.8rem;
+            color: #718096;
+            margin-left: 10px;
+            min-width: 40px;
+            text-align: right;
+        }
+        
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-input {
+            width: 18px;
+            height: 18px;
+            margin-top: 3px;
+            accent-color: #5d8a9e;
+        }
+        
+        .terms-text {
+            font-size: 0.85rem;
+            color: #4a5568;
+            line-height: 1.5;
+        }
+        
+        .terms-text a {
+            color: #5d8a9e;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .terms-text a:hover {
+            text-decoration: underline;
+        }
+        
+        .submit-button {
+            padding: 12px 15px;
+            background-color: #5d8a9e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        
+        .submit-button:hover {
+            background-color: #4a7b8f;
+        }
+        
+        .submit-button:disabled {
+            background-color: #cbd5e0;
+            cursor: not-allowed;
+        }
+        
+        .or-divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+        
+        .or-divider::before, .or-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: #e2e8f0;
+        }
+        
+        .or-divider span {
+            padding: 0 15px;
+        }
+        
+        .social-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .social-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #4a5568;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .social-button:hover {
+            background-color: #5d8a9e;
+            color: white;
+            border-color: #5d8a9e;
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.9rem;
+            color: #718096;
+        }
+        
+        .login-link a {
+            color: #5d8a9e;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            color: #e53e3e;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        /* 響應式設計 */
+        @media (max-width: 1024px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .left-panel, .right-panel {
+                width: 100%;
+                min-height: unset;
+            }
+            
+            .brand-container {
+                padding: 20px 0;
+                text-align: center;
+            }
+            
+            .logo {
+                justify-content: center;
+            }
+            
+            .testimonial-author {
+                justify-content: center;
+            }
+            
+            .circle-1, .circle-2 {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .input-row {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .form-container {
+                padding: 40px 15px;
+            }
+            
+            .social-buttons {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- 背景圖案 -->
+    <div class="background-pattern"></div>
+    
+    <!-- 裝飾圖形 -->
+    <div class="decoration circle-1"></div>
+    <div class="decoration circle-2"></div>
+    
+    <!-- 左側品牌區 -->
+    <div class="left-panel">
+        <div class="brand-container">
+            <div class="logo">
+                UniTopia
+                <div class="logo-icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+            </div>
+            
+            <h1 class="tagline">AI 驅動的升學輔助系統</h1>
+            
+            <p class="description">
+                加入 UniTopia，讓 AI 協助您優化備審資料、練習面試技巧，提高進入理想大學的機會。我們期待幫助學生實現大學夢想。
+            </p>
+        </div>
+    </div>
+    
+    <!-- 右側註冊表單 -->
+    <div class="right-panel">
+        <div class="form-container">
+            <div class="form-header">
+                <h2 class="form-title">創建帳號</h2>
+                <p class="form-subtitle">立即註冊，開始您的申請之旅</p>
+            </div>
+            
+            <div class="social-buttons">
+                <button class="social-button">
+                    <i class="fab fa-google"></i>
+                </button>
+                <button class="social-button">
+                    <i class="fab fa-facebook-f"></i>
+                </button>
+                <button class="social-button">
+                    <i class="fab fa-apple"></i>
+                </button>
+            </div>
+            
+            <div class="or-divider">
+                <span>或使用電子郵件註冊</span>
+            </div>
+            
+            <form id="registerForm" class="register-form">
+                <div class="input-row">
+                    <div class="form-group">
+                        <label for="firstName" class="form-label">名字<span class="required-mark">*</span></label>
+                        <input type="text" id="firstName" name="firstName" class="form-input" required>
+                        <div id="firstNameError" class="error-message">請輸入您的名字</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lastName" class="form-label">姓氏<span class="required-mark">*</span></label>
+                        <input type="text" id="lastName" name="lastName" class="form-input" required>
+                        <div id="lastNameError" class="error-message">請輸入您的姓氏</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="form-label">電子郵件<span class="required-mark">*</span></label>
+                    <input type="email" id="email" name="email" class="form-input" required>
+                    <div id="emailError" class="error-message">請輸入有效的電子郵件地址</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">密碼<span class="required-mark">*</span></label>
+                    <input type="password" id="password" name="password" class="form-input" required>
+                    <div class="password-strength">
+                        <div class="strength-bar">
+                            <div id="strengthFill" class="strength-fill"></div>
+                        </div>
+                        <span id="strengthText" class="strength-text">弱</span>
+                    </div>
+                    <p class="help-text">密碼至少需要 8 個字符</p>
+                    <div id="passwordError" class="error-message">密碼至少需要 8 個字符</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">確認密碼<span class="required-mark">*</span></label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" required>
+                    <div id="confirmPasswordError" class="error-message">密碼不匹配</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="school" class="form-label">學校<span class="required-mark">*</span></label>
+                    <input type="text" id="school" name="school" class="form-input" required>
+                    <div id="schoolError" class="error-message">請輸入您的學校</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="grade" class="form-label">年級<span class="required-mark">*</span></label>
+                    <select id="grade" name="grade" class="form-select" required>
+                        <option value="" disabled selected>選擇年級</option>
+                        <option value="高一">高中一年級</option>
+                        <option value="高二">高中二年級</option>
+                        <option value="高三">高中三年級</option>
+                        <option value="其他">其他</option>
+                    </select>
+                    <div id="gradeError" class="error-message">請選擇您的年級</div>
+                </div>
+                
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="terms" name="terms" class="checkbox-input" required>
+                    <label for="terms" class="terms-text">
+                        我已閱讀並同意<a href="#">服務條款</a> 和 <a href="#">隱私政策</a>
+                    
+                        </dialog>
+                    </label>
+                </div>
+                <div id="termsError" class="error-message">您必須同意服務條款和隱私政策</div>
+                
+                <button type="submit" id="submitBtn" class="submit-button">註冊</button>
+            </form>
+            
+            <div class="login-link">
+                已有帳號？<a href="login.html" id="login">登入</a>
+            </div>
+        </div>
+    </div>
+    
+    
+</body>
+</html>
