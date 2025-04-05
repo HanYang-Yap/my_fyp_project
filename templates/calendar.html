@@ -192,156 +192,364 @@
         }
         
         .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            padding: 15px;
-            gap: 8px;
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        padding: 15px;
+        gap: 8px;
+    }
+
+    .weekday {
+        text-align: center;
+        font-size: 14px;
+        color: #8d939e;
+        padding: 8px 0;
+        font-weight: bold;
+    }
+
+    .day {
+        position: relative;
+        height: 90px;
+        text-align: right;
+        font-size: 14px;
+        color: #636973;
+        padding: 5px;
+        border-radius: 6px;
+        border: 1px solid #f1f1f1;
+        transition: all 0.2s;
+        cursor: pointer;
+        overflow: hidden;
+    }
+
+    .day:hover {
+        background-color: #f9fafb;
+        border-color: #c5d7e0;
+    }
+
+    .day.empty {
+        background-color: #fafafa;
+        border: 1px dashed #eee;
+        cursor: default;
+    }
+
+    .day.current {
+        background-color: #f0f7fa;
+        border: 1px solid #c5d7e0;
+    }
+
+    .day.has-event {
+        background-color: #f0f7fa;
+    }
+
+    .day-number {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    /* Event dot and markers */
+    .event-marker {
+        position: absolute;
+        bottom: 5px;
+        left: 5px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: #5d8a9e;
+    }
+
+    .event-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 3px;
+        vertical-align: middle;
+    }
+
+    /* Event brief in calendar */
+    .event-brief {
+        text-align: left;
+        font-size: 11px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 2px;
+        line-height: 1.3;
+        max-width: 100%;
+        padding-right: 2px;
+    }
+
+    .more-events {
+        font-style: italic;
+        color: #8d939e;
+        text-align: center;
+        font-size: 10px;
+    }
+
+    /* Event panel styling */
+    .events-panel {
+        flex: 1;
+        min-width: 30%;
+        max-width: 35%;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 15px;
+    }
+
+    .panel-title {
+        font-size: 18px;
+        color: #3a4049;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eaecef;
+    }
+
+    .event-list {
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    .event-item {
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        background-color: #f5f7fa;
+        border-left: 4px solid;
+        transition: transform 0.1s ease-in-out;
+    }
+
+    .event-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .event-item.type-interview {
+        border-left-color: #5d8a9e;
+    }
+
+    .event-date {
+        font-size: 12px;
+        color: #8d939e;
+        margin-bottom: 5px;
+    }
+
+    .event-title {
+        font-size: 15px;
+        color: #3a4049;
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        line-height: 1.3;
+    }
+
+    .event-details {
+        font-size: 13px;
+        color: #636973;
+        line-height: 1.4;
+    }
+
+    /* Badge & Tags */
+    .preference-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #5d8a9e;
+        color: white;
+        width: 20px;
+        height: 20px;
+        min-width: 20px;
+        border-radius: 50%;
+        text-align: center;
+        font-size: 12px;
+        margin-left: 8px;
+    }
+
+    .event-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 5px;
+    }
+
+    .event-tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    .tag-interview {
+        background-color: rgba(93, 138, 158, 0.15);
+        color: #3a5a6a;
+    }
+
+    .tag-preference {
+        background-color: rgba(93, 138, 158, 0.15);
+        color: #3a5a6a;
+    }
+
+    /* Modal dialog */
+    .day-details-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(2px);
+    }
+
+    .modal-content {
+        background-color: #fff;
+        border-radius: 12px;
+        padding: 20px;
+        max-width: 80%;
+        width: 500px;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+        position: relative;
+        animation: modalFadeIn 0.2s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 20px;
+        cursor: pointer;
+        color: #636973;
+        transition: color 0.2s;
+    }
+
+    .modal-close:hover {
+        color: #3a4049;
+    }
+
+    .modal-header {
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eaecef;
+    }
+
+    .modal-title {
+        font-size: 18px;
+        color: #3a4049;
+    }
+
+    .modal-events {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    /* Status messages */
+    .loading, .error, .no-events {
+        padding: 15px;
+        text-align: center;
+        color: #636973;
+        border-radius: 8px;
+        background-color: #f9fafb;
+        margin: 10px 0;
+    }
+
+    .loading {
+        color: #3a5a6a;
+        background-color: #f0f7fa;
+    }
+
+    .error {
+        color: #e25c5c;
+        background-color: #ffeeee;
+    }
+
+    /* Export calendar button */
+    .export-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background-color: #5d8a9e;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .export-btn:hover {
+        background-color: #4d7a8e;
+    }
+
+    /* Responsive fixes for Chinese text */
+    @media (max-width: 1200px) {
+        .calendar-container {
+            flex-direction: column;
         }
         
-        .weekday {
-            text-align: center;
-            font-size: 14px;
-            color: #8d939e;
-            padding: 8px 0;
-            font-weight: bold;
-        }
-        
-        .day {
-            position: relative;
-            height: 80px;
-            text-align: right;
-            font-size: 14px;
-            color: #636973;
-            padding: 5px;
-            border-radius: 6px;
-            border: 1px solid #f1f1f1;
-            transition: all 0.2s;
-        }
-        
-        .day:hover {
-            background-color: #f9fafb;
-        }
-        
-        .day.empty {
-            background-color: #fafafa;
-            border: 1px dashed #eee;
-        }
-        
-        .day.current {
-            background-color: #f0f7fa;
-            border: 1px solid #c5d7e0;
-        }
-        
-        .day.has-event {
-            background-color: #f0f7fa;
-        }
-        
-        .day-number {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .event-marker {
-            position: absolute;
-            bottom: 5px;
-            left: 5px;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #5d8a9e;
-        }
-        
-        .event-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 5px;
-        }
-        
-        /* 事件列表 */
         .events-panel {
-            flex: 1;
-            min-width: 30%;
-            max-width: 35%;
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            padding: 15px;
+            max-width: 100%;
+            margin-top: 20px;
         }
-        
-        .panel-title {
-            font-size: 18px;
-            color: #3a4049;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eaecef;
-        }
-        
-        .event-list {
-            max-height: 500px;
-            overflow-y: auto;
-        }
-        
-        .event-item {
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            background-color: #f5f7fa;
-            border-left: 4px solid;
-        }
-        
-        .event-item.type-interview {
-            border-left-color: #5d8a9e;
-        }
-        
-        .event-item.type-deadline {
-            border-left-color: #e25c5c;
-        }
-        
-        .event-item.type-preparation {
-            border-left-color: #f1ae4e;
-        }
-        
-        .event-date {
+    }
+
+    @media (max-width: 768px) {
+        .day {
+            height: 70px;
             font-size: 12px;
-            color: #8d939e;
-            margin-bottom: 5px;
+        }
+        
+        .event-brief {
+            font-size: 10px;
+            max-width: 90%;
         }
         
         .event-title {
-            font-size: 16px;
-            color: #3a4049;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .event-details {
             font-size: 14px;
-            color: #636973;
+            flex-wrap: wrap;
         }
         
-        .event-tag {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 11px;
+        .preference-badge {
+            margin-top: 5px;
+        }
+    }
+        
+        .event-tags {
+            display: flex;
+            gap: 5px;
             margin-top: 5px;
         }
         
-        .tag-interview {
+        .tag-preference {
             background-color: rgba(93, 138, 158, 0.15);
             color: #3a5a6a;
         }
         
-        .tag-deadline {
-            background-color: rgba(226, 92, 92, 0.15);
-            color: #ad4545;
+        .loading, .error, .no-events {
+            padding: 15px;
+            text-align: center;
+            color: #636973;
         }
         
-        .tag-preparation {
-            background-color: rgba(241, 174, 78, 0.15);
-            color: #c48939;
+        .error {
+            color: #e25c5c;
         }
         
         /* 響應式設計 */
@@ -418,12 +626,12 @@
             </div>
         </div>
         
-        <div class="menu-item">
+        <div class="menu-item" onclick="window.location.href='/home'">
             <i class="fas fa-home"></i>
             <span>首頁</span>
         </div>
         
-        <div class="menu-item">
+        <div class="menu-item" onclick="window.location.href='/profile'">
             <i class="fas fa-user"></i>
             <span>個人資料</span>
         </div>
@@ -433,17 +641,17 @@
             <span>日程表</span>
         </div>
         
-        <div class="menu-item">
+        <div class="menu-item" onclick="window.location.href='/settings'">
             <i class="fas fa-cog"></i>
             <span>設定</span>
         </div>
         
-        <div class="menu-item">
+        <div class="menu-item" onclick="window.location.href='/faq'">
             <i class="fas fa-question-circle"></i>
             <span>常見問題</span>
         </div>
         
-        <div class="menu-item logout">
+        <div class="menu-item logout" id="logout-btn">
             <i class="fas fa-sign-out-alt"></i>
             <span>登出</span>
         </div>
@@ -455,12 +663,15 @@
             <div class="page-header">
                 <h1 class="page-title">面試日程</h1>
                 <div class="view-filters">
-                    <button class="control-btn active">月</button>
+                    <button class="control-btn active">月曆視圖</button>
                 </div>
             </div>
             
             <div class="calendar-controls">
                 <button class="control-btn active">面試日程</button>
+                <button class="control-btn" id="export-btn">
+                    <i class="fas fa-download"></i> 匯出行事曆
+                </button>
             </div>
             
             <div class="calendar-container">
@@ -481,62 +692,78 @@
                 <div class="events-panel">
                     <h2 class="panel-title">即將到來的面試</h2>
                     
-                    <div class="event-list">
-                        <div class="event-item type-interview">
-                            <div class="event-date">3月25日 週二 09:00-11:00</div>
-                            <div class="event-title">臺大資工系面試</div>
-                            <div class="event-details">地點: 德田館103室</div>
-                            <div class="event-tag tag-interview">面試</div>
-                        </div>
-                        
-                        <div class="event-item type-interview">
-                            <div class="event-date">3月27日 週四 13:30-15:30</div>
-                            <div class="event-title">政大資管系面試</div>
-                            <div class="event-details">地點: 資管系館201室</div>
-                            <div class="event-tag tag-interview">面試</div>
-                        </div>
-                        
-                        <div class="event-item type-interview">
-                            <div class="event-date">4月2日 週三 10:00-12:00</div>
-                            <div class="event-title">清大資工系面試</div>
-                            <div class="event-details">地點: 資電館3樓演講廳</div>
-                            <div class="event-tag tag-interview">面試</div>
-                        </div>
-                        
-                        <div class="event-item type-interview">
-                            <div class="event-date">4月5日 週六 14:00-16:00</div>
-                            <div class="event-title">交大資工系面試</div>
-                            <div class="event-details">地點: 工程三館122室</div>
-                            <div class="event-tag tag-interview">面試</div>
-                        </div>
-                        
-                        <div class="event-item type-interview">
-                            <div class="event-date">4月8日 週二 11:00-12:30</div>
-                            <div class="event-title">成大資工系面試</div>
-                            <div class="event-details">地點: 資訊系館會議室</div>
-                            <div class="event-tag tag-interview">面試</div>
-                        </div>
+                    <div class="event-list" id="eventList">
+                        <!-- 由 JavaScript 動態生成 -->
+                        <div class="loading">載入中...</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    
     <script>
+        // 初始化 Firebase (在實際使用時，這些值會由 Flask 傳入)
+        const firebaseConfig = {
+            apiKey: "{{ firebase_config.apiKey }}",
+            authDomain: "{{ firebase_config.authDomain }}",
+            projectId: "{{ firebase_config.projectId }}",
+            storageBucket: "{{ firebase_config.storageBucket }}",
+            messagingSenderId: "{{ firebase_config.messagingSenderId }}",
+            appId: "{{ firebase_config.appId }}"
+        };
+        
+        // 初始化 Firebase
+        if (typeof firebase !== 'undefined') {
+            firebase.initializeApp(firebaseConfig);
+        }
+        
+        // 全局變數
+        // Global variables
+        let events = [];
+        let displayedMonth = new Date().getMonth();
+        let displayedYear = new Date().getFullYear();
+
+        // Get student ID from template or use test ID
+        const studentId = "{{ student_id }}" || "test_student_id";
+
+        // Initialize calendar when document is ready
         document.addEventListener('DOMContentLoaded', function() {
-            // Get the current user ID from Firebase Auth
-            firebase.auth().onAuthStateChanged(function(user) {
-                if (user) {
-                    fetchCalendarEvents(user.uid);
-                } else {
-                    // Not logged in, show message or redirect to login
-                    showLoginPrompt();
-                }
-            });
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Fetch calendar data
+            fetchCalendarEvents(studentId);
         });
 
         /**
-         * Fetch calendar events from the API for a specific student
+         * Set up all event listeners
+         */
+        function setupEventListeners() {
+            // Month navigation buttons
+            document.getElementById('prevMonth').addEventListener('click', () => navigateMonth(-1));
+            document.getElementById('nextMonth').addEventListener('click', () => navigateMonth(1));
+            
+            // Export calendar button
+            document.getElementById('export-btn').addEventListener('click', exportCalendar);
+            
+            // Logout button
+            document.getElementById('logout-btn').addEventListener('click', function() {
+                if (typeof firebase !== 'undefined' && firebase.auth) {
+                    firebase.auth().signOut().then(() => {
+                        window.location.href = '/login';
+                    }).catch((error) => {
+                        console.error('登出錯誤:', error);
+                    });
+                }
+            });
+        }
+
+        /**
+         * Fetch calendar events from the API
          */
         async function fetchCalendarEvents(studentId) {
             try {
@@ -552,181 +779,128 @@
                 const data = await response.json();
                 
                 if (data.status === 'success') {
-                    // Update the UI with student info if available
+                    // Update page title with student name
                     if (data.student && data.student.name) {
                         document.querySelector('.page-title').textContent = `${data.student.name} 的面試日程`;
                     }
                     
-                    // Clear existing events
-                    window.events = [];
+                    // Process calendar events
+                    processEvents(data.events);
                     
-                    // Process events for the calendar
-                    data.events.forEach(event => {
-                        window.events.push({
-                            date: new Date(event.date),
-                            type: event.type,
-                            title: event.title,
-                            school: event.school,
-                            department: event.department,
-                            preferenceRank: event.preference_rank || 0
-                        });
-                    });
+                    // Initialize calendar view
+                    renderCalendar(displayedMonth, displayedYear);
                     
-                    // Update the calendar and event panel
-                    initCalendar();
+                    // Update events panel
                     updateEventsPanel(data.events);
                 } else {
                     throw new Error(data.message || 'Unknown error occurred');
                 }
             } catch (error) {
-                console.error('Error fetching calendar:', error);
+                console.error('獲取日曆數據出錯:', error);
                 document.querySelector('.event-list').innerHTML = 
                     `<div class="error">無法載入面試資料: ${error.message}</div>`;
             }
         }
 
         /**
-         * Update the events panel with the fetched events
+         * Process events data from API
          */
-        function updateEventsPanel(events) {
-            const eventList = document.querySelector('.event-list');
+        function processEvents(rawEvents) {
+            // Clear existing events
+            window.events = [];
+            
+            // Process each event
+            rawEvents.forEach(event => {
+                window.events.push({
+                    date: new Date(event.date),
+                    type: event.type,
+                    title: event.title,
+                    school: event.school,
+                    department: event.department,
+                    preferenceRank: event.preference_rank || 0,
+                    location: event.location || '待定',
+                    time: event.time || '',
+                    details: event.details || '',
+                    originalDate: event.original_date || ''
+                });
+            });
+        }
+
+        /**
+         * Update the event panel with upcoming events
+         */
+        function updateEventsPanel(rawEvents) {
+            const eventList = document.getElementById('eventList');
             eventList.innerHTML = '';
             
-            // Sort events by date
-            events.sort((a, b) => new Date(a.date) - new Date(b.date));
+            // Filter and sort events
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
             
-            if (events.length === 0) {
-                eventList.innerHTML = '<div class="no-events">目前沒有面試安排</div>';
+            const upcomingEvents = rawEvents
+                .filter(event => new Date(event.date) >= today)
+                .sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            if (upcomingEvents.length === 0) {
+                eventList.innerHTML = '<div class="no-events">目前沒有即將到來的面試安排</div>';
                 return;
             }
             
             // Add each event to the panel
-            events.forEach(event => {
+            upcomingEvents.forEach(event => {
                 const eventItem = document.createElement('div');
                 eventItem.className = `event-item type-${event.type}`;
                 
-                // Format the date string
+                // Format date string
                 const eventDate = new Date(event.date);
                 const dateString = formatDate(eventDate);
                 
-                // Create the event HTML with preference rank badge
+                // Get preference rank color
+                const badgeColor = getPreferenceColor(event.preference_rank);
+                
+                // Format location text
+                const locationText = event.location || '地點: 待定';
+                
+                // Create event HTML
                 eventItem.innerHTML = `
-                    <div class="event-date">${dateString}</div>
+                    <div class="event-date">${dateString} ${event.time || ''}</div>
                     <div class="event-title">
                         ${event.title}
-                        <span class="preference-badge">${event.preference_rank}</span>
+                        <span class="preference-badge" style="background-color: ${badgeColor};">${event.preference_rank}</span>
                     </div>
-                    <div class="event-details">地點: 待定</div>
+                    <div class="event-details">${locationText}</div>
                     <div class="event-tags">
                         <div class="event-tag tag-${event.type}">面試</div>
-                        <div class="event-tag tag-preference">志願序 ${event.preference_rank}</div>
+                        <div class="event-tag tag-preference" style="background-color: ${badgeColor}20; color: ${badgeColor};">
+                            志願序 ${event.preference_rank}
+                        </div>
                     </div>
                 `;
                 
+                // Add click event to show details
+                eventItem.addEventListener('click', () => {
+                    showEventDetails([{...event, date: new Date(event.date)}], eventDate);
+                });
+                
                 eventList.appendChild(eventItem);
             });
-            
-            // Add CSS for the new elements if not already present
-            addEventPanelStyles();
         }
 
         /**
-         * Format a date for display
+         * Render the calendar for the current month
          */
-        function formatDate(date) {
-            const days = ['週日', '週一', '週二', '週三', '週四', '週五', '週六'];
-            const month = date.getMonth() + 1;
-            const day = date.getDate();
-            const weekday = days[date.getDay()];
-            
-            return `${month}月${day}日 ${weekday}`;
-        }
-
-        /**
-         * Add styles for the event panel if not already present
-         */
-        function addEventPanelStyles() {
-            // Check if styles are already added
-            if (document.getElementById('calendar-custom-styles')) {
-                return;
-            }
-            
-            const styleSheet = document.createElement('style');
-            styleSheet.id = 'calendar-custom-styles';
-            styleSheet.textContent = `
-                .preference-badge {
-                    display: inline-block;
-                    background-color: #5d8a9e;
-                    color: white;
-                    width: 20px;
-                    height: 20px;
-                    border-radius: 50%;
-                    text-align: center;
-                    line-height: 20px;
-                    font-size: 12px;
-                    margin-left: 8px;
-                }
-                
-                .event-tags {
-                    display: flex;
-                    gap: 5px;
-                    margin-top: 5px;
-                }
-                
-                .tag-preference {
-                    background-color: rgba(93, 138, 158, 0.15);
-                    color: #3a5a6a;
-                }
-                
-                .loading, .error, .no-events {
-                    padding: 15px;
-                    text-align: center;
-                    color: #636973;
-                }
-                
-                .error {
-                    color: #e25c5c;
-                }
-            `;
-            
-            document.head.appendChild(styleSheet);
-        }
-
-        /**
-         * Show login prompt if user is not logged in
-         */
-        function showLoginPrompt() {
-            const eventList = document.querySelector('.event-list');
-            eventList.innerHTML = `
-                <div class="no-events">
-                    請先登入以查看您的面試日程
-                    <button id="login-btn" class="control-btn" style="margin-top: 10px;">登入</button>
-                </div>
-            `;
-            
-            // Add event listener to login button
-            document.getElementById('login-btn').addEventListener('click', function() {
-                // Redirect to login page or show login modal
-                window.location.href = '/login';
-            });
-        }
-        
-        function initCalendar() {
-            renderCalendar(displayedMonth, displayedYear);
-        }
-        
         function renderCalendar(month, year) {
             const calendarGrid = document.getElementById('calendarGrid');
             const monthDisplay = document.getElementById('currentMonth');
             
-            // 清空日曆內容
+            // Clear calendar content
             calendarGrid.innerHTML = '';
             
-            // 設置月份標題
+            // Set month title
             const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
             monthDisplay.textContent = `${monthNames[month]} ${year}`;
             
-            // 添加星期標題
+            // Add weekday headers
             const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
             weekdays.forEach(day => {
                 const dayElem = document.createElement('div');
@@ -735,11 +909,11 @@
                 calendarGrid.appendChild(dayElem);
             });
             
-            // 獲取當月第一天和最後一天
+            // Get first and last day of month
             const firstDayOfMonth = new Date(year, month, 1);
             const lastDayOfMonth = new Date(year, month + 1, 0);
             
-            // 填充月初的空白天數
+            // Fill empty days at start
             const firstDayWeekday = firstDayOfMonth.getDay();
             for (let i = 0; i < firstDayWeekday; i++) {
                 const emptyDay = document.createElement('div');
@@ -747,25 +921,25 @@
                 calendarGrid.appendChild(emptyDay);
             }
             
-            // 填充日期
+            // Fill days of the month
             for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
                 const dayElem = document.createElement('div');
                 dayElem.className = 'day';
                 
-                // 添加日期數字
+                // Add date number
                 const dayNumber = document.createElement('div');
                 dayNumber.className = 'day-number';
                 dayNumber.textContent = i;
                 dayElem.appendChild(dayNumber);
                 
-                // 檢查是否是今天
+                // Check if today
                 const checkDate = new Date(year, month, i);
                 if (isToday(checkDate)) {
                     dayElem.classList.add('current');
                 }
                 
-                // 檢查是否有事件
-                const dayEvents = events.filter(event => 
+                // Check for events on this day
+                const dayEvents = window.events.filter(event => 
                     event.date.getDate() === i && 
                     event.date.getMonth() === month && 
                     event.date.getFullYear() === year
@@ -774,37 +948,154 @@
                 if (dayEvents.length > 0) {
                     dayElem.classList.add('has-event');
                     
-                    // 添加事件標記
-                    dayEvents.forEach(event => {
-                        // 最多顯示兩個事件，其他的用省略號表示
-                        if (dayEvents.indexOf(event) < 2) {
+                    // Sort events by preference rank
+                    dayEvents.sort((a, b) => a.preferenceRank - b.preferenceRank);
+                    
+                    // Add event indicators (max 2 visible events)
+                    dayEvents.forEach((event, index) => {
+                        if (index < 2) {
                             const eventDiv = document.createElement('div');
                             eventDiv.className = 'event-brief';
-                            eventDiv.style.color = getEventColor(event.type);
-                            eventDiv.innerHTML = `<span class="event-dot" style="background-color: ${getEventColor(event.type)};"></span>${shortenText(event.title, 10)}`;
+                            
+                            // Use preference rank color
+                            const eventColor = getPreferenceColor(event.preferenceRank);
+                            
+                            eventDiv.innerHTML = `
+                                <span class="event-dot" style="background-color: ${eventColor};"></span>
+                                ${shortenText(event.school, 8)}
+                            `;
+                            eventDiv.style.color = eventColor;
                             dayElem.appendChild(eventDiv);
-                        } else if (dayEvents.indexOf(event) === 2) {
+                        } else if (index === 2) {
                             const moreDiv = document.createElement('div');
-                            moreDiv.className = 'event-brief';
+                            moreDiv.className = 'event-brief more-events';
                             moreDiv.textContent = `+${dayEvents.length - 2} 更多...`;
                             dayElem.appendChild(moreDiv);
                         }
                     });
                     
-                    // 如果有多個事件，添加一個事件標記
+                    // Add event marker
                     const eventMarker = document.createElement('div');
                     eventMarker.className = 'event-marker';
+                    eventMarker.style.backgroundColor = getPreferenceColor(dayEvents[0].preferenceRank);
                     dayElem.appendChild(eventMarker);
+                    
+                    // Add click event to show details
+                    dayElem.addEventListener('click', function() {
+                        showEventDetails(dayEvents, checkDate);
+                    });
                 }
                 
                 calendarGrid.appendChild(dayElem);
             }
         }
-        
+
+        /**
+         * Show event details in a modal dialog
+         */
+        function showEventDetails(events, date) {
+            // Remove existing modal if any
+            const existingModal = document.getElementById('day-details-modal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // Create modal
+            const modal = document.createElement('div');
+            modal.id = 'day-details-modal';
+            modal.className = 'day-details-modal';
+            
+            // Format date for display
+            const dateFormatter = new Intl.DateTimeFormat('zh-TW', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                weekday: 'long'
+            });
+            
+            // Create modal content
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-close">&times;</div>
+                    <div class="modal-header">
+                        <h3 class="modal-title">${dateFormatter.format(date)}</h3>
+                    </div>
+                    <div class="modal-events">
+                        ${events.length === 0 ? '<div class="no-events">本日無面試活動</div>' : ''}
+                    </div>
+                </div>
+            `;
+            
+            // Add events to modal
+            const modalEvents = modal.querySelector('.modal-events');
+            events.forEach(event => {
+                const eventItem = document.createElement('div');
+                eventItem.className = `event-item type-${event.type}`;
+                
+                // Use preference rank color
+                const badgeColor = getPreferenceColor(event.preferenceRank);
+                
+                // Prepare details
+                let detailsHtml = '';
+                if (event.location) {
+                    detailsHtml += `<div>地點: ${event.location}</div>`;
+                }
+                if (event.time) {
+                    detailsHtml += `<div>時間: ${event.time}</div>`;
+                }
+                if (event.details) {
+                    detailsHtml += `<div>說明: ${event.details}</div>`;
+                }
+                
+                eventItem.innerHTML = `
+                    <div class="event-title">
+                        ${event.title}
+                        <span class="preference-badge" style="background-color: ${badgeColor};">${event.preferenceRank}</span>
+                    </div>
+                    <div class="event-details">
+                        ${detailsHtml || '暫無詳細資訊'}
+                    </div>
+                    <div class="event-tags">
+                        <div class="event-tag tag-${event.type}">面試</div>
+                        <div class="event-tag tag-preference" style="background-color: ${badgeColor}20; color: ${badgeColor};">
+                            志願序 ${event.preferenceRank}
+                        </div>
+                    </div>
+                `;
+                
+                modalEvents.appendChild(eventItem);
+            });
+            
+            // Add close functionality
+            document.body.appendChild(modal);
+            
+            // Close button click
+            modal.querySelector('.modal-close').addEventListener('click', function() {
+                modal.remove();
+            });
+            
+            // Click outside to close
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+            
+            // ESC key to close
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && document.getElementById('day-details-modal')) {
+                    modal.remove();
+                }
+            });
+        }
+
+        /**
+         * Navigate to previous or next month
+         */
         function navigateMonth(direction) {
             displayedMonth += direction;
             
-            // 處理年份變更
+            // Handle year change
             if (displayedMonth > 11) {
                 displayedMonth = 0;
                 displayedYear++;
@@ -815,14 +1106,20 @@
             
             renderCalendar(displayedMonth, displayedYear);
         }
-        
+
+        /**
+         * Check if a date is today
+         */
         function isToday(date) {
             const today = new Date();
             return date.getDate() === today.getDate() && 
-                   date.getMonth() === today.getMonth() && 
-                   date.getFullYear() === today.getFullYear();
+                date.getMonth() === today.getMonth() && 
+                date.getFullYear() === today.getFullYear();
         }
-        
+
+        /**
+         * Get color based on event type
+         */
         function getEventColor(type) {
             switch(type) {
                 case 'interview':
@@ -835,10 +1132,130 @@
                     return '#8d939e';
             }
         }
-        
+
+        /**
+         * Get color based on preference rank
+         */
+        function getPreferenceColor(rank) {
+            const colors = [
+                '#e25c5c', // 第 1 志願 - 紅色
+                '#f1ae4e', // 第 2 志願 - 橙色
+                '#5d8a9e', // 第 3 志願 - 藍色
+                '#6a8caf', // 第 4 志願 - 淺藍色
+                '#7d9e6a', // 第 5 志願 - 綠色
+                '#9e7d6a'  // 第 6 志願 - 棕色
+            ];
+            
+            // Default to gray for invalid ranks
+            return colors[rank - 1] || '#8d939e';
+        }
+
+        /**
+         * Shorten text with ellipsis if too long
+         */
         function shortenText(text, maxLength) {
-            if (text.length <= maxLength) return text;
+            if (!text || text.length <= maxLength) return text || '';
             return text.substring(0, maxLength) + '...';
+        }
+
+        /**
+         * Format date for display
+         */
+        function formatDate(date) {
+            const days = ['週日', '週一', '週二', '週三', '週四', '週五', '週六'];
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            const weekday = days[date.getDay()];
+            
+            return `${month}月${day}日 ${weekday}`;
+        }
+
+        /**
+         * Export calendar events as iCalendar file
+         */
+        function exportCalendar() {
+            if (!window.events || window.events.length === 0) {
+                alert('沒有可匯出的面試日程');
+                return;
+            }
+            
+            // Create iCalendar content
+            let icsContent = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//UniTopia//面試日程//ZH',
+                'CALSCALE:GREGORIAN',
+                'METHOD:PUBLISH',
+                'X-WR-CALNAME:大學面試日程',
+                'X-WR-TIMEZONE:Asia/Taipei'
+            ];
+            
+            // Add each event
+            window.events.forEach(event => {
+                // Format dates for iCalendar
+                const eventDate = new Date(event.date);
+                // Set start time to 9:00 AM if not specified
+                if (!event.time) {
+                    eventDate.setHours(9, 0, 0, 0);
+                }
+                const startStr = formatICalDate(eventDate);
+                
+                // Create end time 2 hours later
+                const endDate = new Date(eventDate);
+                endDate.setHours(endDate.getHours() + 2);
+                const endStr = formatICalDate(endDate);
+                
+                // Format description
+                const description = `志願序: ${event.preferenceRank}\\n` + 
+                                    (event.location ? `地點: ${event.location}\\n` : '') +
+                                    (event.details ? `詳情: ${event.details.replace(/\n/g, '\\n')}` : '');
+                
+                // Add event to calendar
+                icsContent.push('BEGIN:VEVENT');
+                icsContent.push(`DTSTART:${startStr}`);
+                icsContent.push(`DTEND:${endStr}`);
+                icsContent.push(`SUMMARY:${event.title}`);
+                icsContent.push(`DESCRIPTION:${description}`);
+                if (event.location) {
+                    icsContent.push(`LOCATION:${event.location}`);
+                }
+                icsContent.push(`UID:unitopia-interview-${event.school}-${event.preferenceRank}-${startStr}`);
+                icsContent.push('END:VEVENT');
+            });
+            
+            icsContent.push('END:VCALENDAR');
+            
+            // Create and download .ics file
+            const blob = new Blob([icsContent.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = '大學面試日程.ics';
+            link.click();
+        }
+
+        /**
+         * Format date for iCalendar
+         */
+        function formatICalDate(date) {
+            return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        }
+
+        /**
+         * Show login prompt for unauthenticated users
+         */
+        function showLoginPrompt() {
+            const eventList = document.querySelector('.event-list');
+            eventList.innerHTML = `
+                <div class="no-events">
+                    請先登入以查看您的面試日程
+                    <button id="login-btn" class="control-btn" style="margin-top: 10px;">登入</button>
+                </div>
+            `;
+            
+            // Add login button event listener
+            document.getElementById('login-btn').addEventListener('click', function() {
+                window.location.href = '/login';
+            });
         }
     </script>
 </body>
