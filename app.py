@@ -70,14 +70,12 @@ app.register_blueprint(create_interview_question_controller(db), url_prefix='/ap
 app.register_blueprint(create_diag_section_controller(db), url_prefix='/api')
 app.register_blueprint(create_diag_type_controller(db), url_prefix='/api')
 app.register_blueprint(create_faq_controller(db), url_prefix='/api')
-app.register_blueprint(create_calendar_controller(db), url_prefix='/api')
+app.register_blueprint(create_calendar_controller(db), url_prefix='/api/calendar')
 app.register_blueprint(test_bp, url_prefix='/test')
 
 from flask import Flask, render_template
 from config import Config
 
-app = Flask(__name__)
-app.config.from_object(Config)
 
 @app.route("/")
 def index():
@@ -187,5 +185,37 @@ def delete_file_metadata():
         #print(f"刪除文件元數據時出錯: {str(e)}")
         return jsonify({"error": "刪除文件元數據失敗"}), 500
 
+@app.route('/calendar/<student_id>')
+def calendar_student_view(student_id):
+    """
+    Render the calendar view for a specific student.
+    The frontend will fetch the student's calendar data via API.
+    
+    Args:
+        student_id: The Firebase ID of the student
+        
+    Returns:
+        Rendered calendar template with Firebase configuration
+    """
+    firebase_config = {
+        "apiKey": Config.FIREBASE_API_KEY,
+        "authDomain": Config.FIREBASE_AUTH_DOMAIN,
+        "projectId": Config.FIREBASE_PROJECT_ID,
+        "storageBucket": Config.FIREBASE_STORAGE_BUCKET,
+        "messagingSenderId": Config.FIREBASE_MESSAGING_SENDER_ID,
+        "appId": Config.FIREBASE_APP_ID
+    }
+    
+    # Pass the student_id to the template
+    return render_template(
+        'calendar.html', 
+        firebase_config=firebase_config, 
+        student_id=student_id
+    )
+
+# Modified main section to avoid app context issues
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+        app.run(debug=True, port=5000)
+
+# if __name__ == '__main__':
+#     app.run(debug=True, port=5000)
