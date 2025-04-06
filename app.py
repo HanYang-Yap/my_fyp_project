@@ -24,6 +24,7 @@ from controllers.diag_section_controller import create_diag_section_controller
 from controllers.diag_type_controller import create_diag_type_controller
 from controllers.faq_controller import create_faq_controller
 from controllers.calendar_controller import create_calendar_controller
+from controllers.profile_controller import create_profile_controller
 
 app = Flask(__name__, template_folder="templates")
 app.config['UPLOAD_DIRECTORY'] = 'uploads/'
@@ -71,6 +72,7 @@ app.register_blueprint(create_diag_section_controller(db), url_prefix='/api')
 app.register_blueprint(create_diag_type_controller(db), url_prefix='/api')
 app.register_blueprint(create_faq_controller(db), url_prefix='/api')
 app.register_blueprint(create_calendar_controller(db), url_prefix='/api/calendar')
+app.register_blueprint(create_profile_controller(db), url_prefix='/api/profile')
 app.register_blueprint(test_bp, url_prefix='/test')
 
 from flask import Flask, render_template
@@ -122,6 +124,22 @@ def home_form():
 @app.route('/file_upload&management')
 def file_upload_form():
     return render_template('file_upload&management.html')
+
+@app.route('/profile')
+@app.route('/profile/<student_id>')
+def profile_form(student_id=None):
+    if student_id is None:
+        student_id = "test_student_id"
+        
+    firebase_config = {
+        "apiKey": Config.FIREBASE_API_KEY,
+        "authDomain": Config.FIREBASE_AUTH_DOMAIN,
+        "projectId": Config.FIREBASE_PROJECT_ID,
+        "storageBucket": Config.FIREBASE_STORAGE_BUCKET,
+        "messagingSenderId": Config.FIREBASE_MESSAGING_SENDER_ID,
+        "appId": Config.FIREBASE_APP_ID
+    }
+    return render_template('profile.html', firebase_config=firebase_config, student_id=student_id)
 
 @app.route('/get-uploaded-files', methods=['GET'])
 def get_uploaded_files():
@@ -187,16 +205,6 @@ def delete_file_metadata():
 
 @app.route('/calendar/<student_id>')
 def calendar_student_view(student_id):
-    """
-    Render the calendar view for a specific student.
-    The frontend will fetch the student's calendar data via API.
-    
-    Args:
-        student_id: The Firebase ID of the student
-        
-    Returns:
-        Rendered calendar template with Firebase configuration
-    """
     firebase_config = {
         "apiKey": Config.FIREBASE_API_KEY,
         "authDomain": Config.FIREBASE_AUTH_DOMAIN,
