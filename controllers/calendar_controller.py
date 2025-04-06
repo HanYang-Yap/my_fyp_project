@@ -485,25 +485,22 @@ def create_calendar_controller(db):
         if item_desc:
             event['item_description'] = item_desc
         
-        # Add details and extract location/time if available
+        # Add details if available
         if details:
             event['details'] = details
             
-            # Try to extract location information if available
+            # Try to extract location information if available in the details
             location_match = re.search(r'地[點址][:：]?\s*([^\n,，。]+)', details)
             if location_match:
                 event['location'] = location_match.group(1).strip()
-            else:
-                # Default location based on school
-                event['location'] = f"{school}{department}館"
             
             # Try to extract time information
             time_match = re.search(r'時間[:：]?\s*([^\n,，。]+)', details)
             if time_match:
                 event['time'] = time_match.group(1).strip()
-        else:
-            # Default location
-            event['location'] = f"{school}{department}館"
+        
+        # Note: We're no longer setting a default location to avoid displaying made-up data
+        # The frontend will handle displaying "待定" (TBD) for undefined locations
         
         return event
     
