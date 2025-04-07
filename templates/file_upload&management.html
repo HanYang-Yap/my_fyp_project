@@ -673,39 +673,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
-        
-        const firebaseConfig = {
-          apiKey: "AIzaSyBfmTEZ_JV2xvm0x2irREfZTECGqYgnh08",
-          authDomain: "fyp-g1-project.firebaseapp.com",
-          projectId: "fyp-g1-project",
-          storageBucket: "fyp-g1-project.firebasestorage.app",
-          messagingSenderId: "21387213956",
-          appId: "21387213956",
-        };
-        
-        const app = initializeApp(firebaseConfig);
-        const storage = getStorage(app);
-        
-        // ✅ Helper to upload and return download URL
-        window.uploadToFirebase = async function(file, path) {
-          const fileRef = ref(storage, path);
-          await uploadBytes(fileRef, file);
-          const url = await getDownloadURL(fileRef);
-          return { url, path };
-        };
-        
-        // ✅ Delete file from Firebase
-        window.deleteFromFirebase = async function(path) {
-          const fileRef = ref(storage, path);
-          await deleteObject(fileRef);
-        };
-        </script>
-        
-  
-
 <body>
     <!-- 側邊欄 -->
     <div class="sidebar">
@@ -724,18 +691,24 @@
         </div>
         
         <div class="menu-item">
-            <i class="fas fa-user"></i>
-            <span>個人資料</span>
+            <a href="/profile/{{student_id}}">
+                <i class="fas fa-user"></i>
+                <span>個人資料</span>
+            </a>
         </div>
         
         <div class="menu-item active">
-            <i class="fas fa-file-alt"></i>
-            <span>學習歷程</span>
+            <a href="/file_upload&management/{{student_id}}">
+                <i class="fas fa-file-alt"></i>
+                <span>學習歷程</span>
+            </a>
         </div>
         
         <div class="menu-item">
-            <i class="fas fa-calendar"></i>
-            <span>日程表</span>
+            <a href="/calendar/{{student_id}}">
+                <i class="fas fa-calendar"></i>
+                <span>日程表</span>
+            </a>
         </div>
         
         <div class="menu-item">
@@ -759,6 +732,7 @@
         <div class="content-container">
             <div class="page-header">
                 <h1 class="page-title">學習歷程</h1>
+                <div>學生ID: <span id="studentIdDisplay">{{student_id}}</span></div>
             </div>
             
             <div class="portfolio-container">
@@ -816,7 +790,7 @@
                             </div>
                             <div class="modal-body">
                                 <div class="upload-form">
-                        <div class="form-group">
+                                    <div class="form-group">
                                         <label for="schoolSelect">選擇志願學校系所：</label>
                                         <select id="schoolSelect" class="form-control">
                                             <option value="">請選擇學校系所...</option>
@@ -850,7 +824,6 @@
                                         <div id="selectedFileName" class="selected-file-name">尚未選擇文件</div>
                                     </div>
                                     
-                                    
                                     <div class="form-group">
                                         <label>最終檔案名稱：</label>
                                         <div id="finalFileName" class="final-file-name">-</div>
@@ -871,39 +844,7 @@
                         </div>
                         
                         <ul class="files-list">
-                            <!-- <li class="file-item" data-school="ntu-computer_science" data-type="learning">
-                                <div class="checkbox-container">
-                                    <input type="radio" name="fileSelect" id="file1">
-                                </div>
-                                <div class="file-icon">
-                                    <i class="fas fa-file-pdf"></i>
-                                </div>
-                                <div class="file-details">
-                                    <div class="file-name">(only for display purpose)臺灣大學-資訊工程學系-學習歷程自述.pdf</div>
-                                    <div class="file-meta">4.2 MB · 上傳於 2025/03/18</div>
-                                </div>
-                                <span class="file-status status-analyzed">已分析 · 2025/03/19 · 評分: 92</span>
-                                <button class="delete-btn">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </li>
-                            
-                            <li class="file-item" data-school="nccu-management_information_system" data-type="learning">
-                                <div class="checkbox-container">
-                                    <input type="radio" name="fileSelect" id="file5">
-                                </div>
-                                <div class="file-icon">
-                                    <i class="fas fa-file-powerpoint"></i>
-                                </div>
-                                <div class="file-details">
-                                    <div class="file-name">(only for display purpose)政治大學-資訊管理學系-學習歷程自述.pptx</div>
-                                    <div class="file-meta">6.5 MB · 上傳於 2025/03/10</div>
-                                </div>
-                                <span class="file-status status-pending">待分析</span>
-                                <button class="delete-btn">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </li> -->
+                            <!-- Files will be dynamically loaded here -->
                         </ul>
                         
                         <div class="analyze-footer">
@@ -917,39 +858,111 @@
         </div>
     </div>
     
+    <!-- AI分析模態框 (模擬) -->
+    <div class="modal" id="analysisModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">AI 文件分析結果</h3>
+                <button class="close-btn" id="closeAnalysisModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="analysis-section">
+                    <h4 class="analysis-heading">總體評估</h4>
+                    <p class="analysis-text">
+                        您的學習歷程文件內容豐富且條理分明，清楚表達了您在資訊工程領域的學習熱情與成就。整體評分為 <strong>85/100</strong>。
+                    </p>
+                </div>
+                <div class="analysis-section">
+                    <h4 class="analysis-heading">優點</h4>
+                    <ul class="suggestion-list">
+                        <li class="suggestion-item">專業技能描述具體詳實，展現了程式設計和問題解決的能力。</li>
+                        <li class="suggestion-item">專案經驗豐富，特別是在網頁開發和人工智能應用方面的實踐。</li>
+                        <li class="suggestion-item">學習動機清晰，能夠與所申請學系的特色相呼應。</li>
+                    </ul>
+                </div>
+                <div class="analysis-section">
+                    <h4 class="analysis-heading">改進建議</h4>
+                    <ul class="suggestion-list">
+                        <li class="suggestion-item">建議強化跨領域學習的內容，展示資訊科技與其他學科的結合應用。</li>
+                        <li class="suggestion-item">可以增加團隊合作的經驗描述，展現溝通和協作能力。</li>
+                        <li class="suggestion-item">建議增加未來學習規劃部分，展示長遠的學習和發展視野。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn btn-primary" id="downloadAnalysisBtn">下載分析報告</button>
+                <button class="modal-btn btn-secondary" id="closeAnalysisBtn">關閉</button>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
+        
+        const firebaseConfig = {
+          apiKey: "AIzaSyBfmTEZ_JV2xvm0x2irREfZTECGqYgnh08",
+          authDomain: "fyp-g1-project.firebaseapp.com",
+          projectId: "fyp-g1-project",
+          storageBucket: "fyp-g1-project.firebasestorage.app",
+          messagingSenderId: "21387213956",
+          appId: "21387213956",
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const storage = getStorage(app);
+        
+        // ✅ Helper to upload and return download URL
+        window.uploadToFirebase = async function(file, path) {
+          const fileRef = ref(storage, path);
+          await uploadBytes(fileRef, file);
+          const url = await getDownloadURL(fileRef);
+          return { url, path };
+        };
+        
+        // ✅ Delete file from Firebase
+        window.deleteFromFirebase = async function(path) {
+          const fileRef = ref(storage, path);
+          await deleteObject(fileRef);
+        };
+    </script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            fetchAndRenderFiles();
+            const studentId = document.getElementById('studentIdDisplay').textContent;
+            fetchAndRenderFiles(studentId);
 
-            // 篩選學校類別
+            // Filter by school category
             document.querySelectorAll('.category-item').forEach(function(item) {
                 item.addEventListener('click', function() {
-                    // 清除所有激活狀態
+                    // Clear all active states
                     document.querySelectorAll('.category-item').forEach(function(el) {
                         el.classList.remove('active');
                     });
                     
-                    // 設置當前項為激活
+                    // Set current item as active
                     this.classList.add('active');
                     
-                    // 獲取學校類別
+                    // Get school category
                     const category = this.getAttribute('data-category');
                     
-                    // 更新文件部分的標題
+                    // Update file section title
                     const sectionTitle = document.querySelector('.section-title');
                     
                     if (category === 'all') {
                         sectionTitle.textContent = '所有文件';
-                        // 顯示所有文件
+                        // Show all files
                         document.querySelectorAll('.file-item').forEach(function(file) {
                             file.style.display = 'flex';
                         });
                     } else {
-                        // 獲取學校名稱
+                        // Get school name
                         const schoolName = this.textContent.trim();
                         sectionTitle.textContent = schoolName + ' 申請資料';
                         
-                        // 只顯示選中學校的文件
+                        // Only show files for selected school
                         document.querySelectorAll('.file-item').forEach(function(file) {
                             if (file.getAttribute('data-school') === category) {
                                 file.style.display = 'flex';
@@ -1012,80 +1025,115 @@
                 }
             });
 
+            // Analysis modal handlers
+            document.getElementById('closeAnalysisModal')?.addEventListener('click', () => {
+                document.getElementById('analysisModal').classList.remove('active');
+            });
+            
+            document.getElementById('closeAnalysisBtn')?.addEventListener('click', () => {
+                document.getElementById('analysisModal').classList.remove('active');
+            });
+            
+            document.getElementById('downloadAnalysisBtn')?.addEventListener('click', () => {
+                alert('分析報告下載功能將在後續版本中開放');
+            });
+
             // Fetch files from Firestore and render
-            async function fetchAndRenderFiles() {
-                const res = await fetch("/get-uploaded-files");
-                const files = await res.json();
-                console.log("Fetched files:", files);
-                const fileList = document.querySelector(".files-list");
+            async function fetchAndRenderFiles(studentId) {
+                try {
+                    // Updated to use student-specific endpoint
+                    const res = await fetch(`/api/get-student-files/${studentId}`);
+                    const files = await res.json();
+                    console.log("Fetched files for student ID:", studentId, files);
+                    const fileList = document.querySelector(".files-list");
 
-                fileList.innerHTML = ''; // Clear any existing list
+                    fileList.innerHTML = ''; // Clear any existing list
 
-                files.forEach(file => {
-                    const fileItem = document.createElement('li');
-                    fileItem.className = 'file-item';
-                    fileItem.setAttribute('data-school', file.school);
-                    fileItem.setAttribute('data-type', file.type);
+                    if (files.length === 0) {
+                        fileList.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">尚未上傳任何文件</div>';
+                        return;
+                    }
 
-                    const fileExt = file.filename.split('.').pop();
-                    const iconClass = fileExt === 'pdf' ? 'fa-file-pdf' :
-                                fileExt === 'doc' || fileExt === 'docx' ? 'fa-file-word' :
-                                fileExt === 'ppt' || fileExt === 'pptx' ? 'fa-file-powerpoint' :
-                                'fa-file-alt';
+                    files.forEach(file => {
+                        const fileItem = document.createElement('li');
+                        fileItem.className = 'file-item';
+                        fileItem.setAttribute('data-school', file.school);
+                        fileItem.setAttribute('data-type', file.type);
 
-                    fileItem.innerHTML = `
-                        <div class="checkbox-container">
-                            <input type="radio" name="fileSelect">
-                        </div>
-                        <div class="file-icon">
-                            <i class="fas ${iconClass}"></i>
-                        </div>
-                        <div class="file-details">
-                            <div class="file-name">${file.filename}</div>
-                            <div class="file-meta">${(file.size / (1024 * 1024)).toFixed(1)} MB · 上傳於 ${file.uploaded_at}</div>
-                        </div>
-                        <span class="file-status status-pending">待分析</span>
-                        <button class="delete-btn">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    `;
+                        const fileExt = file.filename.split('.').pop().toLowerCase();
+                        const iconClass = fileExt === 'pdf' ? 'fa-file-pdf' :
+                                    fileExt === 'doc' || fileExt === 'docx' ? 'fa-file-word' :
+                                    fileExt === 'ppt' || fileExt === 'pptx' ? 'fa-file-powerpoint' :
+                                    fileExt === 'jpg' || fileExt === 'jpeg' || fileExt === 'png' ? 'fa-file-image' :
+                                    'fa-file-alt';
 
-                    fileItem.querySelector('.delete-btn').addEventListener('click', async () => {
-                        if (confirm(`確定要刪除文件: ${file.filename}？`)) {
-                            try {
-                                // 1. 嘗試刪除 Firebase Storage 中的文件
+                        fileItem.innerHTML = `
+                            <div class="checkbox-container">
+                                <input type="radio" name="fileSelect" value="${file.path}">
+                            </div>
+                            <div class="file-icon">
+                                <i class="fas ${iconClass}"></i>
+                            </div>
+                            <div class="file-details">
+                                <div class="file-name">${file.filename}</div>
+                                <div class="file-meta">${(file.size / (1024 * 1024)).toFixed(1)} MB · 上傳於 ${file.uploaded_at}</div>
+                            </div>
+                            <span class="file-status status-pending">待分析</span>
+                            <button class="delete-btn" data-file-path="${file.path}" data-file-name="${file.filename}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        `;
+
+                        fileItem.querySelector('.delete-btn').addEventListener('click', async (e) => {
+                            const filePath = e.currentTarget.getAttribute('data-file-path');
+                            const fileName = e.currentTarget.getAttribute('data-file-name');
+                            
+                            if (confirm(`確定要刪除文件: ${fileName}？`)) {
                                 try {
-                                    await deleteFromFirebase(file.path);
-                                    console.log(`成功從 Storage 刪除文件: ${file.path}`);
-                                } catch (storageError) {
-                                    // 即使 Storage 刪除失敗，仍繼續執行
-                                    console.warn(`無法從 Storage 刪除文件 (可能已被刪除): ${file.path}`, storageError);
+                                    // Try to delete from Firebase Storage
+                                    try {
+                                        await deleteFromFirebase(filePath);
+                                        console.log(`成功從 Storage 刪除文件: ${filePath}`);
+                                    } catch (storageError) {
+                                        console.warn(`無法從 Storage 刪除文件 (可能已被刪除): ${filePath}`, storageError);
+                                    }
+                                    
+                                    // Delete metadata from backend
+                                    await fetch("/api/delete-file-metadata", {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        body: JSON.stringify({
+                                            path: filePath,
+                                            filename: fileName,
+                                            student_id: studentId
+                                        })
+                                    });
+                                    
+                                    // Remove from UI
+                                    fileItem.remove();
+                                    
+                                    // If no files left, show message
+                                    if (document.querySelectorAll('.file-item').length === 0) {
+                                        fileList.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">尚未上傳任何文件</div>';
+                                    }
+                                    
+                                    alert("文件已刪除");
+                                } catch (error) {
+                                    console.error("刪除文件元數據失敗:", error);
+                                    alert("刪除文件元數據失敗，請稍後再試");
                                 }
-                                
-                                // 2. 刪除後端數據庫中的元數據記錄
-                                await fetch("/delete-file-metadata", {
-                                    method: "POST",
-                                    headers: {
-                                        "Content-Type": "application/json"
-                                    },
-                                    body: JSON.stringify({
-                                        path: file.path,
-                                        filename: file.filename
-                                    })
-                                });
-                                
-                                // 3. 從界面中移除文件項
-                                fileItem.remove();
-                                alert("文件已刪除");
-                            } catch (error) {
-                                console.error("刪除文件元數據失敗:", error);
-                                alert("刪除文件元數據失敗，請稍後再試");
                             }
-                        }
-                    });
+                        });
 
-                    fileList.appendChild(fileItem);
-                });
+                        fileList.appendChild(fileItem);
+                    });
+                } catch (error) {
+                    console.error("Error fetching files:", error);
+                    const fileList = document.querySelector(".files-list");
+                    fileList.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">載入文件時發生錯誤，請稍後再試</div>';
+                }
             }
 
             document.getElementById('confirmUpload').addEventListener('click', async () => {
@@ -1099,11 +1147,12 @@
                 }
 
                 try {
-                    const path = `uploads/${school}/${type}/${finalFileName}`;
+                    // Add student_id to the path structure
+                    const path = `uploads/${studentId}/${school}/${type}/${finalFileName}`;
                     const result = await uploadToFirebase(selectedFileBlob, path);
 
                     alert(`文件「${finalFileName}」上傳成功！`);
-                    await fetch("/save-file-metadata", {
+                    await fetch("/api/save-file-metadata", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
@@ -1115,83 +1164,71 @@
                             size: selectedFileBlob.size,
                             school: school,
                             type: type,
-                            uploaded_at: new Date().toLocaleDateString()
+                            uploaded_at: new Date().toLocaleDateString(),
+                            student_id: studentId
                         })
                     });
 
                     document.getElementById('uploadModal').classList.remove('active');
-
-                    // ✅ Create a new file-item DOM element and append
-                    const fileList = document.querySelector('.files-list');
-                    const fileItem = document.createElement('li');
-                    fileItem.className = 'file-item';
-                    fileItem.setAttribute('data-school', school);
-                    fileItem.setAttribute('data-type', type);
-
-                    fileItem.innerHTML = `
-                        <div class="checkbox-container">
-                            <input type="radio" name="fileSelect">
-                        </div>
-                        <div class="file-icon">
-                            <i class="fas fa-file-alt"></i>
-                        </div>
-                        <div class="file-details">
-                            <div class="file-name">${finalFileName}</div>
-                            <div class="file-meta">${(selectedFileBlob.size / (1024 * 1024)).toFixed(1)} MB · 上傳於 ${new Date().toLocaleDateString()}</div>
-                        </div>
-                        <span class="file-status status-pending">待分析</span>
-                        <button class="delete-btn">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    `;
-
-                    fileItem.querySelector('.delete-btn').addEventListener('click', async () => {
-                        if (confirm(`確定要刪除文件: ${finalFileName}？`)) {
-                            try {
-                                // 1. 嘗試刪除 Firebase Storage 中的文件
-                                try {
-                                    await deleteFromFirebase(path);
-                                    console.log(`成功從 Storage 刪除文件: ${path}`);
-                                } catch (storageError) {
-                                    // 即使 Storage 刪除失敗，仍繼續執行
-                                    console.warn(`無法從 Storage 刪除文件 (可能已被刪除): ${path}`, storageError);
-                                }
-                                
-                                // 2. 刪除後端數據庫中的元數據記錄
-                                await fetch("/delete-file-metadata", {
-                                    method: "POST",
-                                    headers: {
-                                        "Content-Type": "application/json"
-                                    },
-                                    body: JSON.stringify({
-                                        path: path,
-                                        filename: finalFileName
-                                    })
-                                });
-                                
-                                // 3. 從界面中移除文件項
-                                fileItem.remove();
-                                alert("文件已刪除");
-                            } catch (error) {
-                                console.error("刪除文件元數據失敗:", error);
-                                alert("刪除文件元數據失敗，請稍後再試");
-                            }
-                        }
-                    });
-
-                    fileList.appendChild(fileItem);
 
                     // Reset form
                     document.getElementById('selectedFileName').textContent = '尚未選擇文件';
                     document.getElementById('finalFileName').textContent = '-';
                     schoolSelect.value = '';
                     selectedFileBlob = null;
-
+                    
+                    // Refresh the file list
+                    fetchAndRenderFiles(studentId);
                 } catch (err) {
                     console.error("上傳失敗", err);
                     alert("上傳失敗，請稍後再試");
                 }
             });
+            
+            // Add the analyze button functionality
+            document.getElementById('analyzeBtn').addEventListener('click', async () => {
+                const selectedFile = document.querySelector('input[name="fileSelect"]:checked');
+                if (!selectedFile) {
+                    alert("請先選擇一個文件進行分析");
+                    return;
+                }
+                
+                const filePath = selectedFile.value;
+                const fileItem = selectedFile.closest('.file-item');
+                const fileName = fileItem.querySelector('.file-name').textContent;
+                
+                try {
+                    // Call the analysis endpoint (placeholder for LangChain integration)
+                    const response = await fetch(`/api/analyze-file/${studentId}/${encodeURIComponent(filePath)}`, {
+                        method: 'POST'
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        // Update the UI to show analysis in progress
+                        const statusElement = fileItem.querySelector('.file-status');
+                        statusElement.textContent = '分析中...';
+                        statusElement.className = 'file-status status-pending';
+                        
+                        // In a real application, you'd wait for analysis to complete
+                        // For now, just simulate with a timeout and show the modal
+                        setTimeout(() => {
+                            statusElement.textContent = '已分析 · ' + new Date().toLocaleDateString() + ' · 評分: 85';
+                            statusElement.className = 'file-status status-analyzed';
+                            
+                            // Show analysis modal (simulation)
+                            document.getElementById('analysisModal').classList.add('active');
+                        }, 2000);
+                    } else {
+                        alert("分析請求失敗: " + result.message);
+                    }
+                } catch (error) {
+                    console.error("Analysis request failed:", error);
+                    alert("分析請求失敗，請稍後再試");
+                }
+            });
         });
-        </script>
-        
+    </script>
+</body>
+</html>

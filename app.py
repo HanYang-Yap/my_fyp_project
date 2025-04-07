@@ -15,7 +15,7 @@ from controllers.role_controller import create_role_controller
 from controllers.user_wish_controller import create_user_wish_controller
 from controllers.department_controller import create_department_controller
 from controllers.radar_data_controller import create_radar_data_controller
-from controllers.portfolio_controller import create_portfolio_controller
+from controllers.portfolio_management_controller import create_portfolio_management_controller
 from controllers.file_type_controller import create_file_type_controller
 from controllers.suggestion_controller import create_suggestion_controller
 from controllers.suggestion_type_controller import create_suggestion_type_controller
@@ -63,7 +63,7 @@ app.register_blueprint(create_role_controller(db), url_prefix='/api')
 app.register_blueprint(create_user_wish_controller(db), url_prefix='/api')
 app.register_blueprint(create_department_controller(db), url_prefix='/api')
 app.register_blueprint(create_radar_data_controller(db), url_prefix='/api')
-app.register_blueprint(create_portfolio_controller(db), url_prefix='/api')
+app.register_blueprint(create_portfolio_management_controller(db), url_prefix='/api')
 app.register_blueprint(create_file_type_controller(db), url_prefix='/api')
 app.register_blueprint(create_suggestion_controller(db), url_prefix='/api')
 app.register_blueprint(create_suggestion_type_controller(db), url_prefix='/api')
@@ -122,8 +122,12 @@ def home_form():
     return render_template('home.html')
 
 @app.route('/file_upload&management')
-def file_upload_form():
-    return render_template('file_upload&management.html')
+def redirect_to_file_management():
+    return redirect('/api/file-management/test_student_id')
+
+@app.route('/file_upload&management/<student_id>')
+def redirect_to_student_file_management(student_id):
+    return redirect(f'/api/file-management/{student_id}')
 
 @app.route('/profile')
 @app.route('/profile/<student_id>')
@@ -141,67 +145,67 @@ def profile_form(student_id=None):
     }
     return render_template('profile.html', firebase_config=firebase_config, student_id=student_id)
 
-@app.route('/get-uploaded-files', methods=['GET'])
-def get_uploaded_files():
-    collection_ref = db.collection('uploaded_files')
-    docs = collection_ref.stream()
-    files = []
+# @app.route('/get-uploaded-files', methods=['GET'])
+# def get_uploaded_files():
+#     collection_ref = db.collection('uploaded_files')
+#     docs = collection_ref.stream()
+#     files = []
 
-    for doc in docs:
-        data = doc.to_dict()
-        files.append({
-            "filename": data.get("filename"),
-            "path": data.get("path"),
-            "url": data.get("url"),
-            "size": data.get("size"),
-            "school": data.get("school"),
-            "type": data.get("type"),
-            "uploaded_at": data.get("uploaded_at")
-        })
+#     for doc in docs:
+#         data = doc.to_dict()
+#         files.append({
+#             "filename": data.get("filename"),
+#             "path": data.get("path"),
+#             "url": data.get("url"),
+#             "size": data.get("size"),
+#             "school": data.get("school"),
+#             "type": data.get("type"),
+#             "uploaded_at": data.get("uploaded_at")
+#         })
 
-    return jsonify(files)
+#     return jsonify(files)
 
-@app.route('/save-file-metadata', methods=['POST'])
-def save_file_metadata():
-    data = request.get_json()
-    #print("Saving file metadata:", data)
-    collection_ref = db.collection('uploaded_files')
-    doc_id = f"{data['school']}_{data['type']}_{data['filename']}"
-    collection_ref.document(doc_id).set(data)
-    return jsonify({"status": "success"}), 200
+# @app.route('/save-file-metadata', methods=['POST'])
+# def save_file_metadata():
+#     data = request.get_json()
+#     #print("Saving file metadata:", data)
+#     collection_ref = db.collection('uploaded_files')
+#     doc_id = f"{data['school']}_{data['type']}_{data['filename']}"
+#     collection_ref.document(doc_id).set(data)
+#     return jsonify({"status": "success"}), 200
 
-@app.route('/delete-file-metadata', methods=['POST'])
-def delete_file_metadata():
-    try:
-        data = request.get_json()
-        path = data.get('path')
-        filename = data.get('filename')
+# @app.route('/delete-file-metadata', methods=['POST'])
+# def delete_file_metadata():
+#     try:
+#         data = request.get_json()
+#         path = data.get('path')
+#         filename = data.get('filename')
         
-        if not path or not filename:
-            return jsonify({"error": "缺少必要參數"}), 400
+#         if not path or not filename:
+#             return jsonify({"error": "缺少必要參數"}), 400
         
-        # 從 Firestore 中刪除文件元數據
-        collection_ref = db.collection('uploaded_files')
+#         # 從 Firestore 中刪除文件元數據
+#         collection_ref = db.collection('uploaded_files')
         
-        # 透過查詢找到相符的文件
-        docs = collection_ref.where('path', '==', path).stream()
+#         # 透過查詢找到相符的文件
+#         docs = collection_ref.where('path', '==', path).stream()
         
-        # 檢查是否找到文件
-        doc_found = False
+#         # 檢查是否找到文件
+#         doc_found = False
         
-        # 刪除所有匹配的文件
-        for doc in docs:
-            doc.reference.delete()
-            doc_found = True
+#         # 刪除所有匹配的文件
+#         for doc in docs:
+#             doc.reference.delete()
+#             doc_found = True
         
-        if not doc_found:
-            return jsonify({"error": "找不到文件記錄"}), 404
+#         if not doc_found:
+#             return jsonify({"error": "找不到文件記錄"}), 404
         
-        return jsonify({"message": "文件元數據已成功刪除"}), 200
+#         return jsonify({"message": "文件元數據已成功刪除"}), 200
     
-    except Exception as e:
-        #print(f"刪除文件元數據時出錯: {str(e)}")
-        return jsonify({"error": "刪除文件元數據失敗"}), 500
+#     except Exception as e:
+#         #print(f"刪除文件元數據時出錯: {str(e)}")
+#         return jsonify({"error": "刪除文件元數據失敗"}), 500
 
 @app.route('/calendar/<student_id>')
 def calendar_student_view(student_id):
