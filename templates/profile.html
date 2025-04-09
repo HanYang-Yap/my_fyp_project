@@ -110,21 +110,6 @@
             min-height: calc(100vh - 60px);
         }
         
-        /* 頁面標題 */
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eaecef;
-        }
-        
-        .page-title {
-            font-size: 24px;
-            color: #3a4049;
-        }
-        
         /* 個人資料卡片 */
         .profile-section {
             display: flex;
@@ -261,7 +246,9 @@
             margin-top: 15px;
         }
         
+        /* Add these CSS styles for drag-and-drop functionality */
         .preference-item {
+            cursor: grab;
             display: flex;
             align-items: center;
             padding: 12px 15px;
@@ -270,6 +257,29 @@
             margin-bottom: 10px;
             position: relative;
             transition: all 0.2s;
+        }
+
+        .preference-item.dragging {
+            opacity: 0.6;
+            background-color: #f0f7fa;
+            cursor: grabbing;
+        }
+
+        .preference-item.drag-over {
+            border: 2px dashed #5d8a9e;
+        }
+
+        .drag-handle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: #9da3b4;
+            cursor: grab;
+        }
+
+        .drag-handle i {
+            font-size: 16px;
         }
         
         .preference-item:hover {
@@ -463,6 +473,49 @@
             align-items: center;
             gap: 10px;
         }
+
+        /* Add to your existing CSS */
+        .profile-header {
+            background: linear-gradient(135deg, #547a8c 0%, #3a5a6a 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            border-radius: 20px 20px 0 0;
+            margin-bottom: 20px;
+        }
+
+        .profile-picture {
+            width: 120px;
+            height: 120px;
+            background-color: #e8eaed;
+            border-radius: 60px;
+            margin-right: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: #3a5a6a;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .profile-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .profile-info h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .profile-info p {
+            margin-bottom: 5px;
+            opacity: 0.9;
+        }
         
         .notification.success {
             background-color: #e6f3ea;
@@ -501,6 +554,30 @@
             height: 24px;
             animation: spin 1s linear infinite;
             margin-right: 10px;
+        }
+        /* Replace the existing preference rank color styles with this */
+        .preference-item:nth-child(1) .preference-rank {
+            background-color: #4e54c8; /* 第1志願用深藍紫色 */
+        }
+
+        .preference-item:nth-child(2) .preference-rank {
+            background-color: #5d8a9e; /* 第2志願用藍綠色 */
+        }
+
+        .preference-item:nth-child(3) .preference-rank {
+            background-color: #3cb371; /* 第3志願用綠色 */
+        }
+
+        .preference-item:nth-child(4) .preference-rank {
+            background-color: #f9a825; /* 第4志願用黃色 */
+        }
+
+        .preference-item:nth-child(5) .preference-rank {
+            background-color: #e57373; /* 第5志願用淡紅色 */
+        }
+
+        .preference-item:nth-child(6) .preference-rank {
+            background-color: #9575cd; /* 第6志願用紫色 */
         }
         
         @keyframes spin {
@@ -612,13 +689,22 @@
     <div class="main-content">
         <div class="content-container">
             <div class="page-header">
-                <h1 class="page-title" id="student-name">載入中...</h1>
+                <!-- <h1 class="page-title" id="student-name">載入中...</h1> -->
+            </div>
+
+            <div class="profile-header">
+                <div class="profile-picture" id="profile-picture"></div>
+                <div class="profile-info">
+                    <h1 id="header-name">載入中...</h1>
+                    <p id="header-school-info">載入中...</p>
+                    <p id="header-grade-info">載入中...</p>
+                    <p id="header-class-info">載入中...</p>
+                    <p id="header-target-departments">目標科系：載入中...</p>
+                </div>
             </div>
             
-            <!-- 通知區域 -->
             <div id="notification-area"></div>
             
-            <!-- 個人資料區域 -->
             <div class="profile-section">
                 <div class="profile-card">
                     <div class="card-title">
@@ -790,7 +876,7 @@
         const profileClass = document.getElementById('profile-class');
         const profileEmail = document.getElementById('profile-email');
         const profilePhone = document.getElementById('profile-phone');
-        const studentNameTitle = document.getElementById('student-name');
+        //const studentNameTitle = document.getElementById('student-name');
         
         // 頁面載入時初始化
         document.addEventListener('DOMContentLoaded', function() {
@@ -826,7 +912,7 @@
             }
         } catch (error) {
             console.error("Firebase initialization error:", error);
-            showNotification('error', '無法連接到 Firebase，請重新整理頁面或聯絡系統管理員。');
+            //showNotification('error', '無法連接到 Firebase，請重新整理頁面或聯絡系統管理員。');
         }
     });
         
@@ -857,26 +943,18 @@
             });
         }
         
-        /**
-         * 從 Firestore 載入學生資料
-         */
-         async function loadStudentData() {
-            console.log("Firebase config:", firebaseConfig);
-            console.log("Student ID:", STUDENT_ID);
+        // Add these global variables
+        let studentDataLoaded = false;
+        let preferencesLoaded = false;
 
-            // Inside loadStudentData:
-            console.log("Loading student data...");
-            // After data is loaded:
-            console.log("Student data:", studentData);
+        // Then modify the loadStudentData function
+        async function loadStudentData() {
             try {
                 const docRef = db.collection('users').doc(STUDENT_ID);
                 const doc = await docRef.get();
                 
                 if (doc.exists) {
                     studentData = doc.data() || {};
-                    
-                    // Update page title with fallback
-                    studentNameTitle.textContent = studentData.name || 'Student Profile';
                     
                     // Fill form fields with fallbacks for missing data
                     profileName.value = studentData.name || '';
@@ -885,10 +963,17 @@
                     profileClass.value = studentData.class || '';
                     profileEmail.value = studentData.email || '';
                     profilePhone.value = studentData.phone || '';
+
+                    // Mark student data as loaded
+                    studentDataLoaded = true;
+                    
+                    // Update header if both data sources are loaded
+                    if (preferencesLoaded) {
+                        updateProfileHeader();
+                    }
                 } else {
                     // Document doesn't exist - create empty profile
                     showNotification('info', 'Creating new student profile...');
-                    studentNameTitle.textContent = 'New Student';
                     
                     // Initialize empty studentData
                     studentData = {
@@ -899,16 +984,19 @@
                         email: '',
                         phone: ''
                     };
+                    
+                    studentDataLoaded = true;
+                    if (preferencesLoaded) {
+                        updateProfileHeader();
+                    }
                 }
             } catch (error) {
                 console.error('Error getting student data:', error);
                 showNotification('error', `Failed to load profile: ${error.message}`);
             }
         }
-        
-        /**
-         * 從 Firestore 載入志願序
-         */
+
+        // Modify the loadPreferredDepartments function
         async function loadPreferredDepartments() {
             try {
                 preferencesContainer.innerHTML = `
@@ -934,9 +1022,22 @@
                     
                     // Render the departments (even if empty)
                     renderPreferredDepartments();
+                    
+                    // Mark preferences as loaded
+                    preferencesLoaded = true;
+                    
+                    // Update header if both data sources are loaded
+                    if (studentDataLoaded) {
+                        updateProfileHeader();
+                    }
                 } else {
                     preferredDepartments = [];
                     renderPreferredDepartments();
+                    
+                    preferencesLoaded = true;
+                    if (studentDataLoaded) {
+                        updateProfileHeader();
+                    }
                 }
             } catch (error) {
                 console.error('獲取志願序錯誤:', error);
@@ -949,9 +1050,6 @@
             }
         }
         
-        /**
-         * 渲染志願序列表
-         */
         function renderPreferredDepartments() {
             if (!preferredDepartments || preferredDepartments.length === 0) {
                 preferencesContainer.innerHTML = `
@@ -963,11 +1061,14 @@
                 return;
             }
             
-            let html = '<ul class="preference-list">';
+            let html = '<ul class="preference-list" id="sortable-preferences">';
             
             preferredDepartments.forEach((pref, index) => {
                 html += `
-                    <li class="preference-item">
+                    <li class="preference-item" draggable="true" data-index="${index}">
+                        <div class="drag-handle">
+                            <i class="fas fa-grip-lines"></i>
+                        </div>
                         <div class="preference-rank">${pref.rank}</div>
                         <div class="preference-content">
                             <div class="preference-school">${pref.school}</div>
@@ -988,7 +1089,18 @@
             html += '</ul>';
             preferencesContainer.innerHTML = html;
             
-            // 添加編輯和刪除按鈕的事件監聽
+            // Add drag and drop event listeners
+            const preferenceItems = document.querySelectorAll('.preference-item');
+            preferenceItems.forEach(item => {
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragend', handleDragEnd);
+                item.addEventListener('dragover', handleDragOver);
+                item.addEventListener('dragenter', handleDragEnter);
+                item.addEventListener('dragleave', handleDragLeave);
+                item.addEventListener('drop', handleDrop);
+            });
+            
+            // Add edit and delete button event listeners
             document.querySelectorAll('.preference-action-btn.edit').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const index = parseInt(this.getAttribute('data-index'));
@@ -1003,10 +1115,168 @@
                 });
             });
         }
+
+        // Drag and drop variables
+        let draggedItem = null;
+        let dragSourceIndex = null;
+
+        function handleDragStart(e) {
+            draggedItem = this;
+            dragSourceIndex = parseInt(this.getAttribute('data-index'));
+            
+            // Set the drag effect
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+            
+            // Add dragging class for styling
+            setTimeout(() => {
+                this.classList.add('dragging');
+            }, 0);
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            
+            // Remove drag-over class from all items
+            document.querySelectorAll('.preference-item').forEach(item => {
+                item.classList.remove('drag-over');
+            });
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault(); // Necessary to allow dropping
+            }
+            
+            e.dataTransfer.dropEffect = 'move';
+            
+            return false;
+        }
+
+        function handleDragEnter(e) {
+            this.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            // Prevent default action
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            
+            // Only process if we're not dropping onto the original element
+            if (draggedItem !== this) {
+                const dropTargetIndex = parseInt(this.getAttribute('data-index'));
+                
+                // Rearrange the preferredDepartments array
+                const temp = [...preferredDepartments];
+                const draggedItemData = temp[dragSourceIndex];
+                
+                // Remove from original position
+                temp.splice(dragSourceIndex, 1);
+                
+                // Insert at new position
+                temp.splice(dropTargetIndex, 0, draggedItemData);
+                
+                // Update the ranks based on new order
+                temp.forEach((item, idx) => {
+                    item.rank = idx + 1;
+                });
+                
+                // Save the reordered departments
+                preferredDepartments = temp;
+                saveReorderedPreferences();
+            }
+            
+            return false;
+        }
+
+        // Function to save the reordered preferences to Firebase
+        async function saveReorderedPreferences() {
+            // Sort by rank for safety
+            preferredDepartments.sort((a, b) => a.rank - b.rank);
+            
+            // Show loading notification
+            showNotification('info', '<div class="loading-spinner" style="margin-right: 10px;"></div> 正在更新志願序...');
+            
+            try {
+                // Update Firestore
+                await db.collection('users').doc(STUDENT_ID).update({
+                    preferred_departments: preferredDepartments
+                });
+                
+                // Show success notification
+                showNotification('success', '<i class="fas fa-check-circle"></i> 志願序已成功更新！');
+                
+                // Refresh the view
+                renderPreferredDepartments();
+                
+                // Update the header
+                updateProfileHeader();
+            } catch (error) {
+                console.error('更新志願序錯誤:', error);
+                showNotification('error', `<i class="fas fa-exclamation-triangle"></i> 更新失敗: ${error.message}`);
+                
+                // Reload the preferences in case of error
+                loadPreferredDepartments();
+            }
+        }
         
         /**
-         * 切換個人資料編輯模式
+         * Update the profile header with student information
          */
+        function updateProfileHeader() {
+            // Set initial values
+            document.getElementById('header-name').textContent = studentData.name || '未設定姓名';
+            document.getElementById('header-school-info').textContent = studentData.school || '未設定學校';
+            document.getElementById('header-grade-info').textContent = studentData.grade ? `年級: ${studentData.grade}` : '未設定年級';
+            document.getElementById('header-class-info').textContent = studentData.class ? `班級: ${studentData.class}` : '未設定班級';
+            //document.getElementById('header-target-departments').textContent = studentData.department ? `目標科系: ${studentData.department}` : '未設定科系';
+
+            // Update profile picture with initials
+            const profilePicture = document.getElementById('profile-picture');
+            if (studentData.name) {
+                const initials = studentData.name.charAt(0);
+                profilePicture.textContent = initials;
+            } else {
+                profilePicture.textContent = '?';
+            }
+            
+            // Update target departments - change to show as a single line summary
+            const headerTargetDepartments = document.getElementById('header-target-departments');
+            if (preferredDepartments && preferredDepartments.length > 0) {
+                // Sort by rank
+                const sortedDepartments = [...preferredDepartments].sort((a, b) => a.rank - b.rank);
+                
+                // Just extract department names (without ranks or colors) for the summary line
+                const departmentNames = sortedDepartments.map(dept => dept.department);
+                
+                // Join with slashes
+                headerTargetDepartments.textContent = `目標科系：${departmentNames.join(' / ')}`;
+            } else {
+                headerTargetDepartments.textContent = '目標科系：尚未設定';
+            }
+        }
+
+        /**
+         * Get color for department rank
+         */
+        function getDepartmentColor(rank) {
+            const colors = [
+                '#4e54c8', // 第 1 志願 - 深藍紫色
+                '#5d8a9e', // 第 2 志願 - 藍綠色
+                '#3cb371', // 第 3 志願 - 中等海綠色
+                '#f9a825', // 第 4 志願 - 琥珀黃色
+                '#e57373', // 第 5 志願 - 淡紅色
+                '#9575cd'  // 第 6 志願 - 淡紫色
+            ];
+            
+            return colors[rank - 1] || '#8d939e';
+        }
+
         function togglePersonalInfoEditMode() {
             const formControls = personalInfoForm.querySelectorAll('.form-control');
             const isDisabled = formControls[0].disabled;
@@ -1036,10 +1306,7 @@
                 profilePhone.value = studentData.phone || '';
             }
         }
-        
-        /**
-         * 儲存個人資料到 Firestore
-         */
+
         async function savePersonalInfo(event) {
             event.preventDefault();
             
@@ -1065,7 +1332,10 @@
                 studentData = { ...studentData, ...updatedData };
                 
                 // 更新頁面標題
-                studentNameTitle.textContent = studentData.name || '學生資料';
+                profileName.textContent = studentData.name || '學生資料';
+                
+                // 立即更新 header
+                updateProfileHeader();
                 
                 // 顯示成功通知
                 showNotification('success', '<i class="fas fa-check-circle"></i> 個人資料已成功更新！');
@@ -1203,6 +1473,8 @@
                 // 顯示成功通知
                 showNotification('success', '<i class="fas fa-check-circle"></i> 志願已成功儲存！');
                 
+                updateProfileHeader();
+
                 // 重新渲染志願列表
                 renderPreferredDepartments();
                 
@@ -1238,6 +1510,8 @@
                 // 更新本地資料
                 preferredDepartments = updatedPreferences;
                 
+                updateProfileHeader();
+
                 // 顯示成功通知
                 showNotification('success', '<i class="fas fa-check-circle"></i> 志願已成功刪除！');
                 
