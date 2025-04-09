@@ -351,7 +351,87 @@
         .feature-button h2, .feature-button p, .feature-button .card-icon, .feature-button .check-icon {
             pointer-events: none;
         }
-        
+
+        .day-details-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 80%;
+            width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            position: relative;
+            animation: modalFadeIn 0.2s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 20px;
+            cursor: pointer;
+            color: #636973;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: #3a4049;
+        }
+
+        .modal-header {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eaecef;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            color: #3a4049;
+        }
+
+        .modal-events {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .event-details {
+            font-size: 13px;
+            color: #636973;
+            line-height: 1.4;
+        }
+
+        .tag-interview {
+            background-color: rgba(93, 138, 158, 0.15);
+            color: #3a5a6a;
+        }
+
         /* 響應式設計 */
         @media (max-width: 1200px) {
             .feature-card {
@@ -441,33 +521,32 @@
             </div>
         </div>
         
-        <div class="menu-item active">
+        <div class="menu-item active" onclick="window.location.href='/home/{{ student_id }}'">
             <i class="fas fa-home"></i>
             <span>首頁</span>
         </div>
         
-        <div class="menu-item">
+        <div class="menu-item" onclick="window.location.href='/profile/{{ student_id }}'">
             <i class="fas fa-user"></i>
             <span>個人資料</span>
         </div>
+
+        <div class="menu-item" onclick="window.location.href='/file_upload&management/{{ student_id }}'">
+            <i class="fas fa-file-alt"></i>
+            <span>學習歷程</span>
+        </div>
         
-        <div class="menu-item">
+        <div class="menu-item" onclick="window.location.href='/calendar/{{ student_id }}'">
             <i class="fas fa-calendar"></i>
             <span>日程表</span>
         </div>
         
-        <div class="menu-item">
-            <i class="fas fa-cog"></i>
-            <span>設定</span>
-        </div>
-        
-        <div class="menu-item">
+        <div class="menu-item" onclick="window.location.href='/faq/{{ student_id }}'">
             <i class="fas fa-question-circle"></i>
-            <a href="/faq" class="feature-button"></a>
             <span>常見問題</span>
         </div>
         
-        <div class="menu-item logout">
+        <div class="menu-item logout" id="logout-btn">
             <i class="fas fa-sign-out-alt"></i>
             <span>登出</span>
         </div>
@@ -478,14 +557,14 @@
         <div class="content-container">
             <!-- 歡迎頭部 -->
             <div class="welcome-header">
-                <h1>歡迎回來，同學！</h1>
+                <h1>歡迎回來，{{ student_name }}！</h1>
                 <p>開始探索你的大學申請之旅，我們會協助你取得最佳成果。</p>
             </div>
             
             <!-- 功能卡片區域 - 已轉換為按鈕功能 -->
             <div class="cards-row">
                 <!-- 學習歷程卡片 -->
-                <a href="/file_upload&management" class="card feature-card feature-button">
+                <a href="/file_upload&management/{{ student_id }}" class="card feature-card feature-button">
                     <div class="card-icon learn">
                         <i class="fas fa-file-alt"></i>
                     </div>
@@ -498,7 +577,7 @@
                 </a>
                 
                 <!-- 模擬面試卡片 -->
-                <a href="#" class="card feature-card feature-button">
+                <a href="/interview/{{ student_id }}" class="card feature-card feature-button">
                     <div class="card-icon interview">
                         <i class="fas fa-user-tie"></i>
                     </div>
@@ -511,7 +590,7 @@
                 </a>
                 
                 <!-- 考古題庫卡片 -->
-                <a href="#" class="card feature-card feature-button">
+                <a href="/exams/{{ student_id }}" class="card feature-card feature-button">
                     <div class="card-icon exam">
                         <i class="fas fa-book"></i>
                     </div>
@@ -529,11 +608,29 @@
                 <!-- D-Day 倒計時卡片 -->
                 <div class="card dday-card">
                     <div class="dday-label">D-DAY</div>
-                    <div class="school-info">國立政治大學</div>
-                    <div class="school-info">資訊管理學系</div>
-                    <div class="countdown">6</div>
+                    <div id="school-name" class="school-info">
+                        {% if nearest_interview %}
+                            {{ nearest_interview.school }}
+                        {% else %}
+                            尚無面試安排
+                        {% endif %}
+                    </div>
+                    <div id="department-name" class="school-info">
+                        {% if nearest_interview %}
+                            {{ nearest_interview.department }}
+                        {% else %}
+                            請添加志願科系
+                        {% endif %}
+                    </div>
+                    <div id="countdown" class="countdown">
+                        {% if days_remaining is not none %}
+                            {{ days_remaining }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </div>
                     <div class="countdown-circle"></div>
-                    <button class="view-button">查看申請材料</button>
+                    <!-- <button class="view-button" id="view-materials-btn">查看申請說明</button> -->
                 </div>
                 
                 <!-- 通知卡片 -->
@@ -558,5 +655,113 @@
             </div>
         </div>
     </div>
-</body>
-</html>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+    <script>
+        // 初始化 Firebase
+        const firebaseConfig = {
+            apiKey: "{{ firebase_config.apiKey }}",
+            authDomain: "{{ firebase_config.authDomain }}",
+            projectId: "{{ firebase_config.projectId }}",
+            storageBucket: "{{ firebase_config.storageBucket }}",
+            messagingSenderId: "{{ firebase_config.messagingSenderId }}",
+            appId: "{{ firebase_config.appId }}"
+        };
+        
+        // 初始化 Firebase
+        if (typeof firebase !== 'undefined') {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize variables
+            const studentId = "{{ student_id }}";
+
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Fetch the latest data if needed
+            refreshData();
+        });
+
+        function setupEventListeners() {
+            // Logout button
+            document.getElementById('logout-btn').addEventListener('click', function() {
+                if (typeof firebase !== 'undefined' && firebase.auth) {
+                    firebase.auth().signOut().then(() => {
+                        window.location.href = '/login';
+                    }).catch((error) => {
+                        console.error('登出錯誤:', error);
+                    });
+                } else {
+                    // Fallback for when Firebase isn't available
+                    window.location.href = '/login';
+                }
+            });
+
+            // View materials button
+            document.getElementById('view-materials-btn').addEventListener('click', function() {
+                window.location.href = `/file_upload&management/${studentId}`;
+            });
+        }
+
+        function refreshData() {
+            const studentId = "{{ student_id }}";
+            
+            // Only fetch data if we need to refresh dynamically
+            // For now, we're using the server-side rendered data
+            // This could be expanded for real-time updates if needed
+            
+            fetch(`/api/home/${studentId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch data');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        updateHomeUI(data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching home data:', error);
+                });
+        }
+
+        
+
+        function updateHomeUI(data) {
+            // Update student name if available
+            if (data.student && data.student.name) {
+                const welcomeHeader = document.querySelector('.welcome-header h1');
+                welcomeHeader.textContent = `歡迎回來，${data.student.name}！`;
+            }
+
+            // Update D-DAY section if interview data is available
+            if (data.interviews && data.interviews.length > 0) {
+                // Sort interviews by date to get the nearest one
+                const sortedInterviews = [...data.interviews].sort((a, b) => 
+                    new Date(a.date) - new Date(b.date)
+                );
+                
+                const nearestInterview = sortedInterviews[0];
+                
+                // Calculate days remaining
+                const interviewDate = new Date(nearestInterview.date);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                const timeDiff = interviewDate.getTime() - today.getTime();
+                const daysRemaining = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                
+                // Update the UI
+                document.getElementById('school-name').textContent = nearestInterview.school;
+                document.getElementById('department-name').textContent = nearestInterview.department;
+                document.getElementById('countdown').textContent = daysRemaining >= 0 ? daysRemaining : 0;
+            }
+        }
+        
