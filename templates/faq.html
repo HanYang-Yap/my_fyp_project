@@ -802,6 +802,27 @@
                     }
                 });
             });
+
+            function getStudentIdFromUrl() {
+            // This assumes the URL might have a student ID parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const studentId = urlParams.get('student_id');
+            
+            // If student_id is in URL parameters, use that
+            if (studentId) {
+                return studentId;
+            }
+            
+            // Otherwise, check if it's in the URL path
+            // Example: /faq/student123
+            const pathParts = window.location.pathname.split('/');
+            if (pathParts.length > 2) {
+                return pathParts[2]; // Adjust the index based on your actual URL structure
+            }
+            
+            // Default to test_student_id if no ID found
+            return 'test_student_id';
+        }
             
             document.querySelector('.question-form').addEventListener('submit', async function(e) {
                 e.preventDefault();

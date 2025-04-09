@@ -25,6 +25,7 @@ from controllers.diag_type_controller import create_diag_type_controller
 from controllers.faq_controller import create_faq_controller
 from controllers.calendar_controller import create_calendar_controller
 from controllers.profile_controller import create_profile_controller
+from controllers.home_controller import create_home_controller
 
 app = Flask(__name__, template_folder="templates")
 app.config['UPLOAD_DIRECTORY'] = 'uploads/'
@@ -73,6 +74,7 @@ app.register_blueprint(create_diag_type_controller(db), url_prefix='/api')
 app.register_blueprint(create_faq_controller(db), url_prefix='/api')
 app.register_blueprint(create_calendar_controller(db), url_prefix='/api/calendar')
 app.register_blueprint(create_profile_controller(db), url_prefix='/api/profile')
+app.register_blueprint(create_home_controller(db), url_prefix='/api/home')
 app.register_blueprint(test_bp, url_prefix='/test')
 
 from flask import Flask, render_template
@@ -91,6 +93,13 @@ def index():
     }
     return render_template("index.html", firebase_config=firebase_config)
 
+@app.route('/home')
+@app.route('/home/<student_id>')
+def home_form(student_id=None):
+    if student_id is None:
+        student_id = "test_student_id"
+    # Redirect to the blueprint route
+    return redirect(f'/api/home/{student_id}')
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -114,12 +123,23 @@ def serve_image(filename):
     return send_from_directory(app.config['UPLOAD_DIRECTORY'], filename)
 
 @app.route('/faq')
-def faq_form():
-    return render_template('faq.html')
+@app.route('/faq/<student_id>')
+def faq_form(student_id):
+        
+    firebase_config = {
+        "apiKey": Config.FIREBASE_API_KEY,
+        "authDomain": Config.FIREBASE_AUTH_DOMAIN,
+        "projectId": Config.FIREBASE_PROJECT_ID,
+        "storageBucket": Config.FIREBASE_STORAGE_BUCKET,
+        "messagingSenderId": Config.FIREBASE_MESSAGING_SENDER_ID,
+        "appId": Config.FIREBASE_APP_ID
+    }
+    
+    return render_template('faq.html', firebase_config=firebase_config, student_id=student_id)
 
-@app.route('/home')
-def home_form():
-    return render_template('home.html')
+@app.route('/faq')
+def faq_redirect():
+    return redirect('/api/faq/test_student_id')
 
 @app.route('/file_upload&management')
 def redirect_to_file_management():
@@ -130,6 +150,9 @@ def redirect_to_student_file_management(student_id):
     return redirect(f'/api/file-management/{student_id}')
 
 @app.route('/profile')
+def redicrect_to_profile():
+    return redirect('/profile/test_student_id')
+
 @app.route('/profile/<student_id>')
 def profile_form(student_id=None):
     if student_id is None:
@@ -144,68 +167,6 @@ def profile_form(student_id=None):
         "appId": Config.FIREBASE_APP_ID
     }
     return render_template('profile.html', firebase_config=firebase_config, student_id=student_id)
-
-# @app.route('/get-uploaded-files', methods=['GET'])
-# def get_uploaded_files():
-#     collection_ref = db.collection('uploaded_files')
-#     docs = collection_ref.stream()
-#     files = []
-
-#     for doc in docs:
-#         data = doc.to_dict()
-#         files.append({
-#             "filename": data.get("filename"),
-#             "path": data.get("path"),
-#             "url": data.get("url"),
-#             "size": data.get("size"),
-#             "school": data.get("school"),
-#             "type": data.get("type"),
-#             "uploaded_at": data.get("uploaded_at")
-#         })
-
-#     return jsonify(files)
-
-# @app.route('/save-file-metadata', methods=['POST'])
-# def save_file_metadata():
-#     data = request.get_json()
-#     #print("Saving file metadata:", data)
-#     collection_ref = db.collection('uploaded_files')
-#     doc_id = f"{data['school']}_{data['type']}_{data['filename']}"
-#     collection_ref.document(doc_id).set(data)
-#     return jsonify({"status": "success"}), 200
-
-# @app.route('/delete-file-metadata', methods=['POST'])
-# def delete_file_metadata():
-#     try:
-#         data = request.get_json()
-#         path = data.get('path')
-#         filename = data.get('filename')
-        
-#         if not path or not filename:
-#             return jsonify({"error": "缺少必要參數"}), 400
-        
-#         # 從 Firestore 中刪除文件元數據
-#         collection_ref = db.collection('uploaded_files')
-        
-#         # 透過查詢找到相符的文件
-#         docs = collection_ref.where('path', '==', path).stream()
-        
-#         # 檢查是否找到文件
-#         doc_found = False
-        
-#         # 刪除所有匹配的文件
-#         for doc in docs:
-#             doc.reference.delete()
-#             doc_found = True
-        
-#         if not doc_found:
-#             return jsonify({"error": "找不到文件記錄"}), 404
-        
-#         return jsonify({"message": "文件元數據已成功刪除"}), 200
-    
-#     except Exception as e:
-#         #print(f"刪除文件元數據時出錯: {str(e)}")
-#         return jsonify({"error": "刪除文件元數據失敗"}), 500
 
 @app.route('/calendar/<student_id>')
 def calendar_student_view(student_id):
@@ -225,9 +186,5 @@ def calendar_student_view(student_id):
         student_id=student_id
     )
 
-# Modified main section to avoid app context issues
 if __name__ == '__main__':
         app.run(debug=True, port=5000)
-
-# if __name__ == '__main__':
-#     app.run(debug=True, port=5000)
