@@ -12,7 +12,7 @@ export default function QueryGuide() {
     const [completed, setCompleted] = useState(Array(10).fill(false));
     const [questions, setQuestions] = useState([]);
     const [hints, setHints] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     // 從 Firebase 獲取問題和提示
     useEffect(() => {
@@ -178,7 +178,7 @@ export default function QueryGuide() {
                 </div>
             </div>
             
-            <button className={styles['next-stage-button']} onClick={() => window.location.href='/logic-flow'}>
+            <button className={styles['next-stage-button']} onClick={() => window.location.href='/detailedRevision'}>
                 回答好了！檢查邏輯與流暢度
                 <svg width="16" height="16" viewBox="0 0 24 24">
                     <path d="M5 12h14" stroke="white" strokeWidth="2" strokeLinecap="round" />

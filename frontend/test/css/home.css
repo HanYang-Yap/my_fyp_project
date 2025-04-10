@@ -1,16 +1,3 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Arial, sans-serif;
-}
-
-body {
-    background-color: #f0f2f5;
-    color: #3a4049;
-    display: flex;
-    min-height: 100vh;
-}
 
 .logo-container {
     padding: 10px 20px;
@@ -78,7 +65,7 @@ body {
 /* 主要內容區域 */
 .main-content {
     flex: 1;
-    padding: 30px;
+    padding: 20px;
     background-color: #f0f2f5;
 }
 
@@ -223,10 +210,8 @@ body {
     font-size: 120px;
     font-weight: bold;
     background: linear-gradient(135deg, #5d8a9e 0%, #3a5a6a 100%);
-    background-clip: text;              /* Standard property */
-    -webkit-background-clip: text;      /* Vendor prefix for Safari/Chrome */
-    color: transparent;                 /* Standard way to make text transparent */
-    -webkit-text-fill-color: transparent; /* For older WebKit browsers */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     z-index: 1;
     width: 180px;
     height: 180px;
@@ -293,125 +278,6 @@ body {
     font-size: 12px;
 }
 
-/* 新增: 按鈕卡片的樣式 */
-.feature-button {
-    text-decoration: none;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-}
-
-.feature-button::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 0;
-    background-color: rgba(93, 138, 158, 0.1);
-    transition: height 0.3s ease;
-    z-index: 0;
-}
-
-.feature-button:hover::after {
-    height: 100%;
-}
-
-.feature-button:active {
-    transform: translateY(2px) !important;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
-}
-
-.feature-button * {
-    position: relative;
-    z-index: 1;
-}
-
-/* 確保點擊整個卡片區域都有效果 */
-.feature-button h2, .feature-button p, .feature-button .card-icon, .feature-button .check-icon {
-    pointer-events: none;
-}
-
-.day-details-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    backdrop-filter: blur(2px);
-}
-
-.modal-content {
-    background-color: #fff;
-    border-radius: 12px;
-    padding: 20px;
-    max-width: 80%;
-    width: 500px;
-    max-height: 80vh;
-    overflow-y: auto;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-    position: relative;
-    animation: modalFadeIn 0.2s ease-out;
-}
-
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.modal-close {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    font-size: 20px;
-    cursor: pointer;
-    color: #636973;
-    transition: color 0.2s;
-}
-
-.modal-close:hover {
-    color: #3a4049;
-}
-
-.modal-header {
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eaecef;
-}
-
-.modal-title {
-    font-size: 18px;
-    color: #3a4049;
-}
-
-.modal-events {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.event-details {
-    font-size: 13px;
-    color: #636973;
-    line-height: 1.4;
-}
-
-.tag-interview {
-    background-color: rgba(93, 138, 158, 0.15);
-    color: #3a5a6a;
-}
-
 /* 響應式設計 */
 @media (max-width: 1200px) {
     .feature-card {
@@ -434,10 +300,6 @@ body {
 }
 
 @media (max-width: 768px) {
-    .sidebar {
-        width: 70px;
-        overflow: hidden;
-    }
     
     .logo-container {
         justify-content: center;
