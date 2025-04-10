@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniTopia - 初步閱讀與診斷</title>
+    <link rel="stylesheet" href="../css/initAnalysis.css">
+</head>
+
+<body>
+    <!-- 主要內容區 -->
+    <div class="main-content">
+        <div class="content-header">
+            <h1 class="page-title">　　初步閱讀與診斷</h1>
+        </div>
+
+        <div class="diagnosis-container">
+            <!-- 左側診斷結果 -->
+            <div class="diagnosis-left">
+                <div class="diagnosis-header">
+                    <div class="diagnosis-title">
+                        <svg width="24" height="24" viewBox="0 0 24 24">
+                            <path d="M20.24 12.24a6 6 0 00-8.49-8.49L5 10.5V19h8.5l6.74-6.76z" stroke="#5d8a9e"
+                                stroke-width="2" fill="none" />
+                            <line x1="16" y1="8" x2="2" y2="22" stroke="#5d8a9e" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                        診斷結果
+                    </div>
+                    <div class="doc-info">
+                        <div class="doc-type" id="documentType">學習歷程自述檔案</div>
+                        <div class="school-info" id="schoolInfo">國立政治大學 - 資訊管理學系</div>
+                    </div>
+                </div>
+
+                <div class="content-panel">
+                    <ul class="diagnosis-list" id="diagnosisResultsList">
+                        <!-- 診斷結果將動態插入此處 -->
+                    </ul>
+                </div>
+
+                <div class="user-input-section">
+                    <div class="user-input-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" stroke="#5d8a9e" stroke-width="2" fill="none" />
+                            <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" stroke="#5d8a9e" stroke-width="2"
+                                stroke-linecap="round" />
+                            <circle cx="12" cy="17" r="0.5" stroke="#5d8a9e" stroke-width="2" fill="#5d8a9e" />
+                        </svg>
+                        自我疑問與回饋
+                    </div>
+                    <div class="user-input-container">
+                        <textarea class="user-textarea" placeholder="請輸入您對文件的疑問、已知問題或需要特別關注的部分..."></textarea>
+                        <div class="hint-text">若無疑問可留空此欄位</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右側文件內容 -->
+            <div class="diagnosis-right">
+                <div class="diagnosis-header">
+                    <div class="diagnosis-title">
+                        <svg width="24" height="24" viewBox="0 0 24 24">
+                            <path d="M14 3v4a1 1 0 001 1h4" stroke="#5d8a9e" stroke-width="2" fill="none" />
+                            <path d="M17 21H7a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z" stroke="#5d8a9e"
+                                stroke-width="2" fill="none" />
+                            <path d="M9 9h6M9 13h6M9 17h4" stroke="#5d8a9e" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                        文件內容（可編輯）
+                    </div>
+                </div>
+
+                <textarea class="editable-content" id="fileContent"></textarea>
+            </div>
+        </div>
+
+        <!-- 下一步按鈕 -->
+        <button class="next-button" onclick="location.href='../html/queryGuide.html'">
+            提問引導與釐清
+            <svg width="16" height="16" viewBox="0 0 24 24">
+                <path d="M5 12h14" stroke="white" stroke-width="2" stroke-linecap="round" />
+                <path d="M12 5l7 7-7 7" stroke="white" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 初始化左側診斷結果區域
+            const diagnosisList = document.getElementById('diagnosisResultsList');
+            diagnosisList.innerHTML = `
+        <li class="diagnosis-item loading">
+            <div class="issue-desc">正在生成診斷結果，請稍候...</div>
+        </li>
+    `;
+
+            // 初始化右側文件內容區域
+            const fileContent = document.getElementById('fileContent');
+            fileContent.value = '正在載入文件內容，請稍候...';
+
+            // 初始化學校資訊
+            const schoolInfo = document.getElementById('schoolInfo');
+            schoolInfo.textContent = '正在載入學校資訊，請稍候...';
+
+            const selectedFileData = localStorage.getItem('selectedFileData');
+            if (selectedFileData) {
+                const fileData = JSON.parse(selectedFileData);
+
+                fetch('http://127.0.0.1:5000/file/diagnose', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(fileData)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('診斷伺服器回應異常');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('診斷回應:', data);
+
+                        // 更新文件內容
+                        fileContent.value = data.fileContent;
+
+                        // 更新診斷結果
+                        const diagnosisLines = data.diagnosedResult.split('\n');
+                        diagnosisList.innerHTML = diagnosisLines.map((line, index) => {
+                            if (line.trim() === '') return '';
+
+                            // 正則表達式解析每行診斷
+                            const match = line.match(/(\d+\.\s*[A-Z]\d+)：\[([^\]]+)\](.*)/);
+                            if (!match) return '';
+
+                            // 獲取診斷類別
+                            const diagnosisClass = mapDiagnosisClass(match[1]);
+
+                            return `
+                        <li class="diagnosis-item ${diagnosisClass}">
+                            <div class="issue-code">${match[1]}：</div>
+                            <span class="issue-title">[${match[2]}]</span>
+                            <div class="issue-desc">${match[3]}</div>
+                        </li>
+                    `;
+                        }).join('');
+
+                        // 更新學校系所資訊
+                        const schoolParts = fileData.departmentandtype.split('-');
+                        schoolInfo.textContent = `${schoolParts[0]} - ${schoolParts[1]}`;
+                    })
+                    .catch(error => {
+                        console.error('診斷錯誤:', error);
+
+                        // 顯示錯誤訊息
+                        diagnosisList.innerHTML = `
+                    <li class="diagnosis-item error">
+                        <div class="issue-desc">無法獲取診斷結果，請稍後再試。</div>
+                    </li>
+                `;
+                        fileContent.value = '載入文件內容時發生錯誤，請重新嘗試。';
+                        schoolInfo.textContent = '無法載入學校資訊';
+
+                        alert('無法獲取診斷結果，請稍後再試。');
+                    });
+                const editableContent = document.querySelector('.editable-content');
+                editableContent.setAttribute('data-original-content', editableContent.value);
+                // 清除當前分析的暫存資料
+                localStorage.removeItem('currentAnalysis');
+            } else {
+                // 如果沒有選擇文件，跳回上一頁
+                alert('請先選擇要分析的文件');
+                window.location.href = '../html/portfolioUpload.html';
+            }
+        });
+
+        function mapDiagnosisClass(issueCode) {
+            // 提取字母和數字
+            const match = issueCode.match(/(\d+\.\s*)([A-Z])(\d+)/);
+            if (!match) return '';
+
+            const letter = match[2];
+            const number = parseInt(match[3]);
+
+            // 根據規則映射診斷類型
+            switch (number) {
+                case 1: return 'grammar';     // 錯字與標點符號
+                case 2: return 'irrelevant';  // 偏題部分
+                case 3: return 'conciseness'; // 精簡建議
+                case 4: return 'improvement'; // 增長建議
+                case 5: return 'structure';   // 架構檢查
+                case 6: return 'completeness';// 完整度
+                default: return '';
+            }
+        }
+
+        document.querySelector('.next-button').addEventListener('click', function (event) {
+            // 阻止預設導航行為
+            event.preventDefault();
+
+            // 獲取文件內容
+            const fileContent = document.getElementById('fileContent').value.trim();
+
+            // 獲取學生反饋文字
+            const studentProblem = document.querySelector('.user-textarea').value.trim();
+
+            // 從 localStorage 獲取檔案資料
+            const selectedFileData = localStorage.getItem('selectedFileData');
+
+            if (selectedFileData) {
+                const originalData = JSON.parse(selectedFileData);
+
+                // 檢查必要欄位是否存在
+                if (!originalData.fileId || !originalData.userId) {
+                    alert('檔案資料不完整，請重新上傳');
+                    window.location.href = '../html/portfolioUpload.html';
+                    return;
+                }
+
+                // 停用按鈕並顯示載入中狀態
+                const nextButton = document.querySelector('.next-button');
+                nextButton.disabled = true;
+                nextButton.textContent = '處理中...';
+
+                // 準備更新文件內容的 POST 請求
+                const updateData = {
+                    userId: originalData.userId,
+                    fileId: originalData.fileId,
+                    fileContent: fileContent
+                };
+
+                // 更新文件內容
+                fetch('http://127.0.0.1:5000/file/updateFullText', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updateData)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('文件內容更新成功:', data);
+
+                        // 更新 localStorage 中的資料
+                        const completeData = {
+                            userId: originalData.userId,
+                            fileId: originalData.fileId,
+                            stuproblem: studentProblem,
+                            departmentandtype: originalData.departmentandtype || ''
+                        };
+
+                        localStorage.setItem('selectedFileData', JSON.stringify(completeData));
+
+                        // 導航到下一頁
+                        window.location.href = '../html/queryGuide.html';
+                    })
+                    .catch(error => {
+                        console.error('文件內容更新失敗:', error);
+
+                        // 恢復按鈕狀態
+                        nextButton.disabled = false;
+                        nextButton.textContent = '提問引導與釐清';
+                        // alert('文件內容更新失敗，請重試。');
+                    });
+            } else {
+                // 如果沒有檔案資料，跳回上一頁
+                alert('請先選擇要分析的文件');
+                window.location.href = '../html/portfolioUpload.html';
+            }
+        });
+    </script>
+</body>
+
+</html>

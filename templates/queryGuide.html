@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniTopia - 提問引導與釐清</title>
+    <link rel="stylesheet" href="../css/queryGuide.css">
+</head>
+
+<body>
+    <!-- 主要內容區 -->
+    <div class="main-content">
+        <div class="content-header">
+            <h1 class="page-title">提問引導與釐清</h1>
+        </div>
+
+        <div class="guidance-container">
+            <!-- 左側問題列表 -->
+            <div class="question-list">
+                <div class="list-title">十個引導式問題</div>
+
+                <div class="question-item active" onclick="switchQuestion(1)">
+                    <div class="question-number">問題 1</div>
+                    <div class="question-preview">你為何選擇「資訊管理」而非「純資訊工程」或「商學相關科系」？</div>
+                </div>
+
+                <div class="question-item" onclick="switchQuestion(2)">
+                    <div class="question-number">問題 2</div>
+                    <div class="question-preview">請詳細描述你在高中參與的資訊相關專題或比賽</div>
+                </div>
+
+                <div class="question-item" onclick="switchQuestion(3)">
+                    <div class="question-number">問題 3</div>
+                    <div class="question-preview">你在「資訊社社長」的角色中，面臨過什麼挑戰？如何解決？</div>
+                </div>
+
+                <div class="question-item" onclick="switchQuestion(4)">
+                    <div class="question-number">問題 4</div>
+                    <div class="question-preview">你提到對「企業管理或金融分析」有興趣，這些興趣源於什麼經歷？</div>
+                </div>
+
+                <div class="question-item" onclick="switchQuestion(5)">
+                    <div class="question-number">問題 5</div>
+                    <div class="question-preview">在校園導覽APP的開發中，你遇到最大的技術困難是什麼？如何克服？</div>
+                </div>
+
+                <div class="question-item" onclick="switchQuestion(6)">
+                    <div class="question-number">問題 6</div>
+                    <div class="question-preview">你希望在大學期間發展哪些專業技能？為什麼？</div>
+                </div>
+
+                <div class="question-item" onclick="switchQuestion(7)">
+                    <div class="question-number">問題 7</div>
+                    <div class="question-preview">你如何評估自己在程式設計方面的優勢與不足？</div>
+                </div>
+
+                <div class="question-item" onclick="switchQuestion(8)">
+                    <div class="question-number">問題 8</div>
+                    <div class="question-preview">你對人工智能和大數據有什麼看法？這與你的學習目標有何關聯？</div>
+                </div>
+
+                <div class="question-item" onclick="switchQuestion(9)">
+                    <div class="question-number">問題 9</div>
+                    <div class="question-preview">你期望在本校系學到什麼特定知識？為什麼這些對你很重要？</div>
+                </div>
+
+                <div class="question-item" onclick="switchQuestion(10)">
+                    <div class="question-number">問題 10</div>
+                    <div class="question-preview">你的長期職業規劃是什麼？大學學習如何支持這個目標？</div>
+                </div>
+            </div>
+
+            <!-- 右側答題區 -->
+            <div class="answer-area">
+                <div class="question-header">
+                    <div class="current-number">問題 1 / 10</div>
+                    <div class="progress-info">已完成 0/10 個問題</div>
+                </div>
+
+                <div class="hint-box">
+                    <div class="hint-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" fill="none" stroke="#5d8a9e" stroke-width="2" />
+                            <path d="M12 16v-4" stroke="#5d8a9e" stroke-width="2" stroke-linecap="round" />
+                            <circle cx="12" cy="8" r="1" fill="#5d8a9e" />
+                        </svg>
+                        回答提示
+                    </div>
+                    <div class="hint-content">
+                        請詳細說明你的選擇動機，可以從個人興趣、能力優勢、未來發展等角度思考。具體的例子和經歷會使你的回答更有說服力。
+                    </div>
+                </div>
+
+                <div class="question-content">
+                    正在生成引導式問題，稍後請點選左側問題區域來切換填寫。
+                </div>
+
+                <div class="answer-box">
+                    <div class="answer-label">你的回答：</div>
+                    <textarea class="answer-textarea" placeholder="在這裡輸入你的回答..."></textarea>
+                </div>
+
+                <div class="answer-controls">
+                    <button class="nav-button prev-button" onclick="prevQuestion()" disabled>
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                            <path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                        上一題
+                    </button>
+
+                    <button class="save-button" onclick="saveAnswer()">
+                        儲存答案
+                    </button>
+
+                    <button class="nav-button next-button" onclick="nextQuestion()">
+                        下一題
+                        <svg viewBox="0 0 24 24">
+                            <path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                            <path d="M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 下一階段按鈕 -->
+        <button class="next-stage-button">
+            回答好了！檢查邏輯與流暢度
+            <svg width="16" height="16" viewBox="0 0 24 24">
+                <path d="M5 12h14" stroke="white" stroke-width="2" stroke-linecap="round" />
+                <path d="M12 5l7 7-7 7" stroke="white" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 初始化問題列表為生成中狀態
+            const questionList = document.querySelector('.question-list');
+            questionList.innerHTML = `
+        <div class="list-title">十個引導式問題</div>
+        <div class="loading-message">
+            正在生成引導式問題，請稍後...
+        </div>
+    `;
+
+            // 嘗試從 localStorage 獲取數據
+            const selectedFileData = localStorage.getItem('selectedFileData');
+
+            if (selectedFileData) {
+                const fileData = JSON.parse(selectedFileData);
+
+                // 發送 POST 請求
+                fetch('http://127.0.0.1:5000/file/questions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(fileData)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('引導式問題回應:', data);
+
+                        // 解析核心議題
+                        const coreIssues = JSON.parse(data.coreIssues);
+                        console.log('核心議題:', coreIssues);
+
+                        // 解析動態問題
+                        dynamicQuestions = data.guidedQuestions;
+
+                        // 重建問題列表
+                        const questionListHTML = dynamicQuestions.map((question, index) => `
+                    <div class="question-item ${index === 0 ? 'active' : ''}" onclick="switchQuestion(${index + 1})">
+                        <div class="question-number">問題 ${index + 1}</div>
+                        <div class="question-preview">${question}</div>
+                    </div>
+                `).join('');
+
+                        questionList.innerHTML = `
+                    <div class="list-title">十個引導式問題</div>
+                    ${questionListHTML}
+                `;
+
+                        // 初始化第一個問題
+                        switchQuestion(1);
+                    })
+                    .catch(error => {
+                        console.error('錯誤:', error);
+
+                        // 顯示錯誤訊息
+                        questionList.innerHTML = `
+                    <div class="list-title">十個引導式問題</div>
+                    <div class="error-message">
+                        無法生成問題，請稍後再試。
+                    </div>
+                `;
+
+                        alert('無法獲取引導式問題，請稍後再試。');
+                    });
+            } else {
+                // 如果沒有檔案資料，跳回上一頁
+                alert('請先選擇要分析的文件');
+                window.location.href = '../html/initAnalysis.html';
+            }
+        });
+
+        // 當前問題索引
+        let currentQuestion = 1;
+        // 儲存所有問題的答案
+        const answers = Array(10).fill('');
+        // 已完成的問題
+        const completed = Array(10).fill(false);
+        // 儲存動態生成的問題
+        let dynamicQuestions = [];
+
+        // 切換問題
+        function switchQuestion(index) {
+            // 先自動保存當前問題的答案
+            saveAnswer();
+
+            // 原有的切換邏輯保持不變
+            // 更新當前問題索引
+            currentQuestion = index;
+
+            // 更新問題列表的活動狀態
+            const questionItems = document.querySelectorAll('.question-item');
+            questionItems.forEach((item, i) => {
+                if (i + 1 === index) {
+                    item.classList.add('active');
+                    item.classList.remove('completed');
+                } else {
+                    item.classList.remove('active');
+                    if (completed[i]) {
+                        item.classList.add('completed');
+                    } else {
+                        item.classList.remove('completed');
+                    }
+                }
+            });
+
+            // 更新問題標題
+            document.querySelector('.current-number').textContent = `問題 ${index} / 10`;
+
+            // 更新問題內容（使用動態問題）
+            document.querySelector('.question-content').textContent = dynamicQuestions[index - 1];
+
+            // 更新文本框的內容
+            document.querySelector('.answer-textarea').value = answers[index - 1];
+
+            // 更新導航按鈕狀態
+            document.querySelector('.prev-button').disabled = index === 1;
+            document.querySelector('.next-button').disabled = index === 10;
+
+            // 更新進度信息
+            const completedCount = completed.filter(Boolean).length;
+            document.querySelector('.progress-info').textContent = `已完成 ${completedCount}/10 個問題`;
+        }
+
+        // 保存答案
+        function saveAnswer() {
+            const answer = document.querySelector('.answer-textarea').value.trim();
+            answers[currentQuestion - 1] = answer;
+
+            if (answer !== '') {
+                completed[currentQuestion - 1] = true;
+                const questionItems = document.querySelectorAll('.question-item');
+                questionItems[currentQuestion - 1].classList.add('completed');
+            } else {
+                completed[currentQuestion - 1] = false;
+                const questionItems = document.querySelectorAll('.question-item');
+                questionItems[currentQuestion - 1].classList.remove('completed');
+            }
+
+            // 更新進度信息
+            const completedCount = completed.filter(Boolean).length;
+            document.querySelector('.progress-info').textContent = `已完成 ${completedCount}/10 個問題`;
+
+            // 移除手動彈窗，改為靜默保存
+            console.log('答案已自動儲存');
+        }
+
+        // 前往上一題
+        function prevQuestion() {
+            if (currentQuestion > 1) {
+                switchQuestion(currentQuestion - 1);
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < 10) {
+                switchQuestion(currentQuestion + 1);
+            }
+        }
+
+        // 監聽文本框變化，自動儲存（可選）
+        document.querySelector('.answer-textarea').addEventListener('input', function () {
+            // 節流函數，防止過於頻繁地觸發儲存
+            clearTimeout(this.saveTimeout);
+            this.saveTimeout = setTimeout(saveAnswer, 500);
+        });
+
+        function createQAResponse() {
+            const qaEntries = dynamicQuestions
+                .map((question, index) => {
+                    const answer = answers[index].trim();
+                    return answer ? `問題${index + 1}：${question}\n答案：${answer}` : null;
+                })
+                .filter(entry => entry !== null);
+            return qaEntries.join('\n\n');
+        }
+
+        document.querySelector('.next-stage-button').addEventListener('click', function () {
+            // 檢查是否所有問題都已回答
+            const isAllQuestionsAnswered = completed.every(Boolean);
+
+            if (!isAllQuestionsAnswered) {
+                alert('請完成所有問題的回答！');
+                return;
+            }
+
+            const selectedFileData = localStorage.getItem('selectedFileData');
+
+            if (selectedFileData) {
+                const fileData = JSON.parse(selectedFileData);
+                const { userId, fileId } = fileData;
+                const QA_response = createQAResponse();
+                const postData = {
+                    userId: userId,
+                    fileId: fileId,
+                    QA_response: QA_response
+                };
+
+                // 顯示載入動畫或禁用按鈕防止重複點擊
+                const nextStageButton = document.querySelector('.next-stage-button');
+                nextStageButton.disabled = true;
+                nextStageButton.textContent = '儲存中...';
+
+                fetch('http://127.0.0.1:5000/file/saveQA', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(postData)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('伺服器回應異常');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('QA 回應儲存成功:', data);
+
+                        // 彈窗確認
+                        alert('所有問答已成功儲存！');
+
+                        // 導航到 loading 頁面
+                        window.location.href = `../loading.html?userId=${userId}&fileId=${fileId}`;
+                    })
+                    .catch(error => {
+                        console.error('儲存 QA 回應時發生錯誤:', error);
+
+                        // 還原按鈕狀態
+                        nextStageButton.disabled = false;
+                        nextStageButton.textContent = '回答好了！檢查邏輯與流暢度';
+
+                        // 顯示錯誤訊息
+                        alert('儲存失敗，請檢查網路連線並重試。');
+                    });
+            } else {
+                // 如果沒有檔案資料，跳回上一頁
+                alert('請先完成問題回答');
+                window.location.href = '../html/queryGuide.html';
+            }
+        });
+    </script>
+</body>
+
+</html>

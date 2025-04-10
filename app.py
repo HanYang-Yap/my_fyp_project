@@ -122,6 +122,26 @@ def home_form(student_id=None):
     # Redirect to the blueprint route
     return redirect(f'/api/home/{student_id}')
 
+@app.route('/file/initAnalysis')
+def file_analysis():
+    return render_template('initAnalysis.html')
+
+@app.route('/file/queryGuidedQuestions')
+def file_query_guided_questions():
+    return render_template('queryGuided.html')
+
+@app.route('/file/loading')
+def file_loading():
+    return render_template('loading.html')
+
+@app.route('/file/detailedRevision')
+def file_detailed_revision():
+    return render_template('detailedRevision.html')
+
+@app.route('/file/history')
+def file_history():
+    return render_template('history.html')
+
 @app.route('/upload', methods=['POST'])
 def upload():
     try:
@@ -166,9 +186,6 @@ def faq_redirect():
 def forget_password():
     return render_template('Forget Password.html') 
 
-@app.route('/file_upload&management')
-def redirect_to_file_management():
-    return redirect('/api/file-management/test_student_id')
 
 @app.route('/file_upload&management/<student_id>')
 def redirect_to_student_file_management(student_id):

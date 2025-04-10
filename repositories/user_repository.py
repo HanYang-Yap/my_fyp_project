@@ -1,16 +1,16 @@
 from models.user_model import User
-from repositories.base_repository import BaseRepository
-
-class UserRepository(BaseRepository):
-    def __init__(self, db):
-        # Initialize the base repository with the db and the model class "User"
-        super().__init__(db, User, custom_id_field="user_id")  # Pass custom_id_field to use user_id as the document ID
 
 class UserRepository:
     def __init__(self, db):
         self.db = db
         self.collection = self.db.collection('users')  # Firestore Collection "users"
-
+    
+    # Add an "add" method that matches what's being called
+    def add(self, user):
+        """Create User 存入 Firestore"""
+        self.collection.document(user.user_id).set(user.to_dict())
+        
+    # Existing methods
     def add_user(self, user):
         """Create User 存入 Firestore"""
         self.collection.document(user.user_id).set(user.to_dict())
