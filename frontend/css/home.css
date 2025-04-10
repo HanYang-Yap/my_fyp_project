@@ -1,18 +1,4 @@
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Arial, sans-serif;
-}
-
-body {
-    background-color: #f0f2f5;
-    color: #3a4049;
-    display: flex;
-    min-height: 100vh;
-}
-
 .logo-container {
     padding: 10px 20px;
     margin: 10px 25px 30px;
@@ -79,7 +65,7 @@ body {
 /* 主要內容區域 */
 .main-content {
     flex: 1;
-    padding: 30px;
+    padding: 20px;
     background-color: #f0f2f5;
 }
 
