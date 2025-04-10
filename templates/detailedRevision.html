@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniTopia - 逐段深入討論與改寫</title>
+    <style>
+        :root {
+            --primary-color: #5A8CA8;
+            --primary-light: #E5F0F5;
+            --primary-dark: #476F85;
+            --primary-hover: #6FA3BF;
+            /* New hover color */
+            --primary-highlight: #5A8CA8;
+            --error-color: #E57373;
+            --error-light: #FFEBEE;
+            --success-color: #81C784;
+            --success-light: #E8F5E9;
+            --warning-light: #E5F0F5;
+            --primary-color: #5A8CA8;
+            --gray-100: #f7f7f7;
+            --gray-200: #e9e9e9;
+            --gray-300: #d9d9d9;
+            --gray-400: #acacac;
+            --gray-500: #8f8f8f;
+            --gray-600: #666666;
+            --gray-700: #4d4d4d;
+            --gray-800: #333333;
+            --gray-900: #1a1a1a;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+            /* Radar chart colors - updated to blue tones */
+            --radar-stroke: #5A8CA8;
+            --radar-fill: rgba(90, 140, 168, 0.15);
+            --radar-point: #5A8CA8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 🔧 額外樣式設定：loading 遮罩 + 高亮顏色 */
+        body.loading::before {
+            content: "讀取中...";
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 1rem 2rem;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            font-weight: bold;
+            z-index: 9999;
+        }
+
+        .highlight-error {
+            background-color: var(--error-light);
+            /* #FFEBEE */
+            border-bottom: 2px solid var(--error-color);
+            /* #E57373 */
+            cursor: pointer;
+        }
+
+        .highlight-success {
+            background-color: var(--success-light);
+            /* #E8F5E9 */
+            border-bottom: 2px solid var(--success-color);
+            /* #81C784 */
+            cursor: pointer;
+        }
+
+        .highlight-warning {
+            background-color: var(--warning-light);
+            /* #E5F0F5 */
+            border-bottom: 2px solid var(--primary-color);
+            /* #5A8CA8 */
+            cursor: pointer;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: #f5f7f9;
+            color: var(--gray-800);
+            line-height: 1.5;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 左側邊欄 */
+
+
+        .logo-container {
+            padding: 30px 25px;
+        }
+
+        .logo {
+            background-color: rgba(58, 63, 75, 0.5);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-text {
+            color: #e8eaed;
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .logo-icon {
+            color: #8aa2aa;
+            font-size: 20px;
+            margin-left: auto;
+        }
+
+        .menu-container {
+            padding: 0 25px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            color: #9da3b4;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #e8eaed;
+            font-weight: bold;
+        }
+
+        .menu-item svg {
+            min-width: 24px;
+            text-align: center;
+            margin-right: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background-color: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1rem 1.5rem;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        /* Document Stats with Radar Chart */
+        .document-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            /* Increased padding */
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .score-summary {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        /* Score display like in the image */
+        .score-display {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background-color: rgba(90, 140, 168, 0.15);
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 0.375rem 0.75rem;
+            border-radius: 2rem;
+            z-index: 2;
+            /* Ensure score is above other elements */
+        }
+
+        /* Radar Chart Container - Updated for pentagon with more spacing */
+        .radar-chart-container {
+            width: 300px;
+            /* Increased size */
+            height: 300px;
+            /* Increased size */
+            position: relative;
+            margin-right: 2rem;
+            /* Increased margin */
+        }
+
+        .score-details {
+            flex: 1;
+            margin-left: 1rem;
+            /* Added margin for separation */
+        }
+
+        .score-details h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--primary-color);
+        }
+
+        .score-details p {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin-bottom: 0.75rem;
+        }
+
+        .stats-items {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--gray-600);
+            text-transform: uppercase;
+        }
+
+        /* Radar chart tooltip */
+        .radar-tooltip {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 4px;
+            padding: 5px 10px;
+            border: 1px solid var(--primary-color);
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--primary-color);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Action buttons container */
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        /* Action buttons styling like in image 2 */
+        .action-button {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            border-radius: 2rem;
+            border: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-button.secondary {
+            background-color: transparent;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        /* Improved hover state for check button */
+        .action-button.secondary:hover {
+            background-color: rgba(90, 140, 168, 0.1);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .action-button.primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .action-button.primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .action-button svg {
+            margin-right: 0.5rem;
+        }
+
+        /* Editor Container */
+        .editor-container {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            height: calc(100% - 150px);
+            overflow: hidden;
+        }
+
+        /* Text Editor - with space for paragraph markers and contenteditable */
+        .text-editor {
+            flex: 1;
+            padding: 1.5rem 1.5rem 1.5rem 3rem;
+            /* Increased left padding for paragraph markers */
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .paragraph {
+            position: relative;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s;
+        }
+
+        .paragraph:hover {
+            background-color: var(--gray-100);
+        }
+
+        /* Updated paragraph marker styling */
+        .paragraph-marker {
+            position: absolute;
+            left: -2.5rem;
+            /* Moved further left */
+            top: 0.5rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: white;
+            background-color: var(--primary-color);
+            cursor: pointer;
+            /* Make it clear it's clickable */
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .paragraph-marker:hover {
+            transform: scale(1.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .paragraph.active .paragraph-marker {
+            background-color: var(--primary-dark);
+            /* Darker shade when active */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .paragraph.active {
+            background-color: var(--primary-light);
+            border-radius: 0.375rem;
+        }
+
+        .paragraph-text {
+            line-height: 1.7;
+            position: relative;
+        }
+
+        /* Make paragraph text editable */
+        .paragraph-text [contenteditable] {
+            outline: none;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            transition: background-color 0.2s;
+            min-height: 1.5rem;
+        }
+
+        .paragraph-text [contenteditable]:hover {
+            background-color: rgba(90, 140, 168, 0.05);
+        }
+
+        .paragraph-text [contenteditable]:focus {
+            background-color: rgba(90, 140, 168, 0.1);
+            box-shadow: 0 0 0 2px rgba(90, 140, 168, 0.2);
+        }
+
+        /* Edit mode indicator */
+        .edit-mode-indicator {
+            position: absolute;
+            top: -1rem;
+            right: 0;
+            font-size: 0.75rem;
+            color: var(--primary-color);
+            background-color: var(--primary-light);
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .paragraph-text [contenteditable]:focus+.edit-mode-indicator {
+            opacity: 1;
+        }
+
+        /* Suggestion Panel - WIDER */
+        .suggestion-panel {
+            width: 450px;
+            border-left: 1px solid var(--gray-200);
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        /* Updated paragraph selection instructions */
+        .panel-instructions {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 0.75rem;
+            background-color: var(--primary-light);
+            border-radius: 0.5rem;
+            color: var(--primary-color);
+            font-size: 0.875rem;
+        }
+
+        .panel-instructions svg {
+            margin-right: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        /* Issue cards */
+        .paragraph-suggestions {
+            display: none;
+            /* Hide all suggestion groups by default */
+        }
+
+        .paragraph-suggestions.active {
+            display: block;
+            /* Show only active paragraph suggestions */
+        }
+
+        .issue-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--primary-color);
+            box-shadow: var(--shadow-sm);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .issue-card.error {
+            border-left-color: var(--error-color);
+        }
+
+        .issue-card.success {
+            border-left-color: var(--success-color);
+        }
+
+        .issue-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .issue-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        /* 類別對應的右側標籤背景色 */
+        .issue-badge.error {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+
+        .issue-badge.success {
+            background-color: #d4f2dd;
+            color: #1a8531;
+        }
+
+        .issue-badge.warning {
+            background-color: #c3dff3;
+            color: #15628e;
+        }
+
+        .issue-paragraph {
+            font-size: 0.75rem;
+            color: var(--gray-600);
+        }
+
+        .issue-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-dark);
+        }
+
+        .issue-description {
+            font-size: 0.875rem;
+            color: var(--gray-700);
+            margin-bottom: 1rem;
+        }
+
+        .original-text {
+            padding: 0.5rem;
+            background-color: var(--gray-100);
+            border-radius: 0.25rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .suggestion-text {
+            padding: 0.5rem;
+            background-color: var(--primary-light);
+            border-radius: 0.25rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            color: var(--gray-800);
+        }
+
+        .suggestion-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .suggestion-actions button {
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.25rem;
+            border: 1px solid var(--gray-300);
+            background-color: white;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .suggestion-actions button:hover {
+            background-color: var(--gray-100);
+        }
+
+        .suggestion-actions button.accept {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .suggestion-actions button.accept:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Added more detailed suggestions with better spacing */
+        .suggestion-description {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .suggestion-examples {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background-color: var(--primary-light);
+            border-radius: 0.375rem;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .suggestion-example-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--gray-600);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Added review button at the bottom of each paragraph suggestions */
+        .review-paragraph-btn {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .review-paragraph-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .review-paragraph-btn svg {
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 16px;
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            border-radius: 4px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .notification svg {
+            margin-right: 8px;
+        }
+
+        .notification.success {
+            background-color: var(--success-light);
+            color: var(--success-color);
+        }
+
+        .notification.error {
+            background-color: var(--error-light);
+            color: var(--error-color);
+        }
+
+
+        /* Empty state when no paragraph is selected */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 2rem;
+            text-align: center;
+            color: var(--gray-500);
+        }
+
+        .empty-state svg {
+            height: 4rem;
+            width: 4rem;
+            margin-bottom: 1rem;
+            color: var(--gray-400);
+        }
+
+        .empty-state h3 {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--gray-700);
+        }
+
+        .empty-state p {
+            max-width: 20rem;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Notification Container -->
+    <div id="notification" class="notification">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <span id="notification-text">修改已接受</span>
+    </div>
+
+    <!-- Tooltip for radar chart -->
+    <div id="radar-tooltip" class="radar-tooltip"></div>
+
+
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-container">
+                <h2>逐段深入討論與改寫</h2>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Document Stats with Radar Chart -->
+            <div class="document-stats">
+                <!-- ✅ 動態雷達圖區塊（由 JS 計算點位置） -->
+                <div class="radar-chart-container">
+                    <svg viewBox="0 0 300 300" width="280" height="280">
+                        <!-- 背景網格 - 調整多邊形座標點居中 -->
+                        <polygon points="150,50 235,120 210,220 90,220 65,120" fill="none" stroke="#e0e0e0"
+                            stroke-width="1" />
+                        <polygon points="150,85 210,135 190,205 110,205 90,135" fill="none" stroke="#e0e0e0"
+                            stroke-width="1" />
+                        <polygon points="150,120 185,150 170,190 130,190 115,150" fill="none" stroke="#e0e0e0"
+                            stroke-width="1" />
+
+                        <!-- 分數點位（由 JS 更新 cx/cy） -->
+                        <circle r="6" fill="var(--radar-point)" class="radar-point" data-label="錯字&標點符號" />
+                        <circle r="6" fill="var(--radar-point)" class="radar-point" data-label="偏題" />
+                        <circle r="6" fill="var(--radar-point)" class="radar-point" data-label="精簡" />
+                        <circle r="6" fill="var(--radar-point)" class="radar-point" data-label="增長" />
+                        <circle r="6" fill="var(--radar-point)" class="radar-point" data-label="架構" />
+
+                        <!-- 標籤位置調整 -->
+                        <text x="150" y="35" text-anchor="middle" font-size="12"
+                            fill="var(--radar-color)">錯字&標點符號</text>
+                        <text x="245" y="125" text-anchor="start" font-size="12" fill="var(--radar-color)">偏題</text>
+                        <text x="210" y="240" text-anchor="middle" font-size="12" fill="var(--radar-color)">精簡</text>
+                        <text x="90" y="240" text-anchor="middle" font-size="12" fill="var(--radar-color)">增長</text>
+                        <text x="55" y="125" text-anchor="end" font-size="12" fill="var(--radar-color)">架構</text>
+                    </svg>
+                </div>
+                <!-- Score in top right -->
+                <div class="score-display">4.8 分</div>
+
+                <div class="score-details">
+                    <h3>整體文本評分</h3>
+                    <p>根據多項指標綜合評估的結果，您的文章質量良好，但還有優化空間。</p>
+
+                    <div class="stats-items">
+                        <div class="stat-item">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">段落</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">12</div>
+                            <div class="stat-label">修改建議</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">5</div>
+                            <div class="stat-label">語法問題</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">7</div>
+                            <div class="stat-label">表達優化</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="action-button secondary" id="check-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38" />
+                    </svg>
+                    重新檢查並生成建議
+                </button>
+                <button class="action-button primary" id="finalize-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    修改完成、最終整合與精修
+                </button>
+                </a>
+            </div>
+
+            <!-- Editor Container -->
+            <div class="editor-container">
+                <!-- Text Editor with highlighted problematic text -->
+                <div class="text-editor">
+                    <!-- 段落會透過 JS 動態載入 -->
+                </div>
+
+                <!-- Suggestion Panel with instructions but no tabs -->
+                <div class="suggestion-panel">
+                    <div class="panel-instructions">
+                        點擊左側文本中的段落編號或有標記的文字，即可查看相應建議
+                    </div>
+                    <div class="empty-state" id="empty-state">
+                        <h3>請選擇段落</h3>
+                        <p>點擊段落或文字以查看修改建議</p>
+                    </div>
+                    <!-- 建議區塊由 JS 動態產生 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <script>
+        // ✅ 功能 Script（完整功能含：段落載入、單句標記、接受忽略、雷達統計、即時統計）
+
+        function getQueryParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return {
+                userId: urlParams.get('userId'),
+                fileId: urlParams.get('fileId')
+            };
+        }
+
+        // async function loadSuggestions() {
+        //     const { userId, fileId } = getQueryParams();
+        //     document.body.classList.add('loading'); // 🟡 顯示載入提示
+        //     const res = await fetch("http://localhost:5000/file/allSuggestion", {
+        //         method: "POST",
+        //         headers: { "Content-Type": "application/json" },
+        //         body: JSON.stringify({ userId, fileId })
+        //     });
+        //     const result = await res.json();
+        //     console.log("建議資料：", result);
+        //     if (!Array.isArray(result.suggestions)) {
+        //         console.error("無法取得建議資料", result);
+        //         document.body.classList.remove('loading');
+        //         return;
+        //     }
+        //     renderSuggestions(result.suggestions);
+        //     updateWordCount();
+        //     updateEvaluationStats();
+        //     document.body.classList.remove('loading'); // ✅ 隱藏載入提示
+        // }
+        async function loadSuggestions() {
+            const suggestionCache = sessionStorage.getItem("suggestions");
+            const evaluationCache = sessionStorage.getItem("evaluation");
+
+            if (!suggestionCache || !evaluationCache) {
+                alert("❌ 找不到分析結果，請先從 loading.html 進入系統");
+                return;
+            }
+
+            try {
+                const parsedSuggestions = JSON.parse(suggestionCache);
+                const parsedEvaluation = JSON.parse(evaluationCache);
+
+                renderSuggestions(parsedSuggestions.suggestions);
+                updateEvaluationStatsWith(parsedEvaluation);
+                updateWordCount();
+
+                // 清除暫存資料
+                sessionStorage.removeItem("suggestions");
+                sessionStorage.removeItem("evaluation");
+
+            } catch (err) {
+                console.error("❌ 資料解析失敗：", err);
+                alert("❌ 資料異常，請重新載入");
+            }
+        }
+
+        function renderSuggestions(suggestionsArray) {
+            console.log("要渲染的 suggestionsArray：", suggestionsArray);
+            const errorTypes = ["修正文句", "修正錯字"];
+            const improveTypes = ["精簡語句", "聚焦主題", "補充內容", "補足要點"];
+
+            const editorContainer = document.querySelector('.text-editor');
+            const panelContainer = document.querySelector('.suggestion-panel');
+            editorContainer.innerHTML = '';
+            panelContainer.querySelectorAll('.paragraph-suggestions').forEach(el => el.remove());
+
+            suggestionsArray.forEach((obj, index) => {
+                const key = Object.keys(obj)[0];
+                const paragraphNum = key.match(/\d+/)[0];
+                const data = obj[key];
+
+                // 🔹 標記句子處理
+                const rawText = data["段落完整修改前內容"];
+                const originalHTML = highlightWithSuggestion(rawText, data["細項"], paragraphNum);
+
+                const paraDiv = document.createElement('div');
+                paraDiv.className = 'paragraph';
+                paraDiv.dataset.paragraph = paragraphNum;
+                paraDiv.innerHTML = `
+                    <div class="paragraph-marker">${paragraphNum}</div>
+                    <div class="paragraph-text">
+                        <div contenteditable="true">${originalHTML}</div>
+                        <div class="edit-mode-indicator">編輯中...</div>
+                    </div>
+                `;
+
+                paraDiv.querySelector('[contenteditable]').addEventListener('input', () => {
+                    updateWordCount();
+                });
+
+                paraDiv.addEventListener('click', () => switchSuggestionTo(paragraphNum));
+                paraDiv.querySelectorAll('mark[data-target]').forEach(mark => {
+                    mark.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const target = mark.getAttribute('data-target');
+                        const card = document.querySelector(`.issue-card[data-problem-id="${target}"]`);
+                        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    });
+                });
+
+                editorContainer.appendChild(paraDiv);
+
+                const suggDiv = document.createElement('div');
+                suggDiv.className = 'paragraph-suggestions';
+                suggDiv.dataset.paragraph = paragraphNum;
+
+                data["細項"].forEach((sugg, sidx) => {
+                    const category = sugg["類別"] || "其他建議";
+                    const className = getHighlightClass(category);
+
+                    suggDiv.innerHTML += `
+                        <div class="issue-card ${className}" data-problem-id="${paragraphNum}-${sidx + 1}">
+                            <div class="issue-header">
+                                <span class="issue-badge ${className}">${category}</span>
+                                <span class="issue-paragraph">段落 ${paragraphNum}</span>
+                            </div>
+                            <h4 class="issue-title">${sugg["修改建議"]}</h4>
+                            <div class="original-text">${sugg["修改前句子"]}</div>
+                            <div class="suggestion-text">${sugg["修改後句子"]}</div>
+                            <div class="suggestion-description">${sugg["修改建議"]}</div>
+                            <div class="suggestion-actions">
+                                <button class="ignore">忽略</button>
+                                <button class="accept">接受修改</button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                suggDiv.innerHTML += `<button class="review-paragraph-btn" data-review-paragraph="${paragraphNum}">🔄 重新審核第${paragraphNum}段</button>`;
+                panelContainer.appendChild(suggDiv);
+            });
+
+            bindActionButtons();
+        }
+
+        function bindActionButtons() {
+            const { userId, fileId } = getQueryParams();
+
+            // ✅ 接受修改
+            document.querySelectorAll('.accept').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const card = e.target.closest('.issue-card');
+                    const pid = card.dataset.problemId;
+                    const [paragraphNum, idx] = pid.split('-');
+                    const suggestion = card.querySelector('.suggestion-text').innerText;
+
+                    const editable = document.querySelector(`.paragraph[data-paragraph="${paragraphNum}"] [contenteditable]`);
+                    const mark = editable.querySelector(`mark[data-target="${pid}"]`);
+                    if (mark) {
+                        mark.outerHTML = suggestion;
+                    }
+                    const res = await fetch("http://localhost:5000/file/acceptSuggestion", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            userId, fileId,
+                            paragraphIndex: parseInt(paragraphNum),
+                            originalSentence: card.querySelector('.original-text').innerText.trim()
+                        })
+                    });
+                    console.log("要送出原句：", card.querySelector('.original-text').innerText.trim());
+                    if (!res.ok) {
+                        const error = await res.json();
+                        showNotification("❌ 接受失敗：" + (error.error || "未知錯誤"), true);
+                        return;
+                    }
+                    showNotification("修改已接受！", false);
+                    card.remove();
+                    updateEvaluationStats();
+                    updateWordCount();
+                });
+            });
+
+            // ✅ 忽略建議
+            document.querySelectorAll('.ignore').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const card = e.target.closest('.issue-card');
+                    const pid = card.dataset.problemId;
+                    const mark = document.querySelector(`mark[data-target="${pid}"]`);
+                    if (mark) mark.replaceWith(mark.textContent); // 將 mark 拆掉保留文字
+
+                    card.remove();
+                    updateEvaluationStats();
+                });
+            });
+
+
+            // ✅ 重新審核段落
+            document.querySelectorAll('[data-review-paragraph]').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const paragraphNum = e.target.dataset.reviewParagraph;
+                    const editable = document.querySelector(`.paragraph[data-paragraph="${paragraphNum}"] [contenteditable]`);
+                    const newText = editable.innerText.trim();
+
+                    const { userId, fileId } = getQueryParams();
+                    document.body.classList.add('loading');
+
+                    await fetch("http://localhost:5000/file/editParagraph", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            userId, fileId,
+                            index: parseInt(paragraphNum),
+                            newText
+                        })
+                    });
+
+                    const suggestionRes = await fetch("http://localhost:5000/file/singleSuggestion", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ userId, fileId, index: parseInt(paragraphNum - 1) })
+                    });
+
+                    const result = await suggestionRes.json();
+                    renderSingleSuggestion(parseInt(paragraphNum), result.suggestion);
+                    switchSuggestionTo(paragraphNum);
+                    document.body.classList.remove('loading');
+                });
+            });
+        }
+
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById("notification");
+            const text = document.getElementById("notification-text");
+            text.innerText = message;
+
+            notification.classList.add("show");
+            if (isError) {
+                notification.classList.add("error");
+                notification.classList.remove("success");
+            } else {
+                notification.classList.add("success");
+                notification.classList.remove("error");
+            }
+
+            setTimeout(() => {
+                notification.classList.remove("show");
+            }, 3000);
+        }
+
+
+
+
+
+
+
+        function updateWordCount() {
+            const paragraphTexts = document.querySelectorAll('.paragraph-text [contenteditable]');
+            let totalCount = 0;
+            paragraphTexts.forEach(p => {
+                const text = p.textContent.trim();
+                totalCount += text.length;
+            });
+            let counter = document.getElementById('word-counter');
+            if (!counter) {
+                counter = document.createElement('div');
+                counter.id = 'word-counter';
+                counter.style.position = 'relative';
+                counter.style.marginBottom = '1rem';
+                counter.style.fontWeight = 'bold';
+                counter.style.fontSize = '16px';
+                counter.style.color = '#333';
+                const wrapper = document.querySelector('.text-editor');
+                wrapper?.prepend(counter);
+            }
+            const alertIcon = totalCount > 800 ? ' ⚠️' : '';
+            counter.innerText = `總字數：${totalCount} 字${alertIcon}`;
+        }
+
+        function updateEvaluationStats() {
+            const { userId, fileId } = getQueryParams();
+            fetch("http://localhost:5000/file/evaluation", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userId, fileId })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    const scores = data.data.scores;
+                    const overall = scores[6];
+                    document.querySelector('.score-display').innerText = `${overall.toFixed(1)} 分`;
+                    document.querySelector('.score-details p').innerText = data.data.suggestions[6];
+                    drawRadarPolygon(scores.slice(0, 5));
+
+                    const allIssues = document.querySelectorAll('.issue-card');
+                    const syntaxIssues = document.querySelectorAll('.issue-card.error');
+                    const expressionIssues = document.querySelectorAll('.issue-card.success, .issue-card.warning');
+
+                    document.querySelector('.stat-item:nth-child(1) .stat-number').innerText = document.querySelectorAll('.paragraph').length;
+                    document.querySelector('.stat-item:nth-child(2) .stat-number').innerText = allIssues.length;
+                    document.querySelector('.stat-item:nth-child(3) .stat-number').innerText = syntaxIssues.length;
+                    document.querySelector('.stat-item:nth-child(4) .stat-number').innerText = expressionIssues.length;
+                });
+        }
+        function updateEvaluationStatsWith(data) {
+            const scores = data.data.scores;
+            const suggestions = data.data.suggestions;
+
+            if (!scores || scores.length < 7) {
+                console.warn("⚠️ 評分資料不完整：", scores);
+                return;
+            }
+            const overall = scores[6]; // 第6項是總分
+            document.querySelector('.score-display').innerText = `${overall.toFixed(1)} 分`;
+            document.querySelector('.score-details p').innerText = suggestions[6]; // 總體建議文字
+
+            // ✅ 畫雷達圖（前 5 維度）
+            drawRadarPolygon(scores.slice(0, 5));
+
+            // ✅ 更新統計數字（依據 DOM 結構）
+            const allIssues = document.querySelectorAll('.issue-card');
+            const syntaxIssues = document.querySelectorAll('.issue-card.error');
+            const expressionIssues = document.querySelectorAll('.issue-card.success, .issue-card.warning');
+
+            // 段落數
+            document.querySelector('.stat-item:nth-child(1) .stat-number').innerText = document.querySelectorAll('.paragraph').length;
+
+            // 所有建議數
+            document.querySelector('.stat-item:nth-child(2) .stat-number').innerText = allIssues.length;
+
+            // 語法錯誤建議數（error 類）
+            document.querySelector('.stat-item:nth-child(3) .stat-number').innerText = syntaxIssues.length;
+
+            // 表達優化建議數（success + warning 類）
+            document.querySelector('.stat-item:nth-child(4) .stat-number').innerText = expressionIssues.length;
+        }
+
+
+
+
+
+
+        function drawRadarPolygon(scores) {
+            const svg = document.querySelector(".radar-chart-container svg");
+            const centerX = 150, centerY = 152; // SVG 中心點
+            // 縮小半徑確保在五邊形範圍內
+            const radius = 81;
+            let points = "";
+
+            scores.forEach((score, i) => {
+                // 從頂點開始，順時針方向繪製
+                const angle = (Math.PI * 2 / 5) * i - Math.PI / 2;
+
+                // 確保比例適當
+                const scaled = (score / 5) * radius;
+                const x = centerX + scaled * Math.cos(angle);
+                const y = centerY + scaled * Math.sin(angle);
+                points += `${x},${y} `;
+            });
+
+            let polygon = svg.querySelector("polygon[data-dynamic]");
+            if (!polygon) {
+                polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+                polygon.setAttribute("data-dynamic", "true");
+                svg.appendChild(polygon);
+            }
+            polygon.setAttribute("points", points.trim());
+            polygon.setAttribute("fill", "var(--radar-fill)");
+            polygon.setAttribute("stroke", "var(--radar-stroke)");
+            polygon.setAttribute("stroke-width", "2");
+        }
+
+
+        function switchSuggestionTo(paragraphNum) {
+            document.querySelectorAll('.paragraph').forEach(p => {
+                p.classList.toggle('active', p.dataset.paragraph === paragraphNum);
+            });
+            document.querySelectorAll('.paragraph-suggestions').forEach(p => {
+                p.classList.toggle('active', p.dataset.paragraph === paragraphNum);
+            });
+            document.getElementById('empty-state')?.remove();
+        }
+
+        function renderSingleSuggestion(index, data) {
+            const paragraphNum = index.toString();
+            const errorTypes = ["修正文句", "修正錯字"];
+            const improveTypes = ["精簡語句", "聚焦主題", "補充內容", "補足要點"];
+
+            const rawText = data["段落完整修改前內容"];
+            const originalHTML = highlightWithSuggestion(rawText, data["細項"], paragraphNum);
+
+            // 🔄 更新左側段落
+            const editableDiv = document.querySelector(`.paragraph[data-paragraph="${paragraphNum}"] [contenteditable]`);
+            if (editableDiv) editableDiv.innerHTML = originalHTML;
+
+            // 🔄 更新右側建議
+            const panelContainer = document.querySelector('.suggestion-panel');
+            const oldPanel = panelContainer.querySelector(`.paragraph-suggestions[data-paragraph="${paragraphNum}"]`);
+            if (oldPanel) oldPanel.remove();
+
+            const suggDiv = document.createElement('div');
+            suggDiv.className = 'paragraph-suggestions active';
+            suggDiv.dataset.paragraph = paragraphNum;
+
+            data["細項"].forEach((sugg, sidx) => {
+                const category = sugg["類別"] || "其他建議";
+                let className = '';
+                if (errorTypes.includes(category)) className = 'error';
+                else if (improveTypes.includes(category) || category === '其他建議') className = 'success';
+                else className = 'warning';
+                suggDiv.innerHTML += `
+                    <div class="issue-card ${className}" data-problem-id="${paragraphNum}-${sidx + 1}">
+                        <div class="issue-header">
+                            <span class="issue-badge ${className}">${category}</span>
+                            <span class="issue-paragraph">段落 ${paragraphNum}</span>
+                        </div>
+                        <h4 class="issue-title">${sugg["修改建議"]}</h4>
+                        <div class="original-text">${sugg["修改前句子"]}</div>
+                        <div class="suggestion-text">${sugg["修改後句子"]}</div>
+                        <div class="suggestion-description">${sugg["修改建議"]}</div>
+                        <div class="suggestion-actions">
+                            <button class="ignore">忽略</button>
+                            <button class="accept">接受修改</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            suggDiv.innerHTML += `<button class="review-paragraph-btn" data-review-paragraph="${paragraphNum}">🔄 重新審核第${paragraphNum}段</button>`;
+            panelContainer.appendChild(suggDiv);
+
+            bindActionButtons(); // ✅ 重新綁定按鈕功能
+            updateEvaluationStats(); // ✅ 更新上面統計
+            updateWordCount();       // ✅ 更新字數
+        }
+
+        function getHighlightClass(type) {
+            const errorTypes = ["修正文句", "修正錯字"];
+            const improveTypes = ["精簡語句", "聚焦主題", "補充內容", "補足要點"];
+
+            if (errorTypes.includes(type)) return "error";
+            if (improveTypes.includes(type)) return "success";
+            return "warning";
+        }
+
+        function highlightWithSuggestion(paragraphText, suggestions, paragraphNum) {
+            let resultHTML = paragraphText;
+
+            // 為了避免多次 replace 導致位置錯亂，先 sort 長句在前
+            suggestions.sort((a, b) => b["修改前句子"].length - a["修改前句子"].length);
+
+            suggestions.forEach((sugg, idx) => {
+                const before = sugg["修改前句子"].trim();
+                const type = sugg["類別"] || "其他建議";
+                // 使用統一分類函式
+                const className = getHighlightClass(type);
+                const cls = `highlight highlight-${className}`;
+                // 使用正規表達式來避免特殊字元誤傷
+                const escaped = before.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');  // 避免特殊字元誤傷
+
+                const reg = new RegExp(escaped);
+                resultHTML = resultHTML.replace(reg, `<mark class="highlight ${cls}" data-target="${paragraphNum}-${idx + 1}">${before}</mark>`);
+            });
+
+            return resultHTML;
+        }
+
+
+        window.addEventListener('DOMContentLoaded', loadSuggestions);
+        // ✅ 點擊「重新檢查並生成建議」時，重新分析所有段落
+        document.getElementById('check-button').addEventListener('click', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('userId');
+            const fileId = urlParams.get('fileId');
+            window.location.href = `loading.html?userId=${userId}&fileId=${fileId}`;
+        });
+        document.getElementById('finalize-button').addEventListener('click', () => {
+            const { userId, fileId } = getQueryParams(); // Get query parameters
+            window.location.href = `lastreview.html?userId=${userId}&fileId=${fileId}`;
+        });
+    </script>
+</body>
+</html>
