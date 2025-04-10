@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
   
   // 檢查當前路徑是否應該隱藏 navbar
   const hideNavbarOnPages = [
-    // '/initAnalysis',
+    '/lastReview',
     '/anotherPage',
     '/thirdPage'
   ];
@@ -104,7 +104,7 @@ export default function RootLayout({ children }) {
                   </div>
                 </Link>
 
-                <Link href="/schedule">
+                <Link href="/calender">
                   <div className={`flex items-center justify-start min-w-[150px] w-[16vw] p-3 px-4 mt-2 hover:bg-gray-700 hover:text-white rounded`}>
                     <i className="fas fa-calendar w-5"></i>
                     <span className="ml-3">日程表</span>

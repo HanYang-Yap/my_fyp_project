@@ -60,7 +60,7 @@
     flex-grow: 1;
     padding: 30px;
     position: relative;
-    min-height: 100vh;
+    height: 100vh;
 }
 
 .content-header {
