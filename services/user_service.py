@@ -34,3 +34,6 @@ class UserService(BaseService):
         
         self.repository.delete(user_id)  # Calls the delete method from BaseRepository
         return True
+
+    def get_by_email(self, email):
+        return self.repository.get_by_email(email)

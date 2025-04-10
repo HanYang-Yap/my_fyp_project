@@ -945,7 +945,7 @@
         // Then modify the loadStudentData function
         async function loadStudentData() {
             try {
-                const docRef = db.collection('users').doc(STUDENT_ID);
+                const docRef = db.collection('user').doc(STUDENT_ID);
                 const doc = await docRef.get();
                 
                 if (doc.exists) {
@@ -1001,7 +1001,7 @@
                     </div>
                 `;
                 
-                const docRef = db.collection('users').doc(STUDENT_ID);
+                const docRef = db.collection('user').doc(STUDENT_ID);
                 const doc = await docRef.get();
                 
                 if (doc.exists) {
@@ -1199,7 +1199,7 @@
             
             try {
                 // Update Firestore
-                await db.collection('users').doc(STUDENT_ID).update({
+                await db.collection('user').doc(STUDENT_ID).update({
                     preferred_departments: preferredDepartments
                 });
                 
@@ -1321,7 +1321,7 @@
             
             try {
                 // 更新 Firestore 文檔
-                await db.collection('users').doc(STUDENT_ID).set(updatedData, { merge: true });
+                await db.collection('user').doc(STUDENT_ID).set(updatedData, { merge: true });
                 
                 // 更新本地資料
                 studentData = { ...studentData, ...updatedData };
@@ -1458,7 +1458,7 @@
             
             try {
                 // 更新 Firestore
-                await db.collection('users').doc(STUDENT_ID).update({
+                await db.collection('user').doc(STUDENT_ID).update({
                     preferred_departments: updatedPreferences
                 });
                 
@@ -1498,7 +1498,7 @@
             
             try {
                 // 更新 Firestore
-                await db.collection('users').doc(STUDENT_ID).update({
+                await db.collection('user').doc(STUDENT_ID).update({
                     preferred_departments: updatedPreferences
                 });
                 

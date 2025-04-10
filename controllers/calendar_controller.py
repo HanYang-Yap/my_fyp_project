@@ -228,7 +228,7 @@ def create_calendar_controller(db):
             preferred_departments = []
             
             # Try to get real student data
-            user_ref = db.collection('users').document(student_id).get()
+            user_ref = db.collection('user').document(student_id).get()
             if user_ref.exists:
                 user_data = user_ref.to_dict()
                 student_info = {

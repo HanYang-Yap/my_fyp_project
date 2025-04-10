@@ -7,6 +7,8 @@ from werkzeug.utils import secure_filename
 from werkzeug.exceptions import RequestEntityTooLarge
 from google.cloud import storage
 from google.oauth2 import service_account
+from extensions import mail
+from flask_cors import CORS
 
 from config import DevelopmentConfig, ProductionConfig, Config
 from controllers.test_controller import test_bp
@@ -26,11 +28,21 @@ from controllers.faq_controller import create_faq_controller
 from controllers.calendar_controller import create_calendar_controller
 from controllers.profile_controller import create_profile_controller
 from controllers.home_controller import create_home_controller
+from repositories.otp_repository import OTPRepository
 
 app = Flask(__name__, template_folder="templates")
 app.config['UPLOAD_DIRECTORY'] = 'uploads/'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
 app.config['ALLOWED_EXTENSIONS'] = ['.jpg', '.jpeg', '.png', '.pdf']
+# Flask-Mail 設定（以 Gmail 為例）
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = '111306025@g.nccu.edu.tw'
+app.config['MAIL_PASSWORD'] = 'waxi ngys lcpv onhx'
+app.config['MAIL_DEFAULT_SENDER'] = '111306025@g.nccu.edu.tw'
+mail.init_app(app)
+CORS(app)
 
 # 根據環境載入不同設定，預設開發模式
 env = os.getenv("FLASK_ENV", "development")
@@ -57,6 +69,7 @@ storage_client = storage.Client(credentials=gcs_credentials)
 bucket = storage_client.bucket(Config.FIREBASE_STORAGE_BUCKET)
 
 db = firestore.client()
+OTPRepository.init_app(db)
 
 # 註冊 API Blueprint
 app.register_blueprint(create_user_controller(db), url_prefix='/api')
@@ -92,6 +105,14 @@ def index():
         "appId": Config.FIREBASE_APP_ID
     }
     return render_template("index.html", firebase_config=firebase_config)
+
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
+@app.route('/signup')
+def signup():
+    return render_template('signup.html')
 
 @app.route('/home')
 @app.route('/home/<student_id>')
@@ -140,6 +161,10 @@ def faq_form(student_id):
 @app.route('/faq')
 def faq_redirect():
     return redirect('/api/faq/test_student_id')
+
+@app.route('/forgetpassword')
+def forget_password():
+    return render_template('Forget Password.html') 
 
 @app.route('/file_upload&management')
 def redirect_to_file_management():
