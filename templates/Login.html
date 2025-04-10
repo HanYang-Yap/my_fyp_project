@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniTopia AI 升學輔助系統 - 登入</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #3a5a6a 0%, #5d8a9e 100%);
+            color: #ffffff;
+            display: flex;
+        }
+        
+        /* 背景圖案 */
+        .background-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="25" cy="25" r="3" fill="%23ffffff" fill-opacity="0.1"/><circle cx="75" cy="25" r="3" fill="%23ffffff" fill-opacity="0.1"/><circle cx="25" cy="75" r="3" fill="%23ffffff" fill-opacity="0.1"/><circle cx="75" cy="75" r="3" fill="%23ffffff" fill-opacity="0.1"/></svg>');
+            background-repeat: repeat;
+            opacity: 0.5;
+            z-index: 0;
+        }
+        
+        /* 左側品牌區域 */
+        .brand-side {
+            flex: 6;
+            padding: 5% 5% 5% 10%;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .logo-container {
+            margin-bottom: 5vh;
+        }
+        
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            margin-left: 15px;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .tagline {
+            font-size: 2.2rem;
+            font-weight: 300;
+            margin-bottom: 3vh;
+            max-width: 600px;
+            line-height: 1.3;
+        }
+        
+        .description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 5vh;
+            max-width: 600px;
+            opacity: 0.9;
+        }
+        
+        .features {
+            list-style: none;
+            max-width: 600px;
+        }
+        
+        .feature-item {
+            margin-bottom: 2vh;
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-icon {
+            margin-right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            background-color: rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .feature-text {
+            font-size: 1.1rem;
+        }
+        
+        /* 右側登入表單 */
+        .login-side {
+            flex: 4;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            box-shadow: -15px 0 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .login-container {
+            width: 80%;
+            max-width: 400px;
+        }
+        
+        .login-header {
+            margin-bottom: 40px;
+        }
+        
+        .login-title {
+            font-size: 2rem;
+            color: #3a4049;
+            margin-bottom: 10px;
+        }
+        
+        .login-subtitle {
+            font-size: 1rem;
+            color: #718096;
+        }
+        
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #4a5568;
+        }
+        
+        .form-input {
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #4a5568;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #5d8a9e;
+            box-shadow: 0 0 0 3px rgba(93, 138, 158, 0.1);
+        }
+        
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+        
+        .checkbox-input {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            accent-color: #5d8a9e;
+        }
+        
+        .forgot-password {
+            font-size: 0.9rem;
+            color: #5d8a9e;
+            text-decoration: none;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        .login-button {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #5d8a9e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .login-button:hover {
+            background-color: #4a7b8f;
+        }
+        
+        .social-login {
+            margin-top: 40px;
+            text-align: center;
+        }
+        
+        .social-title {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-bottom: 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .social-title::before, .social-title::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: #e2e8f0;
+        }
+        
+        .social-title span {
+            padding: 0 15px;
+        }
+        
+        .social-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .social-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.2rem;
+        }
+        
+        .social-button:hover {
+            background-color: #5d8a9e;
+            border-color: #5d8a9e;
+            color: white;
+        }
+        
+        .register-link {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #718096;
+        }
+        
+        .register-link a {
+            color: #5d8a9e;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+        
+        /* 裝飾圖形 */
+        .decoration {
+            position: absolute;
+            z-index: 0;
+        }
+        
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            top: 10%;
+            left: 20%;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .circle-2 {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+            bottom: 15%;
+            left: 40%;
+            animation: float 6s ease-in-out infinite reverse;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+        
+        /* 響應式設計 */
+        @media (max-width: 1200px) {
+            .brand-side {
+                padding: 5%;
+            }
+            
+            .feature-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 900px) {
+            body {
+                flex-direction: column;
+                overflow-y: auto;
+            }
+            
+            .brand-side {
+                flex: none;
+                padding: 50px 10% 70px;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .logo-container {
+                justify-content: center;
+                display: flex;
+            }
+            
+            .description, .features {
+                max-width: 100%;
+            }
+            
+            .feature-item {
+                justify-content: center;
+            }
+            
+            .login-side {
+                flex: none;
+                padding: 70px 0;
+                width: 100%;
+            }
+            
+            .circle-1, .circle-2 {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .login-container {
+                width: 90%;
+            }
+            
+            .feature-icon {
+                width: 36px;
+                height: 36px;
+                margin-right: 15px;
+            }
+            
+            .login-title {
+                font-size: 1.8rem;
+            }
+            
+            .social-button {
+                width: 45px;
+                height: 45px;
+            }
+        }
+    </style>
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- 背景圖案 -->
+    <div class="background-pattern"></div>
+    
+    <!-- 裝飾圖形 -->
+    <div class="decoration circle-1"></div>
+    <div class="decoration circle-2"></div>
+    
+    <!-- 左側品牌區域 -->
+    <div class="brand-side">
+        <div class="logo-container">
+            <div class="logo">
+                UniTopia
+                <div class="logo-icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+            </div>
+        </div>
+        
+        <h1 class="tagline">用 AI 技術實現您的大學夢想</h1>
+        
+        <p class="description">
+            UniTopia 是專為高中生設計的 AI 升學輔助系統，運用先進的人工智能技術，提升申請文件品質，增加頂尖大學錄取機會。
+        </p>
+        
+        <ul class="features">
+            <li class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <span class="feature-text">智能學習歷程整理與備審資料優化</span>
+            </li>
+            
+            <li class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <span class="feature-text">AI 輔助面試模擬與即時反饋</span>
+            </li>
+            
+            <li class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <span class="feature-text">歷年考古題庫與解析</span>
+            </li>
+            
+            <li class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <span class="feature-text">個人化申請日程規劃與提醒</span>
+            </li>
+        </ul>
+    </div>
+    
+    <!-- 右側登入表單 -->
+    <div class="login-side">
+        <div class="login-container">
+            <div class="login-header">
+                <h2 class="login-title">歡迎回來</h2>
+                <p class="login-subtitle">請登入您的帳號以繼續使用</p>
+            </div>
+            
+            <form class="login-form">
+                <div class="form-group">
+                    <label for="email" class="form-label">電子郵件</label>
+                    <input type="email" id="email" class="form-input" placeholder="請輸入您的電子郵件" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">密碼</label>
+                    <input type="password" id="password" class="form-input" placeholder="請輸入您的密碼" required>
+                </div>
+                
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" class="checkbox-input">
+                        <span>記住我</span>
+                    </label>
+                    
+                    <a href="#" class="forgot-password">忘記密碼？</a>
+                </div>
+                
+                <button type="submit" class="login-button">登入</button>
+            </form>
+            
+            <div class="social-login">
+                <div class="social-title"><span>或使用以下方式登入</span></div>
+                
+                <div class="social-buttons">
+                    <div class="social-button">
+                        <i class="fab fa-google"></i>
+                    </div>
+                    
+                    <div class="social-button">
+                        <i class="fab fa-facebook-f"></i>
+                    </div>
+                    
+                    <div class="social-button">
+                        <i class="fab fa-apple"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="register-link">
+                還沒有帳號？<a href="/signup" id="signup">立即註冊</a>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+</body>
+</html>

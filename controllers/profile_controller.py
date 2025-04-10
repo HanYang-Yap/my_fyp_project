@@ -12,7 +12,8 @@ def create_profile_controller(db):
     @profile_bp.route('/<student_id>', methods=['GET'])
     def get_profile(student_id):
         try:
-            user_doc = db.collection('users').document(student_id).get()
+            # Changed from 'users' to 'user' collection
+            user_doc = db.collection('user').document(student_id).get()
             if user_doc.exists:
                 return jsonify({"status": "success", "data": user_doc.to_dict()})
             else:
@@ -24,11 +25,11 @@ def create_profile_controller(db):
     def update_profile(student_id):
         try:
             data = request.json
-            db.collection('users').document(student_id).set(data, merge=True)
+            # Changed from 'users' to 'user' collection
+            db.collection('user').document(student_id).set(data, merge=True)
             return jsonify({"status": "success"})
         except Exception as e:
             return jsonify({"status": "error", "message": str(e)})
-            
-    # Add more endpoints for preferences
     
+    # Add more endpoints for preferences
     return profile_bp
