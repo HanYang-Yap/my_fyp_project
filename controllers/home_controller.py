@@ -156,7 +156,7 @@ def create_home_controller(db):
             }
             
             # Try to get real student data
-            user_ref = db.collection('users').document(student_id).get()
+            user_ref = db.collection('user').document(student_id).get()
             if user_ref.exists:
                 user_data = user_ref.to_dict()
                 student_info = {
@@ -189,13 +189,11 @@ def create_home_controller(db):
         try:
             preferred_departments = []
             
-            # Try to get preferred departments from user data
-            user_ref = db.collection('users').document(student_id).get()
+            user_ref = db.collection('user').document(student_id).get()
             if user_ref.exists:
                 user_data = user_ref.to_dict()
                 preferred_departments = user_data.get('preferred_departments', [])
             
-            # If no preferred departments found in user data, try user_wishes collection
             if not preferred_departments:
                 wishes_query = db.collection('user_wishes').where('user_id', '==', student_id).limit(1).stream()
                 for doc in wishes_query:
@@ -203,7 +201,6 @@ def create_home_controller(db):
                     preferred_departments = wishes_data.get('wishes', [])
                     break
                 
-                # If still not found, try direct document lookup
                 if not preferred_departments:
                     direct_wishes_ref = db.collection('user_wishes').document(student_id).get()
                     if direct_wishes_ref.exists:

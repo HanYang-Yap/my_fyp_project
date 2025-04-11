@@ -19,6 +19,9 @@ document.addEventListener('DOMContentLoaded', function() {
             loginButton.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> 登入中...';
             loginButton.disabled = true;
             
+            // 獲取完整電子郵件作為 student_id
+            const studentId = emailInput.value.trim();
+            
             // 模擬API登入請求
             setTimeout(function() {
                 // 這裡應該是實際的API請求
@@ -33,9 +36,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         localStorage.removeItem('rememberedEmail');
                     }
                     
-                    // 模擬跳轉至首頁
+                    // 跳轉至學生的主頁，使用完整電子郵件
                     setTimeout(function() {
-                        window.location.href = '/home'; // 跳轉至儀表板頁面
+                        window.location.href = `/home/${studentId}`;
                     }, 1500);
                 } else {
                     showNotification('登入失敗，請檢查您的憑證', 'error');
@@ -45,6 +48,29 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 1500);
         }
     });
+    
+    // 處理社交登入
+    function handleSocialLogin(platform) {
+        showNotification(`正在使用${platform}登入...`, 'info');
+        
+        // 這裡應實作實際的社交登入功能
+        // ...
+        
+        // 模擬登入過程
+        setTimeout(function() {
+            showNotification(`${platform}登入成功！正在跳轉...`, 'success');
+            
+            // 使用預設電子郵件
+            const defaultStudentId = 'social_user@example.com';
+            
+            // 模擬跳轉至學生首頁
+            setTimeout(function() {
+                window.location.href = `/home/${defaultStudentId}`;
+            }, 1500);
+        }, 1500);
+    }
+    
+    // 其餘的功能保持不變...
     
     // 表單驗證函數
     function validateForm() {
@@ -163,24 +189,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
-    // 處理社交登入
-    function handleSocialLogin(platform) {
-        showNotification(`正在使用${platform}登入...`, 'info');
-        
-        // 這裡應實作實際的社交登入功能
-        // ...
-        
-        // 模擬登入過程
-        setTimeout(function() {
-            showNotification(`${platform}登入成功！正在跳轉...`, 'success');
-            
-            // 模擬跳轉至首頁
-            setTimeout(function() {
-                window.location.href = '/home';
-            }, 1500);
-        }, 1500);
-    }
     
     // 忘記密碼連結
     forgotPasswordLink.addEventListener('click', function(e) {
@@ -473,17 +481,3 @@ document.addEventListener('DOMContentLoaded', function() {
     // 頁面載入時調整一次
     adjustResponsiveLayout();
 });
-
-document.getElementById("forgetpassword").addEventListener("click",
-    function(event) {
-     event.preventDefault();
-     window.location.href = "/forgetpassword";
-     });
-
-
-
-document.getElementById("signup").addEventListener("click",
-    function(event) {
-    event.preventDefault();
-     window.location.href = "/signup";
-     });

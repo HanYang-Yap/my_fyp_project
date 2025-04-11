@@ -3,7 +3,7 @@ from models.user_model import User
 class UserRepository:
     def __init__(self, db):
         self.db = db
-        self.collection = self.db.collection('users')  # Firestore Collection "users"
+        self.collection = self.db.collection('user')  # Firestore Collection "users"
     
     # Add an "add" method that matches what's being called
     def add(self, user):
