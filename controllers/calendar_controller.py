@@ -40,113 +40,56 @@ def create_calendar_controller(db):
     def parse_roc_date(date_str):
         """
         Parse ROC era date (e.g., 114.5.16) to ISO format (2025-05-16)
-        Also handles concatenated dates like 114.5.18114.5.19
-        
-        Args:
-            date_str: ROC date string
-                
-        Returns:
-            str or list: ISO formatted date string or list of date strings for ranges
+        Handles:
+            - single date
+            - range with '至' (e.g. 114.5.19至114.5.20)
+            - concatenated format like 114.5.19114.5.20
         """
         if pd.isna(date_str) or not date_str:
             return None
-        
-        # Handle explicit date ranges with "至" separator
+
+        # Handle standard range
         if '至' in date_str:
-            try:
-                dates = []
-                start_date, end_date = date_str.split('至')
-                start = parse_roc_date(start_date)
-                end = parse_roc_date(end_date)
-                
-                if start and end:
-                    # Convert to datetime objects for comparison
-                    start_dt = datetime.strptime(start, '%Y-%m-%d')
-                    end_dt = datetime.strptime(end, '%Y-%m-%d')
-                    
-                    # Return a list of all dates in the range
-                    current = start_dt
-                    while current <= end_dt:
-                        dates.append(current.strftime('%Y-%m-%d'))
-                        current = current + timedelta(days=1)
-                    
-                    return dates
-            except Exception as e:
-                logger.error(f"Error parsing date range '{date_str}': {str(e)}")
-                return None
-        
-        # Special case for concatenated dates: handle format 114.5.18114.5.19
-        try:
-            # This is a direct pattern for the specific case we need to handle
-            # It extracts both dates from formats like 114.5.18114.5.19
-            direct_pattern = r'(\d+)\.(\d+)\.(\d+)(\d+)\.(\d+)\.(\d+)'
-            direct_match = re.search(direct_pattern, date_str)
-            
-            if direct_match:
-                # Extract the components
-                year1, month1, day1, year2, month2, day2 = map(int, direct_match.groups())
-                
-                # Build the dates in ISO format
-                greg_year1 = year1 + 1911
-                greg_year2 = year2 + 1911
-                
-                # Validate date components
-                if all([
-                    1 <= month1 <= 12, 1 <= day1 <= 31,
-                    1 <= month2 <= 12, 1 <= day2 <= 31
-                ]):
-                    # Build ISO format dates
-                    start_date = f"{greg_year1}-{month1:02d}-{day1:02d}"
-                    end_date = f"{greg_year2}-{month2:02d}-{day2:02d}"
-                    
-                    logger.info(f"Parsed concatenated dates: {start_date} to {end_date}")
-                    
-                    # Create a date range
-                    try:
-                        start_dt = datetime.strptime(start_date, '%Y-%m-%d')
-                        end_dt = datetime.strptime(end_date, '%Y-%m-%d')
-                        
-                        dates = []
-                        current = start_dt
-                        while current <= end_dt:
-                            dates.append(current.strftime('%Y-%m-%d'))
-                            current = current + timedelta(days=1)
-                        
-                        return dates
-                    except Exception as e:
-                        logger.error(f"Error creating date range from {start_date} to {end_date}: {str(e)}")
-                        # Fall back to returning just the first date
-                        return start_date
-            
-            # For non-consecutive dates or more complex patterns, try a different approach
-            if "114.5.18114.5.19" in date_str:
-                # Handle the specific case based on our test string
-                logger.info("Special case match for 114.5.18114.5.19")
-                start_date = "2025-05-18"
-                end_date = "2025-05-19"
-                
-                dates = [start_date, end_date]
-                logger.info(f"Special case dates: {dates}")
-                return dates
-                
-        except Exception as e:
-            logger.error(f"Error handling concatenated dates '{date_str}': {str(e)}")
-        
-        # If all else fails, try to parse as a single date
+            return parse_roc_range(date_str)
+
+        # Try to detect concatenated dates: two date patterns glued together
+        pattern = r'(\d{3,4}\.\d{1,2}\.\d{1,2})(\d{3,4}\.\d{1,2}\.\d{1,2})'
+        match = re.match(pattern, date_str)
+        if match:
+            range_str = f"{match.group(1)}至{match.group(2)}"
+            return parse_roc_range(range_str)
+
+        # Default: single date
         return convert_roc_to_iso(date_str)
-    
-    def convert_roc_to_iso(date_str):
+
+    def parse_roc_range(range_str):
         """
-        Convert a single ROC date to ISO format
-        
-        Args:
-            date_str: A string containing a ROC date (e.g., 114.5.16)
-            
-        Returns:
-            str: ISO formatted date (e.g., 2025-05-16) or None if invalid
+        Convert ROC date range (e.g. 114.5.19至114.5.20) to list of ISO date strings
         """
         try:
-            # Extract numbers from the string using regex
+            start_str, end_str = range_str.split('至')
+            start_date = convert_roc_to_iso(start_str.strip())
+            end_date = convert_roc_to_iso(end_str.strip())
+
+            if not start_date or not end_date:
+                return None
+
+            start_dt = datetime.strptime(start_date, '%Y-%m-%d')
+            end_dt = datetime.strptime(end_date, '%Y-%m-%d')
+            dates = []
+
+            while start_dt <= end_dt:
+                dates.append(start_dt.strftime('%Y-%m-%d'))
+                start_dt += timedelta(days=1)
+
+            return dates
+        except Exception as e:
+            logger.error(f"Error parsing range '{range_str}': {e}")
+            return None
+
+    def convert_roc_to_iso(date_str):
+
+        try:
             match = re.search(r'(\d+)\.(\d+)\.(\d+)', date_str)
             if not match:
                 return None
@@ -207,21 +150,12 @@ def create_calendar_controller(db):
     
     @calendar_bp.route('/<student_id>', methods=['GET'])
     def get_student_calendar(student_id):
-        """
-        Get personalized calendar events for a specific student
-        
-        Args:
-            student_id: Firebase user ID of the student
-            
-        Returns:
-            JSON response with calendar events
-        """
         try:
             logger.info(f"Calendar API called for student ID: {student_id}")
             
-            if departments_df is None:
-                # Fallback to hardcoded data if CSV couldn't be loaded
-                return get_hardcoded_calendar(student_id)
+            # if departments_df is None:
+            #     # Fallback to hardcoded data if CSV couldn't be loaded
+            #     return get_hardcoded_calendar(student_id)
             
             # Get student preferences from Firebase
             student_info = {'id': student_id, 'name': '測試學生', 'school': '測試高中'}
@@ -255,9 +189,9 @@ def create_calendar_controller(db):
                         preferred_departments = wishes_data.get('wishes', [])
             
             # If still no data, use fallback test data
-            if not preferred_departments:
-                logger.warning(f"No preferences found for student {student_id}, using test data")
-                return get_hardcoded_calendar(student_id)
+            # if not preferred_departments:
+            #     logger.warning(f"No preferences found for student {student_id}, using test data")
+            #     return get_hardcoded_calendar(student_id)
             
             # Now that we have the preferred departments, find their interview dates in the CSV
             events = []
@@ -338,26 +272,26 @@ def create_calendar_controller(db):
                 if not department_has_events:
                     logger.warning(f"No events created for {school} - {department} despite finding matches")
             
-            # If no events were found in the CSV, use hardcoded data as a fallback
-            if not events:
-                logger.warning(f"No events found for student {student_id} in CSV data, using hardcoded data")
-                return get_hardcoded_calendar(student_id)
+            # # If no events were found in the CSV, use hardcoded data as a fallback
+            # if not events:
+            #     logger.warning(f"No events found for student {student_id} in CSV data, using hardcoded data")
+            #     return get_hardcoded_calendar(student_id)
             
-            # If some departments were found but not all, supplement with hardcoded data for missing ones
-            if found_departments < len(preferred_departments):
-                logger.info(f"Only {found_departments} out of {len(preferred_departments)} departments found in CSV; supplementing with hardcoded data")
-                hardcoded_data = get_hardcoded_calendar(student_id, return_dict=True)
+            # # If some departments were found but not all, supplement with hardcoded data for missing ones
+            # if found_departments < len(preferred_departments):
+            #     logger.info(f"Only {found_departments} out of {len(preferred_departments)} departments found in CSV; supplementing with hardcoded data")
+            #     hardcoded_data = get_hardcoded_calendar(student_id, return_dict=True)
                 
                 # For each hardcoded event, check if we already have an event for that department
-                hardcoded_events = hardcoded_data.get('events', [])
+                #hardcoded_events = hardcoded_data.get('events', [])
                 existing_depts = set((e['school'], e['department']) for e in events)
                 
-                for event in hardcoded_events:
-                    dept_tuple = (event['school'], event['department'])
-                    if dept_tuple not in existing_depts:
-                        # Add this event from hardcoded data
-                        events.append(event)
-                        logger.info(f"Added hardcoded event for {dept_tuple[0]} - {dept_tuple[1]}")
+                # for event in hardcoded_events:
+                #     dept_tuple = (event['school'], event['department'])
+                #     if dept_tuple not in existing_depts:
+                #         # Add this event from hardcoded data
+                #         events.append(event)
+                #         logger.info(f"Added hardcoded event for {dept_tuple[0]} - {dept_tuple[1]}")
             
             # Sort events by date
             events.sort(key=lambda x: x['date'])
@@ -372,88 +306,88 @@ def create_calendar_controller(db):
         except Exception as e:
             logger.error(f"Error getting calendar: {str(e)}")
             # Fallback to hardcoded data in case of error
-            return get_hardcoded_calendar(student_id)
+            return None
     
-    def get_hardcoded_calendar(student_id, return_dict=False):
-        """
-        Return hardcoded calendar data for testing
+    # def get_hardcoded_calendar(student_id, return_dict=False):
+    #     """
+    #     Return hardcoded calendar data for testing
         
-        Args:
-            student_id: Student ID to use in the response
-            return_dict: If True, return a dict instead of a JSON response
+    #     Args:
+    #         student_id: Student ID to use in the response
+    #         return_dict: If True, return a dict instead of a JSON response
             
-        Returns:
-            Response: JSON response or dict with hardcoded calendar data
-        """
-        test_data = {
-            'status': 'success',
-            'student': {
-                'id': student_id,
-                'name': '測試學生',
-                'school': '測試高中',
-            },
-            'events': [
-                {
-                    'date': '2025-03-15',
-                    'title': '國立臺灣大學資訊工程學系面試',
-                    'type': 'interview',
-                    'school': '國立臺灣大學',
-                    'department': '資訊工程學系',
-                    'preference_rank': 1,
-                    'location': '德田館103室'
-                },
-                {
-                    'date': '2025-03-18',
-                    'title': '國立政治大學資訊管理學系面試',
-                    'type': 'interview',
-                    'school': '國立政治大學',
-                    'department': '資訊管理學系',
-                    'preference_rank': 2,
-                    'location': '資管系館201室'
-                },
-                {
-                    'date': '2025-03-22',
-                    'title': '國立清華大學資訊工程學系面試',
-                    'type': 'interview',
-                    'school': '國立清華大學',
-                    'department': '資訊工程學系(APCS組)',
-                    'preference_rank': 3,
-                    'location': '資訊館305室'
-                },
-                {
-                    'date': '2025-04-05',
-                    'title': '國立陽明交通大學資訊工程學系面試',
-                    'type': 'interview',
-                    'school': '國立陽明交通大學',
-                    'department': '資訊工程學系(APCS組)',
-                    'preference_rank': 4,
-                    'location': '工程三館122室'
-                },
-                {
-                    'date': '2025-04-12',
-                    'title': '國立成功大學資訊工程學系面試',
-                    'type': 'interview',
-                    'school': '國立成功大學',
-                    'department': '資訊工程學系',
-                    'preference_rank': 5,
-                    'location': '資訊系館會議室'
-                },
-                {
-                    'date': '2025-04-20',
-                    'title': '國立中央大學資訊工程學系面試',
-                    'type': 'interview',
-                    'school': '國立中央大學',
-                    'department': '資訊工程學系',
-                    'preference_rank': 6,
-                    'location': '工程五館204室'
-                }
-            ]
-        }
+    #     Returns:
+    #         Response: JSON response or dict with hardcoded calendar data
+    #     """
+    #     test_data = {
+    #         'status': 'success',
+    #         'student': {
+    #             'id': student_id,
+    #             'name': '測試學生',
+    #             'school': '測試高中',
+    #         },
+    #         'events': [
+    #             {
+    #                 'date': '2025-03-15',
+    #                 'title': '國立臺灣大學資訊工程學系面試',
+    #                 'type': 'interview',
+    #                 'school': '國立臺灣大學',
+    #                 'department': '資訊工程學系',
+    #                 'preference_rank': 1,
+    #                 'location': '德田館103室'
+    #             },
+    #             {
+    #                 'date': '2025-03-18',
+    #                 'title': '國立政治大學資訊管理學系面試',
+    #                 'type': 'interview',
+    #                 'school': '國立政治大學',
+    #                 'department': '資訊管理學系',
+    #                 'preference_rank': 2,
+    #                 'location': '資管系館201室'
+    #             },
+    #             {
+    #                 'date': '2025-03-22',
+    #                 'title': '國立清華大學資訊工程學系面試',
+    #                 'type': 'interview',
+    #                 'school': '國立清華大學',
+    #                 'department': '資訊工程學系(APCS組)',
+    #                 'preference_rank': 3,
+    #                 'location': '資訊館305室'
+    #             },
+    #             {
+    #                 'date': '2025-04-05',
+    #                 'title': '國立陽明交通大學資訊工程學系面試',
+    #                 'type': 'interview',
+    #                 'school': '國立陽明交通大學',
+    #                 'department': '資訊工程學系(APCS組)',
+    #                 'preference_rank': 4,
+    #                 'location': '工程三館122室'
+    #             },
+    #             {
+    #                 'date': '2025-04-12',
+    #                 'title': '國立成功大學資訊工程學系面試',
+    #                 'type': 'interview',
+    #                 'school': '國立成功大學',
+    #                 'department': '資訊工程學系',
+    #                 'preference_rank': 5,
+    #                 'location': '資訊系館會議室'
+    #             },
+    #             {
+    #                 'date': '2025-04-20',
+    #                 'title': '國立中央大學資訊工程學系面試',
+    #                 'type': 'interview',
+    #                 'school': '國立中央大學',
+    #                 'department': '資訊工程學系',
+    #                 'preference_rank': 6,
+    #                 'location': '工程五館204室'
+    #             }
+    #         ]
+    #     }
         
-        if return_dict:
-            return test_data
-        else:
-            return jsonify(test_data)
+    #     if return_dict:
+    #         return test_data
+    #     else:
+    #         return jsonify(test_data)
     
     def create_event(date, school, department, rank, original_date, item_desc, details):
         """
