@@ -1,27 +1,23 @@
-from flask import Blueprint, jsonify, request, render_template
-from firebase_admin import firestore
-from google.cloud import storage
-from config import Config
+from flask import Blueprint, jsonify
 
 def create_portfolio_management_controller(db):
     """
-    Creates a Blueprint for portfolio/file management operations
+    Creates a portfolio management controller blueprint for handling portfolio management routes.
     
     Args:
-        db: Firestore database instance
+        db: Firestore client instance
     
     Returns:
-        Blueprint: Flask Blueprint with portfolio management routes
+        Blueprint: Flask blueprint with portfolio management routes
     """
     portfolio_bp = Blueprint('portfolio_management', __name__)
     
-    @portfolio_bp.route('/file-management')
-    @portfolio_bp.route('/file-management/<student_id>')
-    def file_management_view(student_id=None):
-        """Render the file management page for a specific student"""
-        if student_id is None:
-            student_id = "test_student_id"
-            
+    @portfolio_bp.route('/file-management/<student_id>', methods=['GET'])
+    def student_file_management(student_id):
+        """Render the file management page with student preferences"""
+        from flask import render_template
+        from config import Config
+        
         firebase_config = {
             "apiKey": Config.FIREBASE_API_KEY,
             "authDomain": Config.FIREBASE_AUTH_DOMAIN,
@@ -37,88 +33,246 @@ def create_portfolio_management_controller(db):
             student_id=student_id
         )
     
+    @portfolio_bp.route('/get-student-preferences/<student_id>', methods=['GET'])
+    def get_student_preferences(student_id):
+        """Get the student's preferred departments from Firestore
+        
+        Args:
+            student_id: Firebase user ID of the student
+            
+        Returns:
+            JSON response with preferred departments
+        """
+        try:
+            # First try to get from user data
+            preferred_departments = []
+            
+            # Check direct user data first
+            user_ref = db.collection('user').document(student_id).get()
+            if user_ref.exists:
+                user_data = user_ref.to_dict()
+                preferred_departments = user_data.get('preferred_departments', [])
+            
+            # If not found in user data, try user_wishes collection
+            if not preferred_departments:
+                wishes_query = db.collection('user_wishes').where('user_id', '==', student_id).limit(1).stream()
+                for doc in wishes_query:
+                    wishes_data = doc.to_dict()
+                    preferred_departments = wishes_data.get('wishes', [])
+                    break
+                
+                # If still not found, try direct document lookup
+                if not preferred_departments:
+                    direct_wishes_ref = db.collection('user_wishes').document(student_id).get()
+                    if direct_wishes_ref.exists:
+                        wishes_data = direct_wishes_ref.to_dict()
+                        preferred_departments = wishes_data.get('wishes', [])
+            
+            # If still no data found, use test data
+            if not preferred_departments:
+                # Provide test data for development purposes
+                preferred_departments = [
+                    {
+                        'rank': 1,
+                        'school': '國立臺灣大學',
+                        'department': '資訊工程學系'
+                    },
+                    {
+                        'rank': 2,
+                        'school': '國立清華大學',
+                        'department': '資訊工程學系'
+                    },
+                    {
+                        'rank': 3,
+                        'school': '國立陽明交通大學',
+                        'department': '資訊工程學系'
+                    },
+                    {
+                        'rank': 4,
+                        'school': '國立政治大學',
+                        'department': '資訊管理學系'
+                    },
+                    {
+                        'rank': 5,
+                        'school': '國立成功大學',
+                        'department': '資訊工程學系'
+                    }
+                ]
+            
+            # Format the response
+            return jsonify({
+                'status': 'success',
+                'student_id': student_id,
+                'preferences': preferred_departments
+            })
+            
+        except Exception as e:
+            return jsonify({
+                'status': 'error',
+                'message': str(e)
+            }), 500
+    
     @portfolio_bp.route('/get-student-files/<student_id>', methods=['GET'])
     def get_student_files(student_id):
-        """Get all files for a specific student"""
-        collection_ref = db.collection('uploaded_files')
-        docs = collection_ref.where('student_id', '==', student_id).stream()
-        files = []
-
-        for doc in docs:
-            data = doc.to_dict()
-            files.append({
-                "filename": data.get("filename"),
-                "path": data.get("path"),
-                "url": data.get("url"),
-                "size": data.get("size"),
-                "school": data.get("school"),
-                "type": data.get("type"),
-                "uploaded_at": data.get("uploaded_at"),
-                "student_id": data.get("student_id")
-            })
-
-        return jsonify(files)
+        """Get all files uploaded by the student
+        
+        Args:
+            student_id: Firebase user ID of the student
+            
+        Returns:
+            JSON response with file metadata
+        """
+        try:
+            # Get all files from the student's collection
+            files_ref = db.collection('portfolio_files').where('student_id', '==', student_id).stream()
+            
+            files = []
+            for doc in files_ref:
+                file_data = doc.to_dict()
+                files.append({
+                    'id': doc.id,
+                    'filename': file_data.get('filename', ''),
+                    'path': file_data.get('path', ''),
+                    'url': file_data.get('url', ''),
+                    'size': file_data.get('size', 0),
+                    'uploaded_at': file_data.get('uploaded_at', ''),
+                    'school': file_data.get('school', ''),
+                    'type': file_data.get('type', '')
+                })
+            
+            # Sort files by upload date (newest first)
+            files.sort(key=lambda x: x.get('uploaded_at', ''), reverse=True)
+            
+            return jsonify(files)
+            
+        except Exception as e:
+            return jsonify([])
     
     @portfolio_bp.route('/save-file-metadata', methods=['POST'])
     def save_file_metadata():
-        """Save metadata for an uploaded file"""
-        data = request.get_json()
+        """Save file metadata to Firestore after uploading to Firebase Storage
         
-        # Ensure student_id is provided
-        if 'student_id' not in data:
-            return jsonify({"error": "student_id is required"}), 400
+        Expected JSON body:
+        {
+            "filename": "...",
+            "path": "...",
+            "url": "...",
+            "size": 12345,
+            "school": "...",
+            "type": "...",
+            "uploaded_at": "...",
+            "student_id": "..."
+        }
+        
+        Returns:
+            JSON response with status
+        """
+        from flask import request
+        
+        try:
+            data = request.json
             
-        collection_ref = db.collection('uploaded_files')
-        # Include student_id in the document ID for uniqueness
-        doc_id = f"{data['student_id']}_{data['school']}_{data['type']}_{data['filename']}"
-        collection_ref.document(doc_id).set(data)
-        
-        return jsonify({"status": "success", "message": "File metadata saved successfully"}), 200
+            # Validate required fields
+            required_fields = ['filename', 'path', 'student_id']
+            for field in required_fields:
+                if field not in data:
+                    return jsonify({
+                        'status': 'error',
+                        'message': f'Missing required field: {field}'
+                    }), 400
+            
+            # Add the file metadata to Firestore
+            db.collection('portfolio_files').add(data)
+            
+            return jsonify({
+                'status': 'success',
+                'message': 'File metadata saved successfully'
+            })
+            
+        except Exception as e:
+            return jsonify({
+                'status': 'error',
+                'message': str(e)
+            }), 500
     
     @portfolio_bp.route('/delete-file-metadata', methods=['POST'])
     def delete_file_metadata():
-        """Delete metadata for a specific file"""
+        """Delete file metadata from Firestore
+        
+        Expected JSON body:
+        {
+            "path": "...",
+            "filename": "...",
+            "student_id": "..."
+        }
+        
+        Returns:
+            JSON response with status
+        """
+        from flask import request
+        
         try:
-            data = request.get_json()
-            path = data.get('path')
-            filename = data.get('filename')
-            student_id = data.get('student_id')
+            data = request.json
             
-            if not path or not filename or not student_id:
-                return jsonify({"error": "Missing required parameters"}), 400
+            # Validate required fields
+            required_fields = ['path', 'student_id']
+            for field in required_fields:
+                if field not in data:
+                    return jsonify({
+                        'status': 'error',
+                        'message': f'Missing required field: {field}'
+                    }), 400
             
-            # Delete document metadata from Firestore
-            collection_ref = db.collection('uploaded_files')
+            # Find and delete the file metadata
+            query = db.collection('portfolio_files').where('path', '==', data['path']).where('student_id', '==', data['student_id'])
+            docs = query.stream()
             
-            # Query by path and student_id to ensure we're only deleting the right student's files
-            docs = collection_ref.where('path', '==', path).where('student_id', '==', student_id).stream()
-            
-            doc_found = False
-            
+            deleted = False
             for doc in docs:
                 doc.reference.delete()
-                doc_found = True
+                deleted = True
             
-            if not doc_found:
-                return jsonify({"error": "Document record not found"}), 404
+            if not deleted:
+                return jsonify({
+                    'status': 'warning',
+                    'message': 'No matching file found to delete'
+                }), 404
             
-            return jsonify({"message": "File metadata successfully deleted"}), 200
-        
+            return jsonify({
+                'status': 'success',
+                'message': 'File metadata deleted successfully'
+            })
+            
         except Exception as e:
-            return jsonify({"error": f"Failed to delete file metadata: {str(e)}"}), 500
-    
+            return jsonify({
+                'status': 'error',
+                'message': str(e)
+            }), 500
+            
     @portfolio_bp.route('/analyze-file/<student_id>/<path:file_path>', methods=['POST'])
     def analyze_file(student_id, file_path):
-        """Analyze a specific file using LangChain (placeholder)"""
-        # This would be implemented when LangChain integration is ready
-        # You can decode the file_path parameter with: file_path = request.view_args['file_path']
+        """Placeholder for file analysis endpoint (will be implemented with LangChain)
         
-        # For now, just return a success response
-        return jsonify({
-            "status": "success", 
-            "message": "Analysis queued", 
-            "student_id": student_id,
-            "file_path": file_path
-        })
+        Args:
+            student_id: Firebase user ID of the student
+            file_path: Path to the file in Firebase Storage
+            
+        Returns:
+            JSON response with status
+        """
+        try:
+            # Just a placeholder for now - will be implemented with LangChain
+            return jsonify({
+                'status': 'success',
+                'message': 'Analysis requested successfully',
+                'student_id': student_id,
+                'file_path': file_path
+            })
+            
+        except Exception as e:
+            return jsonify({
+                'status': 'error',
+                'message': str(e)
+            }), 500
     
     return portfolio_bp

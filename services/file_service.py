@@ -27,8 +27,8 @@ def setup_langchain():
     if not os.environ.get("OPENAI_API_KEY"):
         # 若沒設置OPENAI_API_KEY，待加
         pass
-    # model = ChatOpenAI(model="gpt-4o-mini")
-    model = ChatOpenAI(model="gpt-4o")
+    model = ChatOpenAI(model="gpt-4o-mini")
+    #model = ChatOpenAI(model="gpt-4o")
     return model
 
 model = setup_langchain()
@@ -199,7 +199,7 @@ def process_diagnose_request(user_id: str, file_id: str, department_and_type: st
     # 檔案路徑 #未來更改
     # file_path = "C:\\Users\\owner\\Documents\\NCCU\\專題\\初步閱讀與診斷用的.pdf"
     # file_path = "C:\\Users\\sophi\\OneDrive\\桌面\\初步閱讀與診斷用的(1).pdf"
-    file_path = "\\Users\\hy\\Downloads\\初步閱讀與診斷用的(1).pdf"
+    file_path = "/Users/hy/Downloads/初步閱讀與診斷用的(1).pdf"
     
     # 讀取檔案內容 同步呼叫非同步函數
     dividing_list = run_async_function(lambda: load_pdf(file_path, file_id, user_id))

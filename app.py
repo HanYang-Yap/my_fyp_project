@@ -2,7 +2,7 @@ import os
 import openai
 import firebase_admin
 from firebase_admin import credentials, firestore
-from flask import Flask, jsonify, redirect, render_template, request, send_from_directory
+from flask import Flask, jsonify, redirect, render_template, request, send_from_directory, url_for
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import RequestEntityTooLarge
 from google.cloud import storage
@@ -28,6 +28,8 @@ from controllers.faq_controller import create_faq_controller
 from controllers.calendar_controller import create_calendar_controller
 from controllers.profile_controller import create_profile_controller
 from controllers.home_controller import create_home_controller
+from controllers.file_controller import file_bp
+from controllers.evaluation_controller import evaluation_bp
 from repositories.otp_repository import OTPRepository
 
 app = Flask(__name__, template_folder="templates")
@@ -88,6 +90,8 @@ app.register_blueprint(create_faq_controller(db), url_prefix='/api')
 app.register_blueprint(create_calendar_controller(db), url_prefix='/api/calendar')
 app.register_blueprint(create_profile_controller(db), url_prefix='/api/profile')
 app.register_blueprint(create_home_controller(db), url_prefix='/api/home')
+app.register_blueprint(file_bp, url_prefix='/file')
+app.register_blueprint(evaluation_bp,url_prefix='/evaluation')
 app.register_blueprint(test_bp, url_prefix='/test')
 
 from flask import Flask, render_template
@@ -106,29 +110,44 @@ def index():
     }
     return render_template("index.html", firebase_config=firebase_config)
 
-@app.route("/login")
-def login():
-    return render_template("login.html")
-
 @app.route('/signup')
 def signup():
     return render_template('signup.html')
 
-@app.route('/home')
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
+        
+        if not email or not password:
+            return jsonify({"error": "請輸入電子郵件和密碼"}), 400
+        
+        #student_id = email.split('@')[0]
+        student_id = email
+        return redirect(f"/home/{student_id}")
+    
+    firebase_config = {
+        "apiKey": Config.FIREBASE_API_KEY,
+        "authDomain": Config.FIREBASE_AUTH_DOMAIN,
+        "projectId": Config.FIREBASE_PROJECT_ID,
+        "storageBucket": Config.FIREBASE_STORAGE_BUCKET,
+        "messagingSenderId": Config.FIREBASE_MESSAGING_SENDER_ID,
+        "appId": Config.FIREBASE_APP_ID
+    }
+    return render_template("login.html", firebase_config=firebase_config)
+
 @app.route('/home/<student_id>')
-def home_form(student_id=None):
-    if student_id is None:
-        student_id = "test_student_id"
-    # Redirect to the blueprint route
+def home_form(student_id):
     return redirect(f'/api/home/{student_id}')
 
-@app.route('/file/initAnalysis')
-def file_analysis():
+@app.route('/file/analyze', methods=['GET', 'POST'])
+def analyze_file():
     return render_template('initAnalysis.html')
 
 @app.route('/file/queryGuidedQuestions')
 def file_query_guided_questions():
-    return render_template('queryGuided.html')
+    return render_template('queryGuide.html')
 
 @app.route('/file/loading')
 def file_loading():
@@ -138,8 +157,12 @@ def file_loading():
 def file_detailed_revision():
     return render_template('detailedRevision.html')
 
-@app.route('/file/history')
-def file_history():
+@app.route('/file/lastReview')
+def file_last_review():
+    return render_template('lastreview.html')
+
+@app.route('/history')
+def history():
     return render_template('history.html')
 
 @app.route('/upload', methods=['POST'])
@@ -186,19 +209,24 @@ def faq_redirect():
 def forget_password():
     return render_template('Forget Password.html') 
 
-
 @app.route('/file_upload&management/<student_id>')
 def redirect_to_student_file_management(student_id):
     return redirect(f'/api/file-management/{student_id}')
 
-@app.route('/profile')
-def redicrect_to_profile():
-    return redirect('/profile/test_student_id')
+# @app.route('/file_upload&management/<student_id>')
+# def file_management(student_id):
+#     firebase_config = {
+#         "apiKey": Config.FIREBASE_API_KEY,
+#         "authDomain": Config.FIREBASE_AUTH_DOMAIN,
+#         "projectId": Config.FIREBASE_PROJECT_ID,
+#         "storageBucket": Config.FIREBASE_STORAGE_BUCKET,
+#         "messagingSenderId": Config.FIREBASE_MESSAGING_SENDER_ID,
+#         "appId": Config.FIREBASE_APP_ID
+#     }
+#     return render_template('file_upload&management.html', student_id=student_id, firebase_config=firebase_config)
 
 @app.route('/profile/<student_id>')
 def profile_form(student_id=None):
-    if student_id is None:
-        student_id = "test_student_id"
         
     firebase_config = {
         "apiKey": Config.FIREBASE_API_KEY,

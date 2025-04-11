@@ -242,7 +242,7 @@
                 sessionStorage.setItem("evaluation", JSON.stringify(evaluationData));
 
                 // 導向結果頁
-                window.location.href = `detailedRevision.html?userId=${userId}&fileId=${fileId}`;
+                window.location.href = `/file/detailedRevision?userId=${userId}&fileId=${fileId}`;
             } catch (err) {
                 console.error("初始化失敗：", err);
                 alert("🚫 載入失敗，請稍後再試");

@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UniTopia AI 升學輔助系統 - 學習歷程</title>
 
-    
+
     <style>
         * {
             margin: 0;
@@ -13,14 +14,14 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Arial, sans-serif;
         }
-        
+
         body {
             background-color: #f0f2f5;
             color: #3a4049;
             display: flex;
             min-height: 100vh;
         }
-        
+
         /* 側邊欄樣式 */
         .sidebar {
             width: 260px;
@@ -32,7 +33,7 @@
             position: fixed;
             z-index: 10;
         }
-        
+
         .logo-container {
             padding: 10px 20px;
             margin: 10px 25px 30px;
@@ -42,17 +43,17 @@
             align-items: center;
             justify-content: space-between;
         }
-        
+
         .logo {
             font-size: 24px;
             font-weight: bold;
         }
-        
+
         .logo-icon {
             color: #8aa2aa;
             font-size: 20px;
         }
-        
+
         .menu-item {
             padding: 15px 25px;
             margin: 5px 25px;
@@ -62,40 +63,41 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        
+
         .menu-item.active {
             background-color: rgba(255, 255, 255, 0.1);
         }
-        
+
         .menu-item:hover:not(.active) {
             background-color: rgba(255, 255, 255, 0.05);
         }
-        
+
         .menu-item i {
             width: 24px;
             margin-right: 15px;
             color: #9da3b4;
         }
-        
-        .menu-item.active i, .menu-item.active span {
+
+        .menu-item.active i,
+        .menu-item.active span {
             color: #e8eaed;
         }
-        
+
         .menu-item span {
             color: #9da3b4;
         }
-        
+
         .menu-item.active span {
             font-weight: bold;
         }
-        
+
         .logout {
             margin-top: auto;
             position: absolute;
             bottom: 30px;
             width: 210px;
         }
-        
+
         /* 主要內容區域 */
         .main-content {
             flex: 1;
@@ -103,7 +105,7 @@
             padding: 30px;
             background-color: #f0f2f5;
         }
-        
+
         .content-container {
             background-color: #ffffff;
             border-radius: 20px;
@@ -111,7 +113,7 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
             min-height: calc(100vh - 60px);
         }
-        
+
         /* 頁面標題 */
         .page-header {
             display: flex;
@@ -121,18 +123,18 @@
             padding-bottom: 15px;
             border-bottom: 1px solid #eaecef;
         }
-        
+
         .page-title {
             font-size: 24px;
             color: #3a4049;
         }
-        
+
         /* 主內容區域 */
         .portfolio-container {
             display: flex;
             gap: 20px;
         }
-        
+
         /* 左側類別選擇區域 */
         .portfolio-sidebar {
             width: 250px;
@@ -140,7 +142,7 @@
             border-radius: 12px;
             padding: 15px;
         }
-        
+
         .category-title {
             font-size: 16px;
             color: #3a4049;
@@ -149,11 +151,11 @@
             padding-bottom: 8px;
             border-bottom: 1px solid #eaecef;
         }
-        
+
         .category-list {
             list-style: none;
         }
-        
+
         .category-item {
             padding: 10px 10px;
             margin: 5px 0;
@@ -163,26 +165,26 @@
             font-size: 14px;
             color: #5a6877;
         }
-        
+
         .category-item:hover {
             background-color: #eaecef;
         }
-        
+
         .category-item.active {
             background-color: #5d8a9e;
             color: white;
         }
-        
+
         .sub-category {
             margin-left: 15px;
             margin-top: 5px;
             display: none;
         }
-        
+
         .category-item.expanded .sub-category {
             display: block;
         }
-        
+
         .college-item {
             padding: 8px 10px;
             border-radius: 4px;
@@ -191,22 +193,22 @@
             transition: all 0.2s;
             font-size: 13px;
         }
-        
+
         .college-item:hover {
             background-color: #eaecef;
         }
-        
+
         .college-item.active {
             background-color: rgba(93, 138, 158, 0.2);
             color: #3a5a6a;
             font-weight: bold;
         }
-        
+
         /* 右側內容區域 */
         .portfolio-content {
             flex: 1;
         }
-        
+
         /* 上傳區域 */
         .upload-section {
             background-color: #f9fafb;
@@ -218,31 +220,31 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-        
+
         .upload-section:hover {
             background-color: #f5f7fa;
             border-color: #5d8a9e;
         }
-        
+
         .upload-icon {
             font-size: 40px;
             color: #5d8a9e;
             margin-bottom: 15px;
         }
-        
+
         .upload-title {
             font-size: 18px;
             color: #3a4049;
             margin-bottom: 10px;
             font-weight: bold;
         }
-        
+
         .upload-subtitle {
             font-size: 14px;
             color: #636973;
             margin-bottom: 15px;
         }
-        
+
         .upload-button {
             background: linear-gradient(135deg, #5d8a9e 0%, #3a5a6a 100%);
             color: white;
@@ -253,11 +255,11 @@
             cursor: pointer;
             transition: opacity 0.3s;
         }
-        
+
         .upload-button:hover {
             opacity: 0.9;
         }
-        
+
         /* 文件列表 */
         .files-section {
             background-color: #ffffff;
@@ -265,7 +267,7 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             overflow: hidden;
         }
-        
+
         .section-header {
             background-color: #f5f7fa;
             padding: 12px 20px;
@@ -274,26 +276,26 @@
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .section-title {
             font-size: 16px;
             color: #3a4049;
             font-weight: bold;
         }
-        
+
         /* 單選框樣式 */
         .checkbox-container {
             margin-right: 15px;
             display: flex;
             align-items: center;
         }
-        
+
         input[type="radio"] {
             width: 18px;
             height: 18px;
             cursor: pointer;
         }
-        
+
         /* 刪除按鈕樣式 */
         .delete-btn {
             background: none;
@@ -310,23 +312,23 @@
             height: 30px;
             border-radius: 4px;
         }
-        
+
         /* 上傳配置模態框樣式 */
         .upload-form {
             margin-top: 10px;
         }
-        
+
         .form-group {
             margin-bottom: 20px;
         }
-        
+
         .form-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
             color: #3a4049;
         }
-        
+
         .form-control {
             width: 100%;
             padding: 10px;
@@ -336,22 +338,22 @@
             color: #3a4049;
             background-color: #fff;
         }
-        
+
         .radio-group {
             display: flex;
             gap: 20px;
         }
-        
+
         .radio-label {
             display: flex;
             align-items: center;
             cursor: pointer;
         }
-        
+
         .radio-label input {
             margin-right: 8px;
         }
-        
+
         .selected-file-name {
             padding: 10px;
             background-color: #f5f7fa;
@@ -360,7 +362,7 @@
             color: #636973;
             word-break: break-all;
         }
-        
+
         .final-file-name {
             padding: 10px;
             background-color: #e8f0f5;
@@ -370,7 +372,7 @@
             color: #3a5a6a;
             word-break: break-all;
         }
-        
+
         /* 分析底部區域 */
         .analyze-footer {
             padding: 15px 20px;
@@ -378,7 +380,7 @@
             border-top: 1px solid #eaecef;
             text-align: center;
         }
-        
+
         .analysis-button {
             background-color: #5d8a9e;
             color: white;
@@ -390,16 +392,16 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        
+
         .analysis-button:hover {
             background-color: #3a5a6a;
         }
-        
+
         .files-list {
             padding: 0;
             list-style: none;
         }
-        
+
         .file-item {
             padding: 12px 20px;
             border-bottom: 1px solid #eaecef;
@@ -407,15 +409,15 @@
             align-items: center;
             transition: background-color 0.2s;
         }
-        
+
         .file-item:last-child {
             border-bottom: none;
         }
-        
+
         .file-item:hover {
             background-color: #f9fafb;
         }
-        
+
         .file-icon {
             width: 36px;
             height: 36px;
@@ -427,27 +429,27 @@
             border-radius: 4px;
             color: #5d8a9e;
         }
-        
+
         .file-details {
             flex: 1;
         }
-        
+
         .file-name {
             font-size: 14px;
             color: #3a4049;
             margin-bottom: 4px;
         }
-        
+
         .file-meta {
             font-size: 12px;
             color: #8d939e;
         }
-        
+
         .file-actions {
             display: flex;
             gap: 10px;
         }
-        
+
         .file-action-btn {
             color: #636973;
             background: none;
@@ -456,15 +458,15 @@
             font-size: 16px;
             transition: color 0.2s;
         }
-        
+
         .file-action-btn:hover {
             color: #3a4049;
         }
-        
+
         .file-action-btn.delete:hover {
             color: #e25c5c;
         }
-        
+
         .file-status {
             font-size: 12px;
             padding: 3px 8px;
@@ -472,17 +474,17 @@
             font-weight: bold;
             margin-left: auto;
         }
-        
+
         .status-analyzed {
             background-color: rgba(93, 138, 158, 0.15);
             color: #3a5a6a;
         }
-        
+
         .status-pending {
             background-color: rgba(241, 174, 78, 0.15);
             color: #c48939;
         }
-        
+
         /* AI分析模態框 */
         .modal {
             display: none;
@@ -496,11 +498,11 @@
             align-items: center;
             justify-content: center;
         }
-        
+
         .modal.active {
             display: flex;
         }
-        
+
         .modal-content {
             background-color: #ffffff;
             border-radius: 12px;
@@ -510,7 +512,7 @@
             overflow-y: auto;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
         }
-        
+
         .modal-header {
             padding: 15px 20px;
             border-bottom: 1px solid #eaecef;
@@ -518,13 +520,13 @@
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .modal-title {
             font-size: 18px;
             color: #3a4049;
             font-weight: bold;
         }
-        
+
         .close-btn {
             background: none;
             border: none;
@@ -533,42 +535,42 @@
             cursor: pointer;
             transition: color 0.2s;
         }
-        
+
         .close-btn:hover {
             color: #3a4049;
         }
-        
+
         .modal-body {
             padding: 20px;
         }
-        
+
         .analysis-section {
             margin-bottom: 20px;
         }
-        
+
         .analysis-heading {
             font-size: 16px;
             color: #3a4049;
             margin-bottom: 10px;
             font-weight: bold;
         }
-        
+
         .analysis-text {
             font-size: 14px;
             color: #5a6877;
             line-height: 1.6;
             margin-bottom: 15px;
         }
-        
+
         .suggestion-list {
             padding-left: 20px;
         }
-        
+
         .suggestion-item {
             margin-bottom: 8px;
             color: #5a6877;
         }
-        
+
         .modal-footer {
             padding: 15px 20px;
             border-top: 1px solid #eaecef;
@@ -576,7 +578,7 @@
             justify-content: flex-end;
             gap: 10px;
         }
-        
+
         .modal-btn {
             padding: 8px 15px;
             border-radius: 6px;
@@ -584,84 +586,84 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        
+
         .btn-secondary {
             background-color: #f5f7fa;
             color: #3a4049;
             border: 1px solid #dbe0e5;
         }
-        
+
         .btn-secondary:hover {
             background-color: #eaecef;
         }
-        
+
         .btn-primary {
             background-color: #5d8a9e;
             color: white;
             border: none;
         }
-        
+
         .btn-primary:hover {
             background-color: #3a5a6a;
         }
-        
+
         /* 響應式設計 */
         @media (max-width: 1200px) {
             .portfolio-container {
                 flex-direction: column;
             }
-            
+
             .portfolio-sidebar {
                 width: 100%;
                 margin-bottom: 20px;
             }
         }
-        
+
         @media (max-width: 768px) {
             .sidebar {
                 width: 70px;
                 overflow: hidden;
             }
-            
+
             .logo-container {
                 justify-content: center;
                 margin: 10px auto 30px;
                 padding: 10px;
                 width: 50px;
             }
-            
+
             .logo {
                 display: none;
             }
-            
+
             .menu-item span {
                 display: none;
             }
-            
+
             .menu-item {
                 justify-content: center;
                 padding: 15px 0;
                 margin: 5px auto;
                 width: 50px;
             }
-            
+
             .menu-item i {
                 margin-right: 0;
             }
-            
+
             .main-content {
                 margin-left: 70px;
             }
-            
+
             .logout {
                 width: 50px;
             }
-            
+
             .file-item {
                 flex-direction: column;
                 align-items: flex-start;
             }
-            
+
             .file-actions {
                 margin-top: 10px;
                 width: 100%;
@@ -682,12 +684,12 @@
                 <i class="fas fa-plus"></i>
             </div>
         </div>
-        
+
         <div class="menu-item" onclick="window.location.href='/home/{{ student_id }}'">
             <i class="fas fa-home"></i>
             <span>首頁</span>
         </div>
-        
+
         <div class="menu-item" onclick="window.location.href='/profile/{{ student_id }}'">
             <i class="fas fa-user"></i>
             <span>個人資料</span>
@@ -697,60 +699,42 @@
             <i class="fas fa-file-alt"></i>
             <span>學習歷程</span>
         </div>
-        
+
         <div class="menu-item" onclick="window.location.href='/calendar/{{ student_id }}'">
             <i class="fas fa-calendar"></i>
             <span>日程表</span>
         </div>
-        
+
         <div class="menu-item" onclick="window.location.href='/faq/{{ student_id }}'">
             <i class="fas fa-question-circle"></i>
             <span>常見問題</span>
         </div>
-        
+
         <div class="menu-item logout">
             <i class="fas fa-sign-out-alt"></i>
             <span>登出</span>
         </div>
     </div>
-    
+
     <!-- 主要內容區域 -->
     <div class="main-content">
         <div class="content-container">
             <div class="page-header">
                 <h1 class="page-title">學習歷程</h1>
-                <div>學生ID: <span id="studentIdDisplay">{{student_id}}</span></div>
+                <div hidden>
+                    <span id="studentIdDisplay">{{student_id}}</span>
+                </div>
             </div>
-            
+
             <div class="portfolio-container">
-                <!-- 左側類別選擇 -->
                 <div class="portfolio-sidebar">
                     <h3 class="category-title">志願學校系所</h3>
                     <ul class="category-list">
-                        <li class="category-item active" data-category="all">
-                            <i class="fas fa-list"></i> 所有文件
-                        </li>
-                        <li class="category-item" data-category="ntu-computer_science">
-                            <i class="fas fa-university"></i> 國立臺灣大學-資訊工程學系
-                        </li>
-                        <li class="category-item" data-category="nthu-computer_science">
-                            <i class="fas fa-university"></i> 國立清華大學-資訊工程學系
-                        </li>
-                        <li class="category-item" data-category="nycu-computer_science">
-                            <i class="fas fa-university"></i> 國立陽明交通大學-資訊工程學系
-                        </li>
-                        <li class="category-item" data-category="nccu-management_information_system">
-                            <i class="fas fa-university"></i> 國立政治大學-資訊管理學系
-                        </li>
-                        <li class="category-item" data-category="ncku-computer_science">
-                            <i class="fas fa-university"></i> 國立成功大學-資訊工程學系
-                        </li>
-                        <li class="category-item" data-category="ncu-computer-science">
-                            <i class="fas fa-university"></i> 國立中央大學-資訊工程學系
-                        </li>
+                        <!-- This list will be populated dynamically by JavaScript -->
+                        <div class="loading-indicator"><i class="fas fa-spinner fa-spin"></i> 載入中...</div>
                     </ul>
                 </div>
-                
+
                 <!-- 右側內容 -->
                 <div class="portfolio-content">
                     <!-- 上傳區域 -->
@@ -765,7 +749,7 @@
                         </button>
                         <input type="file" id="fileUpload" style="display: none;" multiple>
                     </div>
-                    
+
                     <!-- 上傳配置模態框 -->
                     <div class="modal" id="uploadModal">
                         <div class="modal-content" style="max-width: 500px;">
@@ -789,7 +773,7 @@
                                             <option value="ncu-computer_science">國立中央大學-資訊工程學系</option>
                                         </select>
                                     </div>
-                                    
+
                                     <div class="form-group">
                                         <label>選擇文件類型：</label>
                                         <div class="radio-group">
@@ -803,14 +787,15 @@
                                             </label>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group">
                                         <label for="fileModalInput">選擇的文件：</label>
                                         <input type="file" id="fileModalInput" style="display: none;">
-                                        <button class="modal-btn btn-secondary" id="chooseFileBtn">choose file</button><br><br>
+                                        <button class="modal-btn btn-secondary" id="chooseFileBtn">choose
+                                            file</button><br><br>
                                         <div id="selectedFileName" class="selected-file-name">尚未選擇文件</div>
                                     </div>
-                                    
+
                                     <div class="form-group">
                                         <label>最終檔案名稱：</label>
                                         <div id="finalFileName" class="final-file-name">-</div>
@@ -823,17 +808,17 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- 文件列表 -->
                     <div class="files-section">
                         <div class="section-header">
                             <h3 class="section-title">所有文件</h3>
                         </div>
-                        
+
                         <ul class="files-list">
                             <!-- Files will be dynamically loaded here -->
                         </ul>
-                        
+
                         <div class="analyze-footer">
                             <button class="analysis-button" id="analyzeBtn">
                                 <i class="fas fa-robot"></i> AI 分析所選文件
@@ -844,7 +829,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- AI分析模態框 (模擬) -->
     <div class="modal" id="analysisModal">
         <div class="modal-content">
@@ -884,73 +869,201 @@
             </div>
         </div>
     </div>
-    
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
         import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
-        
+
         const firebaseConfig = {
-          apiKey: "AIzaSyBfmTEZ_JV2xvm0x2irREfZTECGqYgnh08",
-          authDomain: "fyp-g1-project.firebaseapp.com",
-          projectId: "fyp-g1-project",
-          storageBucket: "fyp-g1-project.firebasestorage.app",
-          messagingSenderId: "21387213956",
-          appId: "21387213956",
+            apiKey: "AIzaSyBfmTEZ_JV2xvm0x2irREfZTECGqYgnh08",
+            authDomain: "fyp-g1-project.firebaseapp.com",
+            projectId: "fyp-g1-project",
+            storageBucket: "fyp-g1-project.firebasestorage.app",
+            messagingSenderId: "21387213956",
+            appId: "21387213956",
         };
-        
+
         const app = initializeApp(firebaseConfig);
         const storage = getStorage(app);
-        
-        // ✅ Helper to upload and return download URL
-        window.uploadToFirebase = async function(file, path) {
-          const fileRef = ref(storage, path);
-          await uploadBytes(fileRef, file);
-          const url = await getDownloadURL(fileRef);
-          return { url, path };
+
+        window.uploadToFirebase = async function (file, path) {
+            const fileRef = ref(storage, path);
+            await uploadBytes(fileRef, file);
+            const url = await getDownloadURL(fileRef);
+            return { url, path };
         };
-        
-        // ✅ Delete file from Firebase
-        window.deleteFromFirebase = async function(path) {
-          const fileRef = ref(storage, path);
-          await deleteObject(fileRef);
+
+        window.deleteFromFirebase = async function (path) {
+            const fileRef = ref(storage, path);
+            await deleteObject(fileRef);
         };
     </script>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const studentId = document.getElementById('studentIdDisplay').textContent;
+
+            // Fetch student preferences and files
+            fetchStudentPreferences(studentId);
             fetchAndRenderFiles(studentId);
 
-            // Filter by school category
-            document.querySelectorAll('.category-item').forEach(function(item) {
-                item.addEventListener('click', function() {
+            // Initialize upload modal
+            initializeUploadModal(studentId);
+
+            // Analysis modal handlers
+            document.getElementById('closeAnalysisModal')?.addEventListener('click', () => {
+                document.getElementById('analysisModal').classList.remove('active');
+            });
+
+            document.getElementById('closeAnalysisBtn')?.addEventListener('click', () => {
+                document.getElementById('analysisModal').classList.remove('active');
+            });
+
+            document.getElementById('downloadAnalysisBtn')?.addEventListener('click', () => {
+                alert('分析報告下載功能將在後續版本中開放');
+            });
+        });
+
+        /**
+         * Fetch student's preferred departments from the backend
+         */
+        async function fetchStudentPreferences(studentId) {
+            try {
+                // Show loading state
+                const categoryList = document.querySelector('.category-list');
+                categoryList.innerHTML = '<div class="loading-indicator"><i class="fas fa-spinner fa-spin"></i> 載入中...</div>';
+
+                // Fetch preferences from API
+                const response = await fetch(`/api/get-student-preferences/${studentId}`);
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch student preferences');
+                }
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    // Clear loading indicator
+                    categoryList.innerHTML = '';
+
+                    // Add "All Files" option
+                    const allFilesItem = document.createElement('li');
+                    allFilesItem.className = 'category-item active';
+                    allFilesItem.setAttribute('data-category', 'all');
+                    allFilesItem.innerHTML = '<i class="fas fa-list"></i> 所有文件';
+                    categoryList.appendChild(allFilesItem);
+
+                    // Add each preference as a category
+                    const preferences = data.preferences;
+                    if (preferences && preferences.length > 0) {
+                        preferences.sort((a, b) => a.rank - b.rank); // Sort by rank
+
+                        preferences.forEach(pref => {
+                            const categoryItem = document.createElement('li');
+                            categoryItem.className = 'category-item';
+
+                            // Create a safe category ID for data attribute
+                            const categoryId = `${pref.school}-${pref.department}`.replace(/\s+/g, '_');
+                            categoryItem.setAttribute('data-category', categoryId);
+
+                            // Create item with preference rank
+                            categoryItem.innerHTML = `
+                        <span class="preference-badge rank-${pref.rank}">${pref.rank}</span>
+                        <i class="fas fa-university"></i> ${pref.school}-${pref.department}
+                    `;
+
+                            categoryList.appendChild(categoryItem);
+                        });
+                    } else {
+                        // If no preferences found, show a message
+                        const emptyItem = document.createElement('li');
+                        emptyItem.className = 'empty-content';
+                        emptyItem.textContent = '尚未設定志願學校系所';
+                        categoryList.appendChild(emptyItem);
+                    }
+
+                    // Update dropdown options
+                    updateSchoolDropdown(preferences);
+
+                    // Add event listeners to each category item
+                    addCategoryEventListeners();
+                } else {
+                    throw new Error(data.message || 'Failed to load preferences');
+                }
+            } catch (error) {
+                console.error('Error fetching student preferences:', error);
+                const categoryList = document.querySelector('.category-list');
+                categoryList.innerHTML = `
+            <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i> 
+                無法載入志願學校系所: ${error.message}
+            </div>
+            <li class="category-item active" data-category="all">
+                <i class="fas fa-list"></i> 所有文件
+            </li>
+        `;
+
+                // Still add event listeners even if there's an error
+                addCategoryEventListeners();
+            }
+        }
+
+        /**
+         * Update the school dropdown in the upload modal
+         */
+        function updateSchoolDropdown(preferences) {
+            const schoolSelect = document.getElementById('schoolSelect');
+
+            // Clear existing options except the first one
+            while (schoolSelect.options.length > 1) {
+                schoolSelect.remove(1);
+            }
+
+            // Add each preference as an option
+            if (preferences && preferences.length > 0) {
+                preferences.forEach(pref => {
+                    const option = document.createElement('option');
+                    const valueId = `${pref.school}-${pref.department}`.replace(/\s+/g, '_');
+                    option.value = valueId;
+                    option.textContent = `${pref.school}-${pref.department}`;
+                    schoolSelect.appendChild(option);
+                });
+            }
+        }
+
+        /**
+         * Add event listeners to category items
+         */
+        function addCategoryEventListeners() {
+            document.querySelectorAll('.category-item').forEach(function (item) {
+                item.addEventListener('click', function () {
                     // Clear all active states
-                    document.querySelectorAll('.category-item').forEach(function(el) {
+                    document.querySelectorAll('.category-item').forEach(function (el) {
                         el.classList.remove('active');
                     });
-                    
+
                     // Set current item as active
                     this.classList.add('active');
-                    
+
                     // Get school category
                     const category = this.getAttribute('data-category');
-                    
+
                     // Update file section title
                     const sectionTitle = document.querySelector('.section-title');
-                    
+
                     if (category === 'all') {
                         sectionTitle.textContent = '所有文件';
                         // Show all files
-                        document.querySelectorAll('.file-item').forEach(function(file) {
+                        document.querySelectorAll('.file-item').forEach(function (file) {
                             file.style.display = 'flex';
                         });
                     } else {
-                        // Get school name
+                        // Get school name from the item's text content
                         const schoolName = this.textContent.trim();
                         sectionTitle.textContent = schoolName + ' 申請資料';
-                        
+
                         // Only show files for selected school
-                        document.querySelectorAll('.file-item').forEach(function(file) {
+                        document.querySelectorAll('.file-item').forEach(function (file) {
                             if (file.getAttribute('data-school') === category) {
                                 file.style.display = 'flex';
                             } else {
@@ -960,7 +1073,12 @@
                     }
                 });
             });
+        }
 
+        /**
+         * Initialize the upload modal functionality
+         */
+        function initializeUploadModal(studentId) {
             const schoolSelect = document.getElementById('schoolSelect');
             const radioButtons = document.querySelectorAll('input[name="documentType"]');
             let selectedFileBlob = null;
@@ -1012,117 +1130,6 @@
                 }
             });
 
-            // Analysis modal handlers
-            document.getElementById('closeAnalysisModal')?.addEventListener('click', () => {
-                document.getElementById('analysisModal').classList.remove('active');
-            });
-            
-            document.getElementById('closeAnalysisBtn')?.addEventListener('click', () => {
-                document.getElementById('analysisModal').classList.remove('active');
-            });
-            
-            document.getElementById('downloadAnalysisBtn')?.addEventListener('click', () => {
-                alert('分析報告下載功能將在後續版本中開放');
-            });
-
-            // Fetch files from Firestore and render
-            async function fetchAndRenderFiles(studentId) {
-                try {
-                    // Updated to use student-specific endpoint
-                    const res = await fetch(`/api/get-student-files/${studentId}`);
-                    const files = await res.json();
-                    console.log("Fetched files for student ID:", studentId, files);
-                    const fileList = document.querySelector(".files-list");
-
-                    fileList.innerHTML = ''; // Clear any existing list
-
-                    if (files.length === 0) {
-                        fileList.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">尚未上傳任何文件</div>';
-                        return;
-                    }
-
-                    files.forEach(file => {
-                        const fileItem = document.createElement('li');
-                        fileItem.className = 'file-item';
-                        fileItem.setAttribute('data-school', file.school);
-                        fileItem.setAttribute('data-type', file.type);
-
-                        const fileExt = file.filename.split('.').pop().toLowerCase();
-                        const iconClass = fileExt === 'pdf' ? 'fa-file-pdf' :
-                                    fileExt === 'doc' || fileExt === 'docx' ? 'fa-file-word' :
-                                    fileExt === 'ppt' || fileExt === 'pptx' ? 'fa-file-powerpoint' :
-                                    fileExt === 'jpg' || fileExt === 'jpeg' || fileExt === 'png' ? 'fa-file-image' :
-                                    'fa-file-alt';
-
-                        fileItem.innerHTML = `
-                            <div class="checkbox-container">
-                                <input type="radio" name="fileSelect" value="${file.path}">
-                            </div>
-                            <div class="file-icon">
-                                <i class="fas ${iconClass}"></i>
-                            </div>
-                            <div class="file-details">
-                                <div class="file-name">${file.filename}</div>
-                                <div class="file-meta">${(file.size / (1024 * 1024)).toFixed(1)} MB · 上傳於 ${file.uploaded_at}</div>
-                            </div>
-                            <span class="file-status status-pending">待分析</span>
-                            <button class="delete-btn" data-file-path="${file.path}" data-file-name="${file.filename}">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        `;
-
-                        fileItem.querySelector('.delete-btn').addEventListener('click', async (e) => {
-                            const filePath = e.currentTarget.getAttribute('data-file-path');
-                            const fileName = e.currentTarget.getAttribute('data-file-name');
-                            
-                            if (confirm(`確定要刪除文件: ${fileName}？`)) {
-                                try {
-                                    // Try to delete from Firebase Storage
-                                    try {
-                                        await deleteFromFirebase(filePath);
-                                        console.log(`成功從 Storage 刪除文件: ${filePath}`);
-                                    } catch (storageError) {
-                                        console.warn(`無法從 Storage 刪除文件 (可能已被刪除): ${filePath}`, storageError);
-                                    }
-                                    
-                                    // Delete metadata from backend
-                                    await fetch("/api/delete-file-metadata", {
-                                        method: "POST",
-                                        headers: {
-                                            "Content-Type": "application/json"
-                                        },
-                                        body: JSON.stringify({
-                                            path: filePath,
-                                            filename: fileName,
-                                            student_id: studentId
-                                        })
-                                    });
-                                    
-                                    // Remove from UI
-                                    fileItem.remove();
-                                    
-                                    // If no files left, show message
-                                    if (document.querySelectorAll('.file-item').length === 0) {
-                                        fileList.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">尚未上傳任何文件</div>';
-                                    }
-                                    
-                                    alert("文件已刪除");
-                                } catch (error) {
-                                    console.error("刪除文件元數據失敗:", error);
-                                    alert("刪除文件元數據失敗，請稍後再試");
-                                }
-                            }
-                        });
-
-                        fileList.appendChild(fileItem);
-                    });
-                } catch (error) {
-                    console.error("Error fetching files:", error);
-                    const fileList = document.querySelector(".files-list");
-                    fileList.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">載入文件時發生錯誤，請稍後再試</div>';
-                }
-            }
-
             document.getElementById('confirmUpload').addEventListener('click', async () => {
                 const school = schoolSelect.value;
                 const type = document.querySelector('input[name="documentType"]:checked').value;
@@ -1136,7 +1143,7 @@
                 try {
                     // Add student_id to the path structure
                     const path = `uploads/${studentId}/${school}/${type}/${finalFileName}`;
-                    const result = await uploadToFirebase(selectedFileBlob, path);
+                    const result = await window.uploadToFirebase(selectedFileBlob, path);
 
                     alert(`文件「${finalFileName}」上傳成功！`);
                     await fetch("/api/save-file-metadata", {
@@ -1163,7 +1170,7 @@
                     document.getElementById('finalFileName').textContent = '-';
                     schoolSelect.value = '';
                     selectedFileBlob = null;
-                    
+
                     // Refresh the file list
                     fetchAndRenderFiles(studentId);
                 } catch (err) {
@@ -1171,51 +1178,210 @@
                     alert("上傳失敗，請稍後再試");
                 }
             });
-            
-            // Add the analyze button functionality
-            document.getElementById('analyzeBtn').addEventListener('click', async () => {
-                const selectedFile = document.querySelector('input[name="fileSelect"]:checked');
-                if (!selectedFile) {
-                    alert("請先選擇一個文件進行分析");
+        }
+
+        async function fetchAndRenderFiles(studentId) {
+            try {
+                // Updated to use student-specific endpoint
+                const res = await fetch(`/api/get-student-files/${studentId}`);
+                const files = await res.json();
+                console.log("Fetched files for student ID:", studentId, files);
+                const fileList = document.querySelector(".files-list");
+
+                fileList.innerHTML = ''; // Clear any existing list
+
+                if (files.length === 0) {
+                    fileList.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">尚未上傳任何文件</div>';
                     return;
                 }
-                
-                const filePath = selectedFile.value;
-                const fileItem = selectedFile.closest('.file-item');
-                const fileName = fileItem.querySelector('.file-name').textContent;
-                
-                try {
-                    // Call the analysis endpoint (placeholder for LangChain integration)
-                    const response = await fetch(`/api/analyze-file/${studentId}/${encodeURIComponent(filePath)}`, {
-                        method: 'POST'
+
+                files.forEach(file => {
+                    const fileItem = document.createElement('li');
+                    fileItem.className = 'file-item';
+                    fileItem.setAttribute('data-school', file.school);
+                    fileItem.setAttribute('data-type', file.type);
+                    fileItem.setAttribute('data-file-id', file.id);
+
+                    const fileExt = file.filename.split('.').pop().toLowerCase();
+                    const iconClass = fileExt === 'pdf' ? 'fa-file-pdf' :
+                        fileExt === 'doc' || fileExt === 'docx' ? 'fa-file-word' :
+                            fileExt === 'ppt' || fileExt === 'pptx' ? 'fa-file-powerpoint' :
+                                fileExt === 'jpg' || fileExt === 'jpeg' || fileExt === 'png' ? 'fa-file-image' :
+                                    'fa-file-alt';
+
+                    fileItem.innerHTML = `
+                <div class="checkbox-container">
+                    <input type="radio" name="fileSelect" value="${file.path}">
+                </div>
+                <div class="file-icon">
+                    <i class="fas ${iconClass}"></i>
+                </div>
+                <div class="file-details">
+                    <div class="file-name">${file.filename}</div>
+                    <div class="file-meta">${(file.size / (1024 * 1024)).toFixed(1)} MB · 上傳於 ${file.uploaded_at}</div>
+                </div>
+                <span class="file-status status-pending">待分析</span>
+                <button class="delete-btn" data-file-path="${file.path}" data-file-name="${file.filename}">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+
+                    fileItem.querySelector('.delete-btn').addEventListener('click', async (e) => {
+                        const filePath = e.currentTarget.getAttribute('data-file-path');
+                        const fileName = e.currentTarget.getAttribute('data-file-name');
+
+                        if (confirm(`確定要刪除文件: ${fileName}？`)) {
+                            try {
+                                try {
+                                    await window.deleteFromFirebase(filePath);
+                                    console.log(`成功從 Storage 刪除文件: ${filePath}`);
+                                } catch (storageError) {
+                                    console.warn(`無法從 Storage 刪除文件 (可能已被刪除): ${filePath}`, storageError);
+                                }
+
+                                // Delete metadata from backend
+                                await fetch("/api/delete-file-metadata", {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify({
+                                        path: filePath,
+                                        filename: fileName,
+                                        student_id: studentId
+                                    })
+                                });
+
+                                // Remove from UI
+                                fileItem.remove();
+
+                                // If no files left, show message
+                                if (document.querySelectorAll('.file-item').length === 0) {
+                                    fileList.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">尚未上傳任何文件</div>';
+                                }
+
+                                alert("文件已刪除");
+                            } catch (error) {
+                                console.error("刪除文件元數據失敗:", error);
+                                alert("刪除文件元數據失敗，請稍後再試");
+                            }
+                        }
                     });
-                    
-                    const result = await response.json();
-                    
-                    if (result.status === 'success') {
-                        // Update the UI to show analysis in progress
-                        const statusElement = fileItem.querySelector('.file-status');
-                        statusElement.textContent = '分析中...';
-                        statusElement.className = 'file-status status-pending';
-                        
-                        // In a real application, you'd wait for analysis to complete
-                        // For now, just simulate with a timeout and show the modal
-                        setTimeout(() => {
-                            statusElement.textContent = '已分析 · ' + new Date().toLocaleDateString() + ' · 評分: 85';
-                            statusElement.className = 'file-status status-analyzed';
-                            
-                            // Show analysis modal (simulation)
-                            document.getElementById('analysisModal').classList.add('active');
-                        }, 2000);
-                    } else {
-                        alert("分析請求失敗: " + result.message);
-                    }
-                } catch (error) {
-                    console.error("Analysis request failed:", error);
-                    alert("分析請求失敗，請稍後再試");
-                }
-            });
+
+                    fileList.appendChild(fileItem);
+                });
+            } catch (error) {
+                console.error("Error fetching files:", error);
+                const fileList = document.querySelector(".files-list");
+                fileList.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">載入文件時發生錯誤，請稍後再試</div>';
+            }
+        }
+
+        document.getElementById('confirmUpload').addEventListener('click', async () => {
+            const school = schoolSelect.value;
+            const type = document.querySelector('input[name="documentType"]:checked').value;
+            const finalFileName = document.getElementById('finalFileName').textContent;
+
+            if (!school || !selectedFileBlob) {
+                alert("請選擇學校系所並上傳文件");
+                return;
+            }
+
+            try {
+                // Add student_id to the path structure
+                const path = `uploads/${studentId}/${school}/${type}/${finalFileName}`;
+                const result = await uploadToFirebase(selectedFileBlob, path);
+
+                alert(`文件「${finalFileName}」上傳成功！`);
+                await fetch("/api/save-file-metadata", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        filename: finalFileName,
+                        path: path,
+                        url: result.url,
+                        size: selectedFileBlob.size,
+                        school: school,
+                        type: type,
+                        uploaded_at: new Date().toLocaleDateString(),
+                        student_id: studentId
+                    })
+                });
+
+                document.getElementById('uploadModal').classList.remove('active');
+
+                // Reset form
+                document.getElementById('selectedFileName').textContent = '尚未選擇文件';
+                document.getElementById('finalFileName').textContent = '-';
+                schoolSelect.value = '';
+                selectedFileBlob = null;
+
+                // Refresh the file list
+                fetchAndRenderFiles(studentId);
+            } catch (err) {
+                console.error("上傳失敗", err);
+                alert("上傳失敗，請稍後再試");
+            }
         });
+
+        // Improved analyzeBtn click handler
+        document.getElementById('analyzeBtn').addEventListener('click', function () {
+            const selectedFile = document.querySelector('input[name="fileSelect"]:checked');
+            if (!selectedFile) {
+                alert('請先選擇一個要分析的文件');
+                return;
+            }
+
+            const fileItem = selectedFile.closest('.file-item');
+            const fullFileName = fileItem.querySelector('.file-name').textContent;
+            const fileStatus = fileItem.querySelector('.file-status');
+            const filePath = selectedFile.value; // Get the file path from the radio button value
+
+            const studentId = document.getElementById('studentIdDisplay').textContent;
+
+            // Get the file ID from the data attribute
+            const fileId = fileItem.getAttribute('data-file-id');
+            const school = fileItem.getAttribute('data-school');
+            const fileType = fileItem.getAttribute('data-type');
+
+            console.log('filetype:', fileType);
+
+            // 移除副檔名
+            const fileNameWithoutExt = fullFileName.replace(/\.(pdf|docx|pptx|doc|ppt|jpg|jpeg|png)$/i, '');
+
+            // 準備要傳遞的資料
+            const postData = {
+                userId: studentId,
+                fileId: fileId,
+                filePath: filePath,
+                fileName: fullFileName,
+                school: school,
+                fileType: fileType,
+                departmentandtype: fileNameWithoutExt
+            };
+
+            console.log('fileId:', fileId);
+
+            // 將資料存入 localStorage
+            localStorage.setItem('selectedFileData', JSON.stringify(postData));
+
+            // Determine if we should confirm reanalysis
+            if (fileStatus.classList.contains('status-analyzed')) {
+                if (!confirm('此文件已經分析過，確定要重新分析嗎？')) {
+                    return; // User canceled
+                }
+            }
+
+            console.log('分析文件:', postData);
+
+            // Option 1: Direct navigation (original approach)
+            window.location.href = '/file/analyze';
+
+        });
+
     </script>
 </body>
+
 </html>

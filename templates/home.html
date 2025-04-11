@@ -697,12 +697,10 @@
                         console.error('登出錯誤:', error);
                     });
                 } else {
-                    // Fallback for when Firebase isn't available
                     window.location.href = '/login';
                 }
             });
 
-            // View materials button
             document.getElementById('view-materials-btn').addEventListener('click', function() {
                 window.location.href = `/file_upload&management/${studentId}`;
             });
@@ -710,10 +708,6 @@
 
         function refreshData() {
             const studentId = "{{ student_id }}";
-            
-            // Only fetch data if we need to refresh dynamically
-            // For now, we're using the server-side rendered data
-            // This could be expanded for real-time updates if needed
             
             fetch(`/api/home/${studentId}`)
                 .then(response => {
