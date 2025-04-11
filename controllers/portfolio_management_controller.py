@@ -68,36 +68,7 @@ def create_portfolio_management_controller(db):
                         wishes_data = direct_wishes_ref.to_dict()
                         preferred_departments = wishes_data.get('wishes', [])
             
-            # If still no data found, use test data
-            if not preferred_departments:
-                # Provide test data for development purposes
-                preferred_departments = [
-                    {
-                        'rank': 1,
-                        'school': '國立臺灣大學',
-                        'department': '資訊工程學系'
-                    },
-                    {
-                        'rank': 2,
-                        'school': '國立清華大學',
-                        'department': '資訊工程學系'
-                    },
-                    {
-                        'rank': 3,
-                        'school': '國立陽明交通大學',
-                        'department': '資訊工程學系'
-                    },
-                    {
-                        'rank': 4,
-                        'school': '國立政治大學',
-                        'department': '資訊管理學系'
-                    },
-                    {
-                        'rank': 5,
-                        'school': '國立成功大學',
-                        'department': '資訊工程學系'
-                    }
-                ]
+
             
             # Format the response
             return jsonify({
